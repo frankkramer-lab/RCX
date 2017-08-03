@@ -9,17 +9,17 @@
 ##   Copied from NDExR package on 3 August 2017 by Auer
 ##
 ## Description:
-##    Base functions to create, parse, modify ngraph/igraph objects from/to CX networks
+##    Base functions to create, parse, modify RCXgraph/igraph objects from/to CX networks
 ################################################################################
 
-#' Create ngraph object from RCX object
+#' Create RCXgraph object from RCX object
 #'
-#' This function creates an ngraph object from a supplied \code{\link{RCX}} object.
+#' This function creates an RCXgraph object from a supplied \code{\link{RCX}} object.
 #' RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
-#' The ngraph class inherits from igraph and contains the complete (R)CX information as graph, node and edge attributes.
+#' The RCXgraph class inherits from igraph and contains the complete (R)CX information as graph, node and edge attributes.
 #' All \code{\link[igraph]{igraph}} functionality is available, e.g. access nodes and edges of igraph g via V(g) and E(g) and their attributes via V(g)$attribute
 #'
-#' The following rules apply to convert from \code{\link{RCX}} to ngraph:
+#' The following rules apply to convert from \code{\link{RCX}} to RCXgraph:
 #' \itemize{
 #'  \item nodes receive the "@id" value as name. All other information in aspects node and nodeAttributes are saved as node attributes, access via V(g).
 #'        Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
@@ -28,9 +28,9 @@
 #'  \item all other aspect data is stored as graph attributes, access via g$aspect
 #' }
 #'
-#' An ngraph object could look like this:\cr
+#' An RCXgraph object could look like this:\cr
 #'\preformatted{
-#'> str(ngraph)
+#'> str(rcxgraph)
 #'  IGRAPH DN-B 244 141 --
 #'   + attr: metaData (g/x), numberVerification (g/x), ndexStatus (g/x), networkAttributes (g/x), hiddenAttributes (g/x), cartesianLayout (g/x),
 #'   | visualProperties (g/x), subNetworks (g/x), cyViews (g/x), networkRelations (g/x), cyTableColumn (g/x), status (g/x), name (v/c), n (v/c), NAME (v/c),
@@ -46,7 +46,7 @@
 #'  [109] 136->137 134->135 132->133 130->131 128->129 126->127 124->125 122->123 120->121 118->119 116->117 114->115 112->113 110->111 108->109 106->107 104->105 102->103
 #'  [127] 100->101 98 ->99  96 ->97  94 ->95  92 ->93  90 ->91  88 ->89  86 ->87  84 ->85  82 ->83  80 ->81  78 ->79  76 ->77  74 ->75  72 ->73
 #'
-#'> V(ngraph)[[]]   ## @id as vertex names
+#'> V(rcxgraph)[[]]   ## @id as vertex names
 #'  + 244/244 vertices, named:
 #'      name                         n                      NAME type selected
 #'  1    315                     ZNF84                     ZNF84 gene    false
@@ -56,11 +56,11 @@
 #'  5    311                    ZNF561                    ZNF561 gene    false
 #'  ....
 #'
-#'> V(ngraph)$NAME   ## (node) names of the vertices from rcx$nodeAttributes
+#'> V(rcxgraph)$NAME   ## (node) names of the vertices from rcx$nodeAttributes
 #'   [1] "ZNF84"                     "chr12:133450233-133450289" "ZNF572"                    "chr8:125985493-125985548"  "ZNF561"
 #'   ...
 #'
-#'> E(ngraph)[[]]
+#'> E(rcxgraph)[[]]
 #'  + 11/11 edges (vertex names):
 #'  + 141/141 edges (vertex names):
 #'      tail head tid hid name              i                                         shared.name Score                                                NAME    interaction
@@ -70,7 +70,7 @@
 #'  4    311  310   5   6  453 interacts with       chr19:9707546-9707590 (interacts with) ZNF561     1       chr19:9707546-9707590 (interacts with) ZNF561 interacts with
 #'  5    313  309   3   7  452 interacts with                      ZNF257 (interacts with) ZNF572  <NA>                      ZNF257 (interacts with) ZNF572 interacts with
 #'
-#'> E(ngraph)$i
+#'> E(rcxgraph)$i
 #'  [1] "neighbor-of"                 "neighbor-of"                 "neighbor-of"
 #'  [4] "controls-expression-of"      "controls-phosphorylation-of" "controls-state-change-of"
 #'  [7] "controls-phosphorylation-of" "controls-state-change-of"    "controls-phosphorylation-of"
@@ -81,38 +81,38 @@
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback
 #'
-#' @return returns object of class ngraph if successfull, NULL otherwise
+#' @return returns object of class RCXgraph if successfull, NULL otherwise
 #'
-#' @seealso \code{\link{ngraph_toRCX}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}
-#' @aliases ngraph
+#' @seealso \code{\link{rcxgraph_toRCX}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}
+#' @aliases RCXgraph
 #' @examples
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' ## Convert to nGraph
-#' ngraph = ngraph_fromRCX(rcx)
+#' ## Convert to RCXgraph
+#' rcxgraph = rcxgraph_fromRCX(rcx)
 #' @export
-ngraph_fromRCX <- function(rcx, verbose = FALSE){
+rcxgraph_fromRCX <- function(rcx, verbose = FALSE){
 
   if(!("RCX" %in% class(rcx))) {
-    warning("RCX2ngraph: supplied parameter is not of class RCX! Returning null.")
+    warning("RCX2RCXgraph: supplied parameter is not of class RCX! Returning null.")
     return(NULL)
   }
 
   ##### create empty graph
-  ngraph = igraph::make_empty_graph()
+  rcxgraph = igraph::make_empty_graph()
   # adding graph attributes is harmless
-  ngraph = ndex_internal_addAspects(ngraph, rcx, verbose)
+  rcxgraph = ndex_internal_addAspects(rcxgraph, rcx, verbose)
 
   ## sanity checks: no nodes defined
   if(is.null(rcx$nodes) || dim(rcx$nodes)[1] == 0) {
-    warning("RCX2ngraph: supplied RCX does not contain node information. Returning ngraph object without nodes or edges.")
-    return(ngraph)
+    warning("RCX2RCXgraph: supplied RCX does not contain node information. Returning RCXgraph object without nodes or edges.")
+    return(rcxgraph)
   }
 
   ## add nodes and nodeAttributes (if available)
   ids = as.character(rcx$nodes$"@id")
   nodes = as.list(rcx$nodes[names(rcx$nodes)!='@id'])
-  ngraph = igraph::add_vertices(ngraph, length(ids), name=ids, attr=nodes)
+  rcxgraph = igraph::add_vertices(rcxgraph, length(ids), name=ids, attr=nodes)
   if(!is.null(rcx$nodeAttributes) && dim(rcx$nodeAttributes)[1] > 0) {
     for(attrname in unique(rcx$nodeAttributes$n)) {
       sel = rcx$nodeAttributes$n == attrname
@@ -120,15 +120,15 @@ ngraph_fromRCX <- function(rcx, verbose = FALSE){
       if(attrname=='name') attrname='NAME'
       ## !ToDo: value type is missing: e.g. n=selected, v=false, d=boolean
       ## Therefore the encoding of list_of... might be incorrect!
-      if(verbose){ message('___________\nngraph:\n\tattrname:',attrname, '\n\tindex: ',index=paste(as.character(rcx$nodeAttributes$po[sel]),collapse = ', '),'\n\tvalue: ', value=paste(rcx$nodeAttributes$v[sel],collapse = ', '),'\n') }
-      ngraph = igraph::set_vertex_attr(ngraph,attrname, index=as.character(rcx$nodeAttributes$po[sel]), value=rcx$nodeAttributes$v[sel])
+      if(verbose){ message('___________\nRCXgraph:\n\tattrname:',attrname, '\n\tindex: ',index=paste(as.character(rcx$nodeAttributes$po[sel]),collapse = ', '),'\n\tvalue: ', value=paste(rcx$nodeAttributes$v[sel],collapse = ', '),'\n') }
+      rcxgraph = igraph::set_vertex_attr(rcxgraph,attrname, index=as.character(rcx$nodeAttributes$po[sel]), value=rcx$nodeAttributes$v[sel])
     }
   }
 
   ## sanity checks: no edges defined
   if(is.null(rcx$edges) || dim(rcx$edges)[1] == 0) {
-    warning("RCX2ngraph: supplied RCX does not contain edge information. Returning ngraph object without edges.")
-    return(ngraph)
+    warning("RCX2RCXgraph: supplied RCX does not contain edge information. Returning RCXgraph object without edges.")
+    return(rcxgraph)
   }
 
   # add edges and edgeAttributes (if available)
@@ -139,78 +139,78 @@ ngraph_fromRCX <- function(rcx, verbose = FALSE){
   edgeAttr$s = NULL
   edgeAttr$t = NULL
   edgeAttr$'@id' = NULL
-  #ngraph = igraph::add_edges(ngraph,edges=c(t(rcx$edges[,c("s","t")])),attr=edgeAttr)
-  #ngraph = igraph::add_edges(ngraph,edges=c(t(rcx$edges[,c("s","t")])),attr=rcx$edges[,c("@id","i")])
-  #ngraph = igraph::add_edges(ngraph,edges=c(t(rcx$edges[,c("s","t")])))
+  #rcxgraph = igraph::add_edges(rcxgraph,edges=c(t(rcx$edges[,c("s","t")])),attr=edgeAttr)
+  #rcxgraph = igraph::add_edges(rcxgraph,edges=c(t(rcx$edges[,c("s","t")])),attr=rcx$edges[,c("@id","i")])
+  #rcxgraph = igraph::add_edges(rcxgraph,edges=c(t(rcx$edges[,c("s","t")])))
 
-  ngraph = igraph::add_edges(ngraph, edges=edges, name=edgeNames, attr=edgeAttr)
+  rcxgraph = igraph::add_edges(rcxgraph, edges=edges, name=edgeNames, attr=edgeAttr)
   if(!is.null(rcx$edgeAttributes) && dim(rcx$edgeAttributes)[1] > 0) {
     for(attrname in unique(rcx$edgeAttributes$n)) {
       sel = rcx$edgeAttributes$n == attrname
       ## in igraph the attribute 'name' is used for the id (here @id) of the node, therefore the attribute name has to be changed!
       if(attrname=='name') attrname='NAME'
-      if(verbose){ message('___________\nngraph:\n\tattrname:',attrname, '\n\tindex: ',index=paste(as.character(rcx$edgeAttributes$po[sel]),collapse = ', '),'\n\tvalue: ', value=paste(rcx$edgeAttributes$v[sel],collapse = ', '),'\n') }
-      ngraph = igraph::set_edge_attr(ngraph, attrname, index=as.character(rcx$edgeAttributes$po[sel]), value=rcx$edgeAttributes$v[sel])
+      if(verbose){ message('___________\nRCXgraph:\n\tattrname:',attrname, '\n\tindex: ',index=paste(as.character(rcx$edgeAttributes$po[sel]),collapse = ', '),'\n\tvalue: ', value=paste(rcx$edgeAttributes$v[sel],collapse = ', '),'\n') }
+      rcxgraph = igraph::set_edge_attr(rcxgraph, attrname, index=as.character(rcx$edgeAttributes$po[sel]), value=rcx$edgeAttributes$v[sel])
     }
   }
 
-  class(ngraph) = c("ngraph",class(ngraph))
-  return(ngraph)
+  class(rcxgraph) = c("RCXgraph",class(rcxgraph))
+  return(rcxgraph)
 
 }
 
 
-#' Create ngraph object from RCX object
+#' Create RCXgraph object from RCX object
 #'
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback
 #'
-#' @return returns object of class ngraph if successfull, NULL otherwise
+#' @return returns object of class RCXgraph if successfull, NULL otherwise
 #'
-#' @note Wrapper function for \code{\link{ngraph_fromRCX}}
+#' @note Wrapper function for \code{\link{rcxgraph_fromRCX}}
 #' @examples
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' ## Convert to nGraph
-#' ngraph = rcx_toNGraph(rcx)
+#' ## Convert to RCXgraph
+#' RCXgraph = rcx_toRCXgraph(rcx)
 #' @export
-rcx_toNGraph <- ngraph_fromRCX
+rcx_toRCXgraph <- rcxgraph_fromRCX
 
 
 #' ndex_internal_addAspects
 #'
-#' @param ngraph ngraph object
+#' @param rcxgraph RCXgraph object
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback
-#' @return returns object of class ngraph
+#' @return returns object of class RCXgraph
 #' @examples
 #' NULL
-ndex_internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
+ndex_internal_addAspects <- function(rcxgraph, rcx, verbose = FALSE){
 
   ### add all non-core aspects to the graph:
   for(i in names(rcx)) {
     if(i %in% c("nodes","edges","nodeAttributes","edgeAttributes")) {
       next()
     }
-    ngraph = igraph::set_graph_attr(ngraph,i,rcx[[i]])
+    rcxgraph = igraph::set_graph_attr(rcxgraph,i,rcx[[i]])
   }
 
   # # if networkAttributes available
-  # if(is.null(rcx$networkAttributes) || dim(rcx$networkAttributes)[1] == 0) return(ngraph)
+  # if(is.null(rcx$networkAttributes) || dim(rcx$networkAttributes)[1] == 0) return(rcxgraph)
   # ### unlist the network attributes
   # for(i in 1:length(rcx$networkAttributes$n)) {
-  #   ngraph = igraph::set_graph_attr(ngraph,name=rcx$networkAttributes$n[i],value=rcx$networkAttributes$v[i])
+  #   rcxgraph = igraph::set_graph_attr(rcxgraph,name=rcx$networkAttributes$n[i],value=rcx$networkAttributes$v[i])
   # }
 
-  return(ngraph)
+  return(rcxgraph)
 }
 
 
-#' Create RCX object from ngraph object
+#' Create RCX object from RCXgraph object
 #'
-#' This function creates an RCX object from a valid ngraph object.
+#' This function creates an RCX object from a valid RCXgraph object.
 #'
-#' The following rules apply to convert from \code{\link{ngraph}} to \code{\link{RCX}}:
+#' The following rules apply to convert from \code{\link{RCXgraph}} to \code{\link{RCX}}:
 #' \itemize{
 #'  \item all graph attributes are stored as named data.frames within the RCX object
 #'  \item nodes receive their name value as "@id" attribute. All other node attributes are saved in the RCX object as nodeAttributes, access via rcx[["nodeAttributes"]].
@@ -220,22 +220,22 @@ ndex_internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
 #' }
 
 #'
-#' @param ngraph ngraph object
+#' @param rcxgraph RCXgraph object
 #' @param verbose logical; whether to print out extended feedback
 #' @return returns object of class RCX if successfull, NULL otherwise
-#' @seealso \code{\link{ngraph}} \code{\link{ngraph_fromRCX}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}}
+#' @seealso \code{\link{RCXgraph}} \code{\link{rcxgraph_fromRCX}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}}
 #' @examples
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' ## Convert to nGraph
-#' ngraph = ngraph_fromRCX(rcx)
+#' ## Convert to RCXgraph
+#' rcxgraph = rcxgraph_fromRCX(rcx)
 #' ## Convert it back to rcx
-#' rcx = ngraph_toRCX(ngraph)
+#' rcx = rcxgraph_toRCX(rcxgraph)
 #' @export
-ngraph_toRCX <- function(ngraph, verbose = FALSE){
+rcxgraph_toRCX <- function(rcxgraph, verbose = FALSE){
 
-  if(is.null(ngraph) || !("igraph" %in% class(ngraph))) {
-    warning("ngraph_toRCX: parameter ngraph does not contain igraph object")
+  if(is.null(rcxgraph) || !("igraph" %in% class(rcxgraph))) {
+    warning("rcxgraph_toRCX: parameter rcxgraph does not contain igraph object")
     return(NULL)
   }
 
@@ -243,13 +243,13 @@ ngraph_toRCX <- function(ngraph, verbose = FALSE){
   #set class
   class(aspectlist) = c("RCX",class(aspectlist))
 
-  sel = igraph::list.graph.attributes(ngraph)
+  sel = igraph::list.graph.attributes(rcxgraph)
   for(i in sel) {
-    aspectlist[[i]] = igraph::get.graph.attribute(ngraph,i)
+    aspectlist[[i]] = igraph::get.graph.attribute(rcxgraph,i)
   }
 
   ## pick apart nodes/edges and their attributes
-  tmp = igraph::as_data_frame(ngraph,what="both")
+  tmp = igraph::as_data_frame(rcxgraph,what="both")
 
   if(!is.null(tmp$vertices) && dim(tmp$vertices)[1] > 0) {
 

@@ -124,5 +124,5 @@ json = rcx_toJSON(rcx)
 rcx = rcx_fromJSON(json)
 }
 \seealso{
-\code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_toJSON}}
+\code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_toJSON}}
 }

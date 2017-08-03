@@ -7,7 +7,7 @@
 ## History:
 ##   Created on 20 September 2016 by Kramer
 ##   Restructured on 10 January 2017 by Auer
-##   Copied from NDExR package on 3 August 2017 by Auer
+##   Copied from  package on 3 August 2017 by Auer
 ##
 ## Description:
 ##    Base functions to create, parse, modify CX networks from/to JSON data
@@ -124,7 +124,7 @@
 #'
 #' @return returns object of class RCX if successfull, NULL otherwise
 #'
-#' @seealso \code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_toJSON}}
+#' @seealso \code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_toJSON}}
 #' @aliases RCX
 #'
 #' @examples
@@ -190,7 +190,7 @@ rcx_fromJSON <- function(json, verbose = FALSE){
 #' @param pretty logical; adds indentation whitespace to JSON output
 #'
 #' @return json jsonlite json object if successfull, NULL otherwise
-#' @seealso \code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_fromJSON}}
+#' @seealso \code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_fromJSON}}
 #'
 #' @examples
 #' ## Create an RCX object

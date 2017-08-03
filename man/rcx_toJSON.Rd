@@ -26,5 +26,5 @@ rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 json = rcx_toJSON(rcx)
 }
 \seealso{
-\code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_fromJSON}}
+\code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_fromJSON}}
 }
