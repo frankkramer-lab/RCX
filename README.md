@@ -17,15 +17,9 @@ NDEx can be used to upload, share and publicly distribute networks,
 while providing an output in formats, that can be used by plenty of
 other applications.
 
-This package provides an interface to query the public NDEx server, as
-well as private installations, in order to upload, download or modify
-biological networks. This document aims to help the user to install and
-benefit from the wide range of funtionality of this implementation. The
-package also provides classes to implement the Cytoscape
-Cyberinfrastructure (CX) Format and to extend the \[iGraph Package\]
-(<http://igraph.org/r/>).
+This package provides an implementation of the Cytoscape
+Cyberinfrastructure (CX) Format in R, representing the CX information in an RCX R object as well as an extended igraph object RCXgraph \[iGraph Package\] (<http://igraph.org/r/>).
 
-The package is compatible with both NDEx versions 1.3 and 2.0.
 
 Installation
 ============
@@ -35,8 +29,8 @@ Installation
 using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
 
     require(devtools)
-    install_github("frankkramer-lab/ndexr")
-    library(ndexr)
+    install_github("frankkramer-lab/RCX")
+    library(RCX)
 
 RCX
 ===
