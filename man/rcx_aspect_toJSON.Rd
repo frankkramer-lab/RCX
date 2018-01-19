@@ -23,7 +23,7 @@ Generate JSON data for a single aspect of a RCX object
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## Convert RCX aspect to JSON
-rcxNodesJson = rcx_aspect_toJSON(rcx$nodes)
+rcxNodesJson = RCX:::rcx_aspect_toJSON(rcx$nodes)
 }
 \seealso{
 \code{\link{rcx_toJSON}} and \code{\link{rcx_fromJSON}}

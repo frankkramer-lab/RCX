@@ -7,7 +7,7 @@
 ## History:
 ##   Created on 20 September 2016 by Kramer
 ##   Restructured on 10 January 2017 by Auer
-##   Copied from  package on 3 August 2017 by Auer
+##   Copied from NDExR package on 3 August 2017 by Auer
 ##
 ## Description:
 ##    Base functions to create, parse, modify CX networks from/to JSON data
@@ -166,6 +166,22 @@ rcx_fromJSON <- function(json, verbose = FALSE){
       aspectlist[["metaData"]]$properties.y = NULL
     }
   }
+  ## correction for the "properties" element in "metaData"
+  ## since 2018.01.20 "properties" is optional, it casts to NULL instead of list
+  ## this leads to a conversion to an json object, which is wrong
+  ## this is done to prevent this behavor!
+  if("properties" %in% names(aspectlist$metaData)) {
+    propTmp = aspectlist[["metaData"]]$properties
+    aspectlist[["metaData"]]$properties = lapply(propTmp, function(x){
+      if(is.null(x)){
+        return(as.list(NULL))
+      }else{
+        return(x)
+      }
+    })
+  }
+
+  ## more than 2 metaData elements in the json defined
   if(!(length(sel) %in% c(1,2))) {
     warning(paste0("JSON2RCX: data contained ",length(sel), " parts of metaData. Must be 1 or 2. Returning NULL." ))
     return(NULL)
@@ -206,6 +222,16 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   ## numberVerification has to be 2^48 = 281,474,976,710,655
   rcx$numberVerification = data.frame(longNumber=281474976710655)
   jsonCol = c()
+
+  ## remove empty "properties" elements column in "metaData"
+  if("properties" %in% names(rcx$metaData)) {
+    propTmp = rcx$metaData$properties
+    if(! any(! sapply(propTmp, is.null))){
+      rcx$metaData$properties = NULL
+    }
+  }
+
+  ## specify the order of the elemnets in the sent CX json
   ## numberVerifiction has to be first!!
   ## metaData has to be second!!
   rcxNames = names(rcx)
@@ -213,7 +239,7 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   rcxNames = rcxNames[rcxNames!="metaData"]
   rcxNames = c("numberVerification", "metaData", rcxNames)
   for(aspect in rcxNames){
-      jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx_aspect_toJSON(rcx[[aspect]], verbose, pretty),'}'))
+    jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx_aspect_toJSON(rcx[[aspect]], verbose, pretty),'}'))
   }
   return(paste0('[',paste0(jsonCol, collapse=','),']'))
 }
@@ -232,7 +258,7 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' ## Convert RCX aspect to JSON
-#' rcxNodesJson = rcx_aspect_toJSON(rcx$nodes)
+#' rcxNodesJson = RCX:::rcx_aspect_toJSON(rcx$nodes)
 rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
     result = ''
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
@@ -244,7 +270,6 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
         tmpNoList = rcxAspect[!isListVector,]    # doesn't have to be wrapped
         tmpList$v = as.list(tmpList$v)              # forces toJSON to encode the elements as arrays
         jsonCol = c()
-
         ## don't add an empty aspect, if all v's are lists
         if(dim(tmpNoList)[1]!=0){
             tmpNoList$v <- unlist(tmpNoList$v)
@@ -270,6 +295,25 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
     }
 
     return(result)
+}
+
+
+#' Reads an RCX object from a file in CX (JSON) format
+#'
+#' @param file Either a path to a file, a connection, or literal data (either a single string or a raw vector)
+#' @param verbose logical; whether to print out extended feedback
+#'
+#' @return json object if successfull, empty string otherwise
+#' @seealso \code{\link{rcx_fromJSON}}
+#'
+#' @examples
+#' ## Read from a CX file
+#' #rcx = rcx_fromFile('/path/to/file.cx')
+rcx_fromFile <- function(file, verbose = FALSE){
+    if(verbose) message(paste0('Reading CX from file "',file,'"'))
+    json = readr::read_file(file)
+    rcx = rcx_fromJSON(json)
+    return(rcx)
 }
 
 ####################################################
@@ -367,7 +411,6 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
     # check if mandatoryAspects are present in the RCX object
     if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx_updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
 
-
     # get meta data from RCX object
     # create it, if it doesn't exist (or if it is forced)
     metaData = rcx$metaData
@@ -416,7 +459,6 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
     if(verbose) print('rcx_updateMetaData: idCounter will be updated')
     # id exporting aspects are required to have specified an id counter (max id in the aspect)
     metaData$idCounter = sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
-
 
     if(verbose) print('rcx_updateMetaData: Consistency groups will be checked')
     # get the current consistency group(s)

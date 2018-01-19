@@ -11,7 +11,8 @@ Depends:
 Imports:
     jsonlite,
     plyr,
-    tidyr
+    tidyr,
+    readr
 RoxygenNote: 6.0.1
 biocViews: Pathways, DataImport, Network
 Suggests: BiocStyle,
