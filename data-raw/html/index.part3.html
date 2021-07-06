@@ -1,0 +1,33 @@
+
+		var zoom = cx2Js.cyZoomFromNiceCX(niceCX);
+
+        var pan = cx2Js.cyPanFromNiceCX(niceCX);
+
+        date = new Date();
+        var endTime = date.getTime();
+
+        console.info('cx2js conversion time: ' + (endTime - startTime) + ' milliseconds');
+
+        startTime = endTime;
+
+        document.getElementById('cy').style.backgroundColor = cyBackgroundColor;
+
+        var cytoscapeJS = {
+            container: document.getElementById('cy'),
+            style: style,
+            elements: elements,
+            layout: layout,
+            zoom: zoom,
+            pan: pan
+        };
+
+        var cy = cytoscape(cytoscapeJS);
+        cy.fit()
+        date = new Date();
+        var endTime = date.getTime();
+        console.info('cytoscape js init time: '+ (endTime - startTime) + ' milliseconds');
+
+    </script>
+</body>
+
+</html>

@@ -1,24 +1,27 @@
 Package: RCX
 Type: Package
 Title: R package implementing the Cytoscape Exchange (CX) format
-Version: 0.99.1
-Author: Frank Kramer <frank.kramer@med.uni-goettingen.de>, Florian Auer <florian.auer@med.uni-goettingen.de>, Zaynab Hammoud <zaynab.hammoud@med.uni-goettingen.de>
-Maintainer: Florian Auer <florian.auer@med.uni-goettingen.de>
+Version: 0.99.0
+Author: Florian Auer <florian.auer@informatik.uni-augsburg.de>
+Maintainer: Florian Auer <florian.auer@informatik.uni-augsburg.de>
 Description: R package implementing the Cytoscape Exchange (CX) format
-License: BSD
+License:  MIT + file LICENSE
 Depends:
-    igraph
+    R (>= 4.0)
 Imports:
     jsonlite,
     plyr,
     tidyr,
-    readr
-RoxygenNote: 6.0.1
+    readr,
+    igraph
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
 biocViews: Pathways, DataImport, Network
 Suggests: BiocStyle,
     testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Encoding: UTF-8
 URL: https://github.com/frankkramer-lab/RCX
 BugReports: https://github.com/frankkramer-lab/RCX/issues

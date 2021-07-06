@@ -16,81 +16,89 @@
 ##  devtools::test(filter='05_*')
 ################################################################################
 
-library(RCX)
-context('RCX data model')
-
-
-# test_that('Check from and to JSON (rcx_fromJSON, rcx_toJSON)', {
-#     con = ndex_connect()
-# #    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-# #    uuid = networks[1,'externalId']
-#     uuid = ndexTestConf$uuidPublicNetwork
-#     rcx = ndex_get_network(con, uuid)
-#     rcx2json = rcx_toJSON(rcx)
-#     rcx2json2rcx = rcx_fromJSON(rcx2json)
-#
-#     expect_is(rcx, 'list', info=paste0('Checking class of rcx'))
-#     expect_is(rcx, 'RCX', info=paste0('Checking class of rcx'))
-#     expect_equal(rcx, rcx2json2rcx, info=paste0('A conversion from rcx to json and back to rcx must produce the same rcx object'))
+# library(RCX)
+# context('RCX data model')
+# 
+# 
+# test_that('Create nodes aspect', {
+#     nodes1 = createNodesAspect(id=c(0,1,2,3))
+# 
+#     nodes2a = createNodesAspect(id=c(0,1,2,3), name=c("a","b","c","d"))
+#     nodes2b = createNodesAspect(name=c("a","b","c","d"))
+# 
+#     nodes3a = createNodesAspect(id=c(0,1,2,3), represent=c("aa","bb","cc","dd"))
+#     nodes3b = createNodesAspect(represent=c("aa","bb","cc","dd"))
+# 
+#     nodes4a = createNodesAspect(id=c(0,1,2,3), name=c("a","b","c","d"), represent=c("aa","bb","cc","dd"))
+#     nodes4b = createNodesAspect(name=c("a","b","c","d"), represent=c("aa","bb","cc","dd"))
+# 
+#     expect_is(nodes1, 'NodesAspect')
+#     expect_is(nodes2a, 'NodesAspect')
+#     expect_is(nodes2b, 'NodesAspect')
+#     expect_is(nodes3a, 'NodesAspect')
+#     expect_is(nodes3b, 'NodesAspect')
+#     expect_is(nodes4a, 'NodesAspect')
+#     expect_is(nodes4b, 'NodesAspect')
+# 
+#     expect_equal(nodes2a, nodes2b)
+#     expect_equal(nodes3a, nodes3b)
+#     expect_equal(nodes4a, nodes4b)
+# 
+#     expect_error(createNodesAspect())
+#     expect_error(createNodesAspect(id=c(0,1,1,2)))
+#     expect_error(createNodesAspect(id=c(0,1,2), name=c("a","b","c","d")))
+#     expect_error(createNodesAspect(id=c(0,1,2,3), name=c("a","b","c")))
+#     expect_error(createNodesAspect(id=c(0,1,2), name=c("a","b","c","d"), represent=c("aa","bb","cc","dd")))
+#     expect_error(createNodesAspect(id=c(0,1,2,3), name=c("a","b","c"), represent=c("aa","bb","cc","dd")))
+#     expect_error(createNodesAspect(id=c(0,1,2,3), name=c("a","b","c","d"), represent=c("aa","bb","cc")))
 # })
-
-test_that('Check new RCX objects (rcx_new)', {
-    rcx1 = rcx_new()                                        # default
-    rcx2 = rcx_new(c('@id'=1))                                # with node
-    rcx3 = rcx_new(nodes=c('@id'=1))                        # name with node
-    rcx4 = rcx_new(data.frame('@id'=c(1), check.names=F))    # data.frame
-
-    expect_is(rcx1, 'list', info=paste0('Checking class of rcx (list)'))
-    expect_is(rcx1, 'RCX', info=paste0('Checking class of rcx (RCX)'))
-    expect_is(rcx2, 'list', info=paste0('Checking class of rcx (with node) (list)'))
-    expect_is(rcx2, 'RCX', info=paste0('Checking class of rcx (with node) (RCX)'))
-    expect_is(rcx3, 'list', info=paste0('Checking class of rcx (name with node) (list)'))
-    expect_is(rcx3, 'RCX', info=paste0('Checking class of rcx (name with node) (RCX)'))
-    expect_is(rcx4, 'list', info=paste0('Checking class of rcx (data.frame) (list)'))
-    expect_is(rcx4, 'RCX', info=paste0('Checking class of rcx (data.frame) (RCX)'))
-    expect_equal(rcx1, rcx2, info=paste0('The two functions (default and with node) should return the same rcx object'))
-    expect_equal(rcx1, rcx3, info=paste0('The two functions (default and name with node)should return the same rcx object'))
-    expect_equal(rcx1, rcx4, info=paste0('The two functions (default and data.frame)should return the same rcx object'))
-
-    rcxV = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))                                    # vector
-    rcxD = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))    # data.frame
-
-    expect_is(rcxV, 'list', info=paste0('Checking class of rcx (vector) (list)'))
-    expect_is(rcxV, 'RCX', info=paste0('Checking class of rcx (vector) (RCX)'))
-    expect_is(rcxD, 'list', info=paste0('Checking class of rcx (data.frame) (list)'))
-    expect_is(rcxD, 'RCX', info=paste0('Checking class of rcx (data.frame) (RCX)'))
-    expect_equal(rcxV, rcxD, info=paste0('The two functions (from vector and data.frame) should return the same rcx object'))
-})
-
-# test_that('Check MetaData update (rcx_updateMetaData)', {
-#     con = ndex_connect()
-# #    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-# #    uuid = networks[1,'externalId']
-#     uuid = ndexTestConf$uuidPublicNetwork
-#     rcx = ndex_get_network(con, uuid)
-#     rcxF = rcx_updateMetaData(rcx,force=T)        # forced metaData update
-#
-#     expect_is(rcxF, 'list', info=paste0('Checking class of rcx (list)'))
-#     expect_is(rcxF, 'RCX', info=paste0('Checking class of rcx (RCX)'))
-#
-#     nodesIndex = which(rcxF$metaData$name=='nodes')
-#     rcxF$metaData[nodesIndex,'version']='6.6.6'
-#     rcxV6 = rcx_updateMetaData(rcxF)
-#     nodesV6Index = which(rcxV6$metaData$name=='nodes')
-#     expect_equal(rcxV6$metaData[nodesV6Index,'version'],'6.6.6', info=paste0('Changes in the metaData should be kept'))
-#
-#     rcxS = rcx_updateMetaData(rcxF,force=T)
-#     rcxS$metaData = rcxS$metaData[-nodesIndex,]
-#     rcxS$citations = NULL
-#     rcxS = rcx_updateMetaData(rcxS)
-#     rcxT = rcx_updateMetaData(rcxF,force=T)
-#     citationsIndex = which(rcxT$metaData$name=='citations')
-#     rcxT$metaData = rcxT$metaData[-citationsIndex,]
-#     rownames(rcxT$metaData) = 1:dim(rcxT$metaData)[1]
-#     expect_equal(rcxS$metaData, rcxT$metaData, info=paste0('Missing aspects should be added/removed from the metaData'))
-#
-#     rcxS$nodes = NULL
-#     expect_error(rcx_updateMetaData(rcxS),'*',info='A mandatory aspect is missing')
+# 
+# 
+# test_that('Create edges aspect', {
+#     edges1 = createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3,2))
+#     edges2 = createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2))
+#     edges3 = createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA, "activates"))
+#     edges4 = createEdgesAspect(source=c(), target=c())
+# 
+#     expect_is(edges1, "EdgesAspect")
+#     expect_is(edges2, "EdgesAspect")
+#     expect_is(edges3, "EdgesAspect")
+#     expect_is(edges4, "EdgesAspect")
+# 
+#     expect_equal(edges1, edges2)
+# 
+#     expect_error(createEdgesAspect())
+#     expect_error(createEdgesAspect(source=c(1,2,2,4)))
+#     expect_error(createEdgesAspect(target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(source=c(1,2,2), target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3)))
+#     expect_error(createEdgesAspect(id=c(0,1,2), source=c(1,2,2,4), target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(id=c(0,1,2,2), source=c(1,2,2,4), target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
+#     expect_error(createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
 # })
-
-
+# 
+# 
+# test_that('Create nodeAttributes aspect', {
+#     propertyOf = c(1,3,4,4)
+#     name = c("alias","alias","alias","relatedTo")
+#     value1 = list("bla",NA,c("bla","blubb"),3)
+#     subnetworkId
+# 
+#     expect_is(edges1, "EdgesAspect")
+#     expect_is(edges2, "EdgesAspect")
+#     expect_is(edges3, "EdgesAspect")
+#     expect_is(edges4, "EdgesAspect")
+# 
+#     expect_equal(edges1, edges2)
+# 
+#     expect_error(createEdgesAspect())
+#     expect_error(createEdgesAspect(source=c(1,2,2,4)))
+#     expect_error(createEdgesAspect(target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(source=c(1,2,2), target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3)))
+#     expect_error(createEdgesAspect(id=c(0,1,2), source=c(1,2,2,4), target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(id=c(0,1,2,2), source=c(1,2,2,4), target=c(4,1,3,2)))
+#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
+#     expect_error(createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
+# })

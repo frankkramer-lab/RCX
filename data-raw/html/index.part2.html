@@ -1,0 +1,17 @@
+;
+
+        var utils = new cytoscapeCx2js.CyNetworkUtils()
+
+        var niceCX = utils.rawCXtoNiceCX(rawCX);
+
+        var cx2Js = new cytoscapeCx2js.CxToJs(utils);
+
+        var attributeNameMap = {};
+
+        var elements = cx2Js.cyElementsFromNiceCX(niceCX, attributeNameMap);
+
+        var style = cx2Js.cyStyleFromNiceCX(niceCX, attributeNameMap);
+
+        console.info('style:', style);
+
+        var cyBackgroundColor = cx2Js.cyBackgroundColorFromNiceCX(niceCX);      
