@@ -1,5 +1,5 @@
 ---
-title: "02. The RCX and CX Data Model"
+title: "03. Extending the RCX Data Model"
 Model author: 
 - name: Florian J. Auer
   email: Florian.Auer@informatik.uni-augsburg.de
@@ -7,7 +7,7 @@ Model author:
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{02. The RCX and CX Data Model}
+  %\VignetteIndexEntry{03. Extending the RCX Data Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTFv2.4.0"}
 ---

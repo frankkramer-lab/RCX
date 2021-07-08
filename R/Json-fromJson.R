@@ -6,51 +6,45 @@
 ##    Base functions to create, parse, modify CX networks from/to JSON data
 ################################################################################
 
-#TODO: add examples
-#TODO: raw should return all data as parsed json. an additional parameter should return the failed (includeFailed?)
-# better: two functions: additional fromJSONlist, which does the work and fromCX calling that one
-#' Convert CX to an [RCX][RCX-object] object
-#' 
-#' This function parses a CX file or text and creates an [RCX][RCX-object] object from it.
-#' 
-#' The CX-JSON is parsed using the [jsonlite] package, with the [jsonToRCX] functions creating objects for the single aspects.
-#' For standard CX aspects are processed by generic functions named by the aspect names of the CX data structure
-#' (see NDEx documentation: \url{https://home.ndexbio.org/data-model/}).
-#' 
-#' The CX network may contain additional aspects besides the officially defined ones. 
-#' This includes self defined or deprecated aspects, that sill can be found in the networks at the NDEx platform.
-#' By default, those aspects are simply omitted.
-#' 
-#' In those cases, the setting *verbose* to `TRUE` is a good idea to see, which aspects cannot be processed this package.
-#' If *raw* is set to `TRUE`, those aspects are also returned along the [RCX][RCX-object] object in **raw** format, 
-#' i.e. as a named list containing the parsed JSON from
-#' 
-#' `jsonlite::fromJSON(cx, simplifyVector = F)`
-#' 
-#' The raw data can be handled individually, but is advisable to extend the [jsonToRCX] functions by implementing own versions
-#' for those aspects. 
-#' 
-#' Additionally, the **update** functions have to be implemented to add the newly generated aspect objects
-#' to [RCX][RCX-object] object (see e.g. [updateNodes] or [updateEdges]).
-#' Therefore, the function also have to be named `"update<aspect-name>`, where aspect-name is the capitalized version of the
-#' name used in the CX.
-#'
-#' @param cx CX file in JSON format
-#' @param verbose logical; whether to print what is happening
-#' @param raw logical; whether to return unparsable aspects
-#'
-#' @return [RCX][RCX-object] object; (or a `list(rcx=<`[RCX][RCX-object]`>, raw=<raw>)` if `raw=TRUE`)
+
+#' @describeIn readRCX Reads the CX/JSON from file and returns the content as text
 #' @export
-#' @seealso [toCX], [rcxToJson], [readRCX], [writeCX]
-#'
-#' @examples
-#' NULL
-fromCX = function(cx, verbose=F, raw=F){
-  json = jsonlite::fromJSON(cx, simplifyVector = F)
-  jsonNames = sapply(json, names)
+readJSON = function(file, verbose=F){
+  if(verbose) cat(paste0("Read file \"",file,'"...'))
+  
+  fileCon = file(file)
+  json = readLines(fileCon, warn = F)
+  close(fileCon)
+  
+  json = paste0(json,collapse = "\n")
+  
+  .addClass(json) = "json"
+  
+  if(verbose) cat("done!\n")
+  return(json)
+}
+
+
+#' @describeIn readRCX Parses the JSON text and returns a list with the aspect data
+#' @export
+parseJSON = function(json, verbose=F){
+  if(verbose) cat(paste0("Parse json..."))
+  
+  jsonList = jsonlite::fromJSON(json, simplifyVector = F)
+  
+  if(verbose) cat("done!\n")
+  return(jsonList)
+}
+
+
+#' @describeIn readRCX Processes the list of aspect data and creates an [RCX][RCX-object]
+#' @export
+processCX = function(aspectList, verbose=F){
+  ## get the names of the aspects
+  jsonNames = sapply(aspectList, names)
   
   posAspects = names(.CLS)
-  ## rearrange order
+  ## rearrange order of the aspects to be processed
   posAspects = posAspects[!posAspects %in% c("nodes", "metaData", "rcx")]
   posAspects = c("nodes", posAspects, "metaData")
   presAspects = posAspects[posAspects %in% jsonNames]
@@ -64,7 +58,7 @@ fromCX = function(cx, verbose=F, raw=F){
     if(acc=="metaData"){
       ## metaData might be composed of pre- and post-metaData
       for(j in i){
-        jsonData = json[[j]]
+        jsonData = aspectList[[j]]
         .addClass(jsonData) = acc
         params = jsonToRCX(jsonData, verbose)
         
@@ -94,7 +88,7 @@ fromCX = function(cx, verbose=F, raw=F){
       
     }else{ 
       for(j in i){
-        jsonData = json[[j]]
+        jsonData = aspectList[[j]]
         .addClass(jsonData) = acc
         aspect = jsonToRCX(jsonData, verbose)
         
@@ -111,7 +105,7 @@ fromCX = function(cx, verbose=F, raw=F){
                           list(rcx, aspect))
             if(verbose) cat("done!\n")
           }else{
-            if(verbose && raw) cat(paste0("Can't process aspect \"",acc,"\", so return it raw..."))
+            if(verbose) cat(paste0("Can't process aspect \"",acc,"\", so skip it..."))
             if(length(i)==1){
               rawData[[acc]] = jsonData
             }else{
@@ -120,63 +114,89 @@ fromCX = function(cx, verbose=F, raw=F){
               tmp[[length(tmp)+1]] = jsonData
               rawData[[acc]] = tmp
             }
-            if(verbose && raw) cat("done!\n")
+            if(verbose) cat("done!\n")
           }
         }
       }
     }
   }
   
-  if(raw){
-    return(list(rcx=rcx, raw=rawData))
-  }else{
-    return(rcx)
-  }
-}
-
-
-#TODO: add example
-#' Read CX from file
-#' 
-#' These function read a CX network from a file.
-#' 
-#' These functions return either simply the read JSON from the file, or 
-#' convert the CX to an [RCX][RCX-object] by calling [fromCX].
-#'
-#' @param file character; the name of the file which the data are to be read from
-#' @param verbose logical; whether to print what is happening
-#' @param raw logical; whether to return unparsable aspects (see [fromCX])
-#'
-#' @export
-#' @seealso [fromCX], [jsonToRCX], [writeCX]
-#' 
-#' @aliases readCX
-#' 
-#' @examples 
-#' NULL
-readRCX = function(file, verbose=F, raw=F){
-  cx = readCX(file, verbose)
-  rcx = fromCX(cx, verbose, raw)
   return(rcx)
 }
 
 
-#' @rdname readRCX
+#' Read CX from file, parse the JSON and convert it to an [RCX][RCX-object] object
+#' 
+#' The `readRCX` function combines three sub-task:
+#' - read the JSON from file
+#' - parse the JSON
+#' - process the contained aspects to create an [RCX][RCX-object] object
+#' 
+#' If any errors occur during this process, the single steps can be performed individually.
+#' This also allows to skip certain steps, for example if the JSON data is already availabe as text, 
+#' there is no need to save it as file and read it again.
+#' 
+#' ## Read the JSON from file
+#' 
+#' The `readJSON` function only read the content of a text file and returns it as a simple character vector.
+#' 
+#' ## Parse the JSON
+#' 
+#' The `parseJSON` function uses the [jsonlite] package, to parse JSON text:
+#'  
+#' `jsonlite::fromJSON(cx, simplifyVector = F)`
+#' 
+#' The result is a list containing the aspect data as elements.
+#' If, for some reason, the JSON is not valid, the [jsonlite] package raises an error.
+#' 
+#' ## Process the contained aspects to create an [RCX][RCX-object] object
+#' 
+#' With the `processCX` function, the single elements from the previous list will be processed with the [jsonToRCX] functions, 
+#' which creating objects for the single aspects.
+#' The standard CX aspects are processed by generic functions named by the aspect names of the CX data structure, e.g.
+#' `jsonToRCX.nodeAttributes` for the samely named CX aspect the corresponding `NodeAttributesAspect` in [RCX][RCX-object]
+#' (see also \code{vignette("02. The RCX and CX Data Model")} or NDEx documentation: \url{https://home.ndexbio.org/data-model/}).
+#' 
+#' The CX network may contain additional aspects besides the officially defined ones. 
+#' This includes self defined or deprecated aspects, that sill can be found in the networks at the NDEx platform.
+#' By default, those aspects are simply omitted.
+#' In those cases, the setting *verbose* to `TRUE` is a good idea to see, which aspects cannot be processed this package.
+#' 
+#' Those not processable aspects can be handled individually, but it is advisable to extend the [jsonToRCX] functions by 
+#' implementing own versions for those aspects. 
+#' Additionally, the **update** functions have to be implemented to add the newly generated aspect objects
+#' to [RCX][RCX-object] object (see e.g. [updateNodes] or [updateEdges]).
+#' Therefore, the function also have to be named `"update<aspect-name>`, where aspect-name is the capitalized version of the
+#' name used in the CX.
+#' (see also \code{vignette("03. Extending the RCX Data Model")}
+#'
+#' @param file character; the name of the file which the data are to be read from
+#' @param json character; raw JSON data
+#' @param aspectList list; list containing the aspect data (parsed JSON)
+#' @param verbose logical; whether to print what is happening
+#'
 #' @export
-readCX = function(file, verbose=F){
-  if(verbose) cat(paste0("Read file \"",file,'"...'))
-  
-  fileCon = file(file)
-  cx = readLines(fileCon, warn = F)
-  close(fileCon)
-  
-  cx = paste0(cx,collapse = "\n")
-  
-  .addClass(cx) = "json"
-  .addClass(cx) = "CX"
-  
-  if(verbose) cat("done!\n")
-  return(cx)
+#' @seealso [jsonToRCX], [writeCX]
+#' 
+#' @examples 
+#' cxFile = system.file(
+#'   "extdata", 
+#'   "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
+#'   package = "RCX"
+#' )
+#' 
+#' rcx = readRCX(cxFile)
+#' 
+#' ## OR:
+#' 
+#' json = readJSON(cxFile)
+#' aspectList = parseJSON(json)
+#' rcx = processCX(aspectList)
+readRCX = function(file, verbose=F){
+  json = readJSON(file, verbose)
+  aspectList = parseJSON(json, verbose)
+  rcx = processCX(aspectList, verbose)
+  return(rcx)
 }
 
 
@@ -234,7 +254,7 @@ jsonToRCX.default = function(jsonData, verbose){
 #' @rdname jsonToRCX
 #' @export
 jsonToRCX.status = function(jsonData, verbose){
-  if(verbose) cat(paste0("Ignore \"", names(jsonData), '" aspect!\n'))
+  if(verbose) cat(paste0("Ignore \"", names(jsonData), '" aspect, not necessary in RCX!\n'))
   return(NULL)
 }
 
@@ -242,7 +262,7 @@ jsonToRCX.status = function(jsonData, verbose){
 #' @rdname jsonToRCX
 #' @export
 jsonToRCX.numberVerification = function(jsonData, verbose){
-  if(verbose) cat(paste0("Ignore \"", names(jsonData), '" aspect!\n'))
+  if(verbose) cat(paste0("Ignore \"", names(jsonData), '" aspect, not necessary in RCX!\n'))
   return(NULL)
 }
 

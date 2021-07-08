@@ -67,14 +67,14 @@ In the following, it will be explained, how to read and write networks from/to C
 
 # The basics
 
+```{r, echo=FALSE, message=FALSE}
+library(RCX)
+```
+
 ## Read and write CX files
 
 Networks can be downloaded from the [NDEx plattform](http://ndexbio.org/) as files in JSON format.
 Those files can be read as following:
-
-```{r, echo=FALSE, message=FALSE}
-library(RCX)
-```
 
 ```{r readRCX}
 cxFile = system.file(
@@ -100,32 +100,29 @@ writeCX(rcx, "some-file.cx")
 However, there might some errors occur while reading CX file.
 This might happen, because the definition of the CX has changed over time, and so the definition of some aspects. 
 Therefore it is possible, that there are still some networks stored at the NDEx plattform following a deprecated format.
-In those cases it might be helpful to read the CX network in a "raw" format, and convert this data in a second step.
-There are two options to try:
+In those cases it might be helpful to process the CX network step by step:
 
 - just read the JSON without parsing
-```{r readCX}
-cx = readCX(cxFile)
-
-# do some regex magic..
-
-rcx = fromCX(cx)
+```{r readJSON}
+json = readJSON(cxFile)
 ```
-- read the CX with JSON parsing
-```{r readRCXraw, eval=FALSE}
-cxParsed = readRCX(cxFile, raw=TRUE)
-
-# OR:
-
-cxParsed = fromCX(cx, raw=TRUE)
-
-# do some manual modification of the data
-
-rcx = fromCX(cx)
+- parse the JSON
+```{r parseJSON}
+aspectList = parseJSON(json)
+```
+- process the aspect data
+```{r processCX}
+rcx = processCX(aspectList)
 ```
 
 This also allows to handle CX networks in JSON format, even if it comes from a different source instead of a file.
 
+All the above function for processing CX networks come with an option to show the performed steps.
+This might be helpful for finding ocurring errors:
+
+```{r readRCXverbose}
+rcx = readRCX(cxFile, verbose = TRUE)
+```
 
 
 # Core aspects
