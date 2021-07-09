@@ -82,7 +82,8 @@ cxFile = system.file(
   "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
   package = "RCX"
 )
-rcx = readRCX(cxFile)
+
+rcx = readCX(cxFile)
 ```
 
 To check the contents of the RCX object, a summary of the object can be shown:
@@ -121,7 +122,7 @@ All the above function for processing CX networks come with an option to show th
 This might be helpful for finding ocurring errors:
 
 ```{r readRCXverbose}
-rcx = readRCX(cxFile, verbose = TRUE)
+rcx = readCX(cxFile, verbose = TRUE)
 ```
 
 

@@ -24,8 +24,8 @@ Visualize \link[=RCX-object]{RCX} and CX networks in RStudio or in an external b
 }
 \details{
 This function uses the Java Script library used by the NDEx platform (\url{https://ndexbio.org/}) to visualize
-the \link[=RCX-object]{RCX} or \link[=readCX]{CX} network.
-The \link[=RCX-object]{RCX} is therefore converted to CX (JSON) using \link{toCX}.
+the \link[=RCX-object]{RCX} or CX network from \link{toCX}.
+In the first case, the \link[=RCX-object]{RCX} is converted to CX (JSON) using \link{toCX}.
 
 By default the visualization is opened in RStudio in the \emph{Viewer} panel.
 If this function is not executed in RStudio, the visualization is opened in the standard web-browser.
@@ -84,5 +84,5 @@ rcx = createRCX(
 }
 }
 \seealso{
-\link{rcxToJson}, \link{readRCX}, \link{writeCX}
+\link{rcxToJson}, \link{readCX}, \link{writeCX}
 }

@@ -140,7 +140,7 @@ getAttributeData = function(attributeRef, igAttributes){
 #'
 #' @return [igraph][igraph::igraph()] or [RCX][RCX-object] object
 #' @export
-#' @seealso [toCX], [rcxToJson], [readRCX], [writeCX]
+#' @seealso [toCX], [rcxToJson], [readCX], [writeCX]
 #' 
 #' @name Igraph
 #'

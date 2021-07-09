@@ -29,5 +29,5 @@ These function write an \link[=RCX-object]{RCX} object or a \link[=readCX]{CX} o
 NULL
 }
 \seealso{
-\link{toCX}, \link{rcxToJson}, \link{readRCX}
+\link{toCX}, \link{rcxToJson}, \link{readCX}
 }

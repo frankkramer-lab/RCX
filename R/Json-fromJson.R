@@ -7,7 +7,82 @@
 ################################################################################
 
 
-#' @describeIn readRCX Reads the CX/JSON from file and returns the content as text
+#' Read CX from file, parse the JSON and convert it to an [RCX][RCX-object] object
+#' 
+#' The `readCX` function combines three sub-task:
+#' - read the JSON from file
+#' - parse the JSON
+#' - process the contained aspects to create an [RCX][RCX-object] object
+#' 
+#' If any errors occur during this process, the single steps can be performed individually.
+#' This also allows to skip certain steps, for example if the JSON data is already availabe as text, 
+#' there is no need to save it as file and read it again.
+#' 
+#' ## Read the JSON from file
+#' 
+#' The `readJSON` function only read the content of a text file and returns it as a simple character vector.
+#' 
+#' ## Parse the JSON
+#' 
+#' The `parseJSON` function uses the [jsonlite] package, to parse JSON text:
+#'  
+#' `jsonlite::fromJSON(cx, simplifyVector = F)`
+#' 
+#' The result is a list containing the aspect data as elements.
+#' If, for some reason, the JSON is not valid, the [jsonlite] package raises an error.
+#' 
+#' ## Process the contained aspects to create an [RCX][RCX-object] object
+#' 
+#' With the `processCX` function, the single elements from the previous list will be processed with the [jsonToRCX] functions, 
+#' which creating objects for the single aspects.
+#' The standard CX aspects are processed by generic functions named by the aspect names of the CX data structure, e.g.
+#' `jsonToRCX.nodeAttributes` for the samely named CX aspect the corresponding `NodeAttributesAspect` in [RCX][RCX-object]
+#' (see also \code{vignette("02. The RCX and CX Data Model")} or NDEx documentation: \url{https://home.ndexbio.org/data-model/}).
+#' 
+#' The CX network may contain additional aspects besides the officially defined ones. 
+#' This includes self defined or deprecated aspects, that sill can be found in the networks at the NDEx platform.
+#' By default, those aspects are simply omitted.
+#' In those cases, the setting *verbose* to `TRUE` is a good idea to see, which aspects cannot be processed this package.
+#' 
+#' Those not processable aspects can be handled individually, but it is advisable to extend the [jsonToRCX] functions by 
+#' implementing own versions for those aspects. 
+#' Additionally, the **update** functions have to be implemented to add the newly generated aspect objects
+#' to [RCX][RCX-object] object (see e.g. [updateNodes] or [updateEdges]).
+#' Therefore, the function also have to be named `"update<aspect-name>`, where aspect-name is the capitalized version of the
+#' name used in the CX.
+#' (see also \code{vignette("03. Extending the RCX Data Model")}
+#'
+#' @param file character; the name of the file which the data are to be read from
+#' @param json character; raw JSON data
+#' @param aspectList list; list containing the aspect data (parsed JSON)
+#' @param verbose logical; whether to print what is happening
+#'
+#' @export
+#' @seealso [jsonToRCX], [writeCX]
+#' 
+#' @examples 
+#' cxFile = system.file(
+#'   "extdata", 
+#'   "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
+#'   package = "RCX"
+#' )
+#' 
+#' rcx = readCX(cxFile)
+#' 
+#' ## OR:
+#' 
+#' json = readJSON(cxFile)
+#' aspectList = parseJSON(json)
+#' rcx = processCX(aspectList)
+readCX = function(file, verbose=F){
+  json = readJSON(file, verbose)
+  aspectList = parseJSON(json, verbose)
+  rcx = processCX(aspectList, verbose)
+  return(rcx)
+}
+
+
+#' @describeIn readCX Reads the CX/JSON from file and returns the content as text
 #' @export
 readJSON = function(file, verbose=F){
   if(verbose) cat(paste0("Read file \"",file,'"...'))
@@ -25,7 +100,7 @@ readJSON = function(file, verbose=F){
 }
 
 
-#' @describeIn readRCX Parses the JSON text and returns a list with the aspect data
+#' @describeIn readCX Parses the JSON text and returns a list with the aspect data
 #' @export
 parseJSON = function(json, verbose=F){
   if(verbose) cat(paste0("Parse json..."))
@@ -37,7 +112,7 @@ parseJSON = function(json, verbose=F){
 }
 
 
-#' @describeIn readRCX Processes the list of aspect data and creates an [RCX][RCX-object]
+#' @describeIn readCX Processes the list of aspect data and creates an [RCX][RCX-object]
 #' @export
 processCX = function(aspectList, verbose=F){
   ## get the names of the aspects
@@ -125,86 +200,11 @@ processCX = function(aspectList, verbose=F){
 }
 
 
-#' Read CX from file, parse the JSON and convert it to an [RCX][RCX-object] object
-#' 
-#' The `readRCX` function combines three sub-task:
-#' - read the JSON from file
-#' - parse the JSON
-#' - process the contained aspects to create an [RCX][RCX-object] object
-#' 
-#' If any errors occur during this process, the single steps can be performed individually.
-#' This also allows to skip certain steps, for example if the JSON data is already availabe as text, 
-#' there is no need to save it as file and read it again.
-#' 
-#' ## Read the JSON from file
-#' 
-#' The `readJSON` function only read the content of a text file and returns it as a simple character vector.
-#' 
-#' ## Parse the JSON
-#' 
-#' The `parseJSON` function uses the [jsonlite] package, to parse JSON text:
-#'  
-#' `jsonlite::fromJSON(cx, simplifyVector = F)`
-#' 
-#' The result is a list containing the aspect data as elements.
-#' If, for some reason, the JSON is not valid, the [jsonlite] package raises an error.
-#' 
-#' ## Process the contained aspects to create an [RCX][RCX-object] object
-#' 
-#' With the `processCX` function, the single elements from the previous list will be processed with the [jsonToRCX] functions, 
-#' which creating objects for the single aspects.
-#' The standard CX aspects are processed by generic functions named by the aspect names of the CX data structure, e.g.
-#' `jsonToRCX.nodeAttributes` for the samely named CX aspect the corresponding `NodeAttributesAspect` in [RCX][RCX-object]
-#' (see also \code{vignette("02. The RCX and CX Data Model")} or NDEx documentation: \url{https://home.ndexbio.org/data-model/}).
-#' 
-#' The CX network may contain additional aspects besides the officially defined ones. 
-#' This includes self defined or deprecated aspects, that sill can be found in the networks at the NDEx platform.
-#' By default, those aspects are simply omitted.
-#' In those cases, the setting *verbose* to `TRUE` is a good idea to see, which aspects cannot be processed this package.
-#' 
-#' Those not processable aspects can be handled individually, but it is advisable to extend the [jsonToRCX] functions by 
-#' implementing own versions for those aspects. 
-#' Additionally, the **update** functions have to be implemented to add the newly generated aspect objects
-#' to [RCX][RCX-object] object (see e.g. [updateNodes] or [updateEdges]).
-#' Therefore, the function also have to be named `"update<aspect-name>`, where aspect-name is the capitalized version of the
-#' name used in the CX.
-#' (see also \code{vignette("03. Extending the RCX Data Model")}
-#'
-#' @param file character; the name of the file which the data are to be read from
-#' @param json character; raw JSON data
-#' @param aspectList list; list containing the aspect data (parsed JSON)
-#' @param verbose logical; whether to print what is happening
-#'
-#' @export
-#' @seealso [jsonToRCX], [writeCX]
-#' 
-#' @examples 
-#' cxFile = system.file(
-#'   "extdata", 
-#'   "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
-#'   package = "RCX"
-#' )
-#' 
-#' rcx = readRCX(cxFile)
-#' 
-#' ## OR:
-#' 
-#' json = readJSON(cxFile)
-#' aspectList = parseJSON(json)
-#' rcx = processCX(aspectList)
-readRCX = function(file, verbose=F){
-  json = readJSON(file, verbose)
-  aspectList = parseJSON(json, verbose)
-  rcx = processCX(aspectList, verbose)
-  return(rcx)
-}
-
-
 #' Convert parsed JSON aspects to RCX
 #' 
 #' Functions to handle parsed JSON for the different aspects.
 #' 
-#' These functions will be used in \code{\link{fromCX}} to process the JSON data for every aspect.
+#' These functions will be used in \code{\link{processCX}} to process the JSON data for every aspect.
 #' Each aspect is accessible in the CX-JSON by a particular accession name (i.e. its aspect name; see NDEx documentation:
 #' \url{https://home.ndexbio.org/data-model/}). 
 #' This name is used as class to handle different aspects by method dispatch.

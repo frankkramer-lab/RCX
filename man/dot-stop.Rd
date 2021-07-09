@@ -21,6 +21,8 @@ Internal function only for convenience
 }
 \section{Details}{
  \subsection{List of error codes:}{
+\subsection{e404}{
+\preformatted{THIS ERROR SHOULD NEVER HAPPEN!!!}}
 \subsection{ErrorCodeNotFound}{
 \preformatted{
 ##############################
@@ -28,8 +30,6 @@ Internal function only for convenience
 ##############################
 requested error code: 
 <info[1]>}}
-\subsection{e404}{
-\preformatted{THIS ERROR SHOULD NEVER HAPPEN!!!}}
 \subsection{idNonNeg}{
 \preformatted{Provided IDs (<info[1]>) must be non-neagtive!}}
 \subsection{idNotNum}{

@@ -89,5 +89,5 @@ nodes = createNodes(name = c("a","b","c","d","e","f"))
 rcxToJson(nodes)
 }
 \seealso{
-\link{toCX}, \link{writeCX}, \link{jsonToRCX}, \link{fromCX}
+\link{toCX}, \link{writeCX}, \link{jsonToRCX}, \link{readCX}
 }

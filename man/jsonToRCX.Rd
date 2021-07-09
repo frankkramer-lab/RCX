@@ -66,7 +66,7 @@ created aspect or \code{NULL}
 Functions to handle parsed JSON for the different aspects.
 }
 \details{
-These functions will be used in \code{\link{fromCX}} to process the JSON data for every aspect.
+These functions will be used in \code{\link{processCX}} to process the JSON data for every aspect.
 Each aspect is accessible in the CX-JSON by a particular accession name (i.e. its aspect name; see NDEx documentation:
 \url{https://home.ndexbio.org/data-model/}).
 This name is used as class to handle different aspects by method dispatch.

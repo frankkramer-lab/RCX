@@ -28,9 +28,9 @@
 #' @param pretty logical; adds indentation whitespace to JSON output. 
 #' Can be TRUE/FALSE or a number specifying the number of spaces to indent. See [jsonlite::prettify()]
 #'
-#' @return [CX (JSON)][readCX] object
+#' @return CX (JSON) text
 #' @export
-#' @seealso [toCX], [rcxToJson], [readRCX], [writeCX]
+#' @seealso [toCX], [rcxToJson], [readCX], [writeCX]
 #'
 #' @examples
 #' NULL
@@ -101,7 +101,7 @@ toCX = function(rcx, verbose=F, pretty=F){
 #' Can be TRUE/FALSE or a number specifying the number of spaces to indent. See [jsonlite::prettify()]
 #'
 #' @export
-#' @seealso [toCX], [rcxToJson], [readRCX]
+#' @seealso [toCX], [rcxToJson], [readCX]
 #' 
 #' @examples
 #' NULL
@@ -147,7 +147,7 @@ writeCX.CX = function(x, file, verbose=F, pretty=F){
 #'
 #' @return character; JSON of an aspect
 #' @export
-#' @seealso [toCX], [writeCX], [jsonToRCX], [fromCX]
+#' @seealso [toCX], [writeCX], [jsonToRCX], [readCX]
 #'
 #' @examples
 #' nodes = createNodes(name = c("a","b","c","d","e","f"))

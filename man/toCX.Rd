@@ -15,7 +15,7 @@ toCX(rcx, verbose = F, pretty = F)
 Can be TRUE/FALSE or a number specifying the number of spaces to indent. See \code{\link[jsonlite:prettify]{jsonlite::prettify()}}}
 }
 \value{
-\link[=readCX]{CX (JSON)} object
+CX (JSON) text
 }
 \description{
 This function converts an \link[=RCX-object]{RCX} object to JSON in a valid CX data structure
@@ -38,5 +38,5 @@ them in the resulting CX.
 NULL
 }
 \seealso{
-\link{toCX}, \link{rcxToJson}, \link{readRCX}, \link{writeCX}
+\link{toCX}, \link{rcxToJson}, \link{readCX}, \link{writeCX}
 }

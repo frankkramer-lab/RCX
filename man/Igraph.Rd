@@ -47,5 +47,5 @@ Convert an \link[=RCX-object]{RCX} object to an \link[igraph:aaa-igraph-package]
 NULL
 }
 \seealso{
-\link{toCX}, \link{rcxToJson}, \link{readRCX}, \link{writeCX}
+\link{toCX}, \link{rcxToJson}, \link{readCX}, \link{writeCX}
 }

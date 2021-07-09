@@ -82,5 +82,5 @@ cx = toCX(rcx)
 }
 }
 \seealso{
-\link{rcxToJson}, \link{readRCX}, \link{writeCX}
+\link{rcxToJson}, \link{readCX}, \link{writeCX}
 }

@@ -13,8 +13,8 @@
 #' 
 #' @details 
 #' This function uses the Java Script library used by the NDEx platform (\url{https://ndexbio.org/}) to visualize
-#' the [RCX][RCX-object] or [CX][readCX] network. 
-#' The [RCX][RCX-object] is therefore converted to CX (JSON) using [toCX].
+#' the [RCX][RCX-object] or CX network from [toCX]. 
+#' In the first case, the [RCX][RCX-object] is converted to CX (JSON) using [toCX].
 #' 
 #' By default the visualization is opened in RStudio in the *Viewer* panel.
 #' If this function is not executed in RStudio, the visualization is opened in the standard web-browser.
@@ -39,7 +39,7 @@
 #' @param openExternal logical; whether to open in an external browser instead of the RStudio viewer
 #'
 #' @export
-#' @seealso [rcxToJson], [readRCX], [writeCX]
+#' @seealso [rcxToJson], [readCX], [writeCX]
 #'
 #' @examples
 #' ## prepare RCX
@@ -139,7 +139,7 @@ visualize.CX = function(x, layout=NULL, openExternal=F) {
 #' @param verbose logical; whether to print what is happening 
 #'
 #' @export
-#' @seealso [rcxToJson], [readRCX], [writeCX]
+#' @seealso [rcxToJson], [readCX], [writeCX]
 #'
 #' @examples
 #' ## prepare RCX
