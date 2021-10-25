@@ -380,7 +380,7 @@ visualize(rcx, layout = c(name = "cose"))
 ```
 
 ![Force-driven visualization of the network without visual
-properties](1_network_no_cvp.png)
+properties](vignettes/1_network_no_cvp.png)
 
 Unfortunately no labels are shown in the network. We can fix that by
 defining a simple pass-through mapping for the node labels and add it to
