@@ -14,7 +14,8 @@ fromIgraph(
   nodeName = "nodeName",
   nodeIgnore = c("name"),
   edgeId = "id",
-  edgeIgnore = c("name"),
+  edgeInteraction = "edgeInteraction",
+  edgeIgnore = c(),
   suppressWarning = F
 )
 }
@@ -33,6 +34,8 @@ fromIgraph(
 
 \item{edgeId}{character; igraph attribute name used for \link[=Edges]{edge} ids}
 
+\item{edgeInteraction}{character; igraph attribute name used for \link[=Edges]{edge} interaction}
+
 \item{edgeIgnore}{character; igraph attribute names that should be ignored}
 
 \item{suppressWarning}{logical; whether to suppress a warning message, if the validation of the \link[=RCX-object]{RCX} object fails}
@@ -43,9 +46,60 @@ fromIgraph(
 \description{
 Convert an \link[=RCX-object]{RCX} object to an \link[igraph:aaa-igraph-package]{igraph} object
 }
+\details{
+In the \link[igraph:aaa-igraph-package]{igraph} object the attributes are not separated from the graph like in \link[=RCX-object]{RCX}.
+Therefore, for converting an \link[=RCX-object]{RCX} object to an \link[igraph:aaa-igraph-package]{igraph} object, and back,
+some adjustments in the naming of the attributes have to be made.
+
+For nodes the \code{name} can be present in the \link[=Nodes]{nodes} aspect, as name in the \link[=NodeAttributes]{nodeAttributes} aspect.
+Also \code{name} is used in \link[igraph:aaa-igraph-package]{igraph} for naming the vertices.
+To avoid collisions in the conversion, the \link[=Nodes]{nodes} name is saved in \link[igraph:aaa-igraph-package]{igraph} as \code{nodeName},
+while the \link[=NodeAttributes]{nodeAttributes} property \code{name} is saved as \code{"attribute...name"}.
+These names are also used for the conversion back to \link[=RCX-object]{RCX}, but here the \code{name} used in the
+\link[=Nodes]{nodes} aspect can be changed by the \code{nodeName} parameter.
+
+Similar to the node name, if \code{"represents"} is present as property in \link[=NodeAttributes]{nodeAttributes} its name is changed to
+\code{"attribute...represents"}.
+
+The conversion of \link[=Edges]{edges} works analogously:
+If \code{"interaction"} is present as property in \link[=EdgeAttributes]{edgeAttributes} its name is changed to \code{"attribute...interaction"}.
+
+\link{Nodes} and \link[=Edges]{edges} must have IDs in the \link[=RCX-object]{RCX}, but not in the \link[igraph:aaa-igraph-package]{igraph} object.
+To define an \link[igraph:vertex_attr]{vertex} or \link[igraph:vertex_attr]{edge} attribute to be used as ID, the parameters
+\code{nodeId} and \code{edgeId} can be used to define ether an attribute name (default:"id") or set it to \code{NULL} to generate ID automatically.
+
+The attributes also may have a special data type assigned.
+The data type then is saved by adding \code{"...dataType"} to the attribute name.
+
+The \link[=CartesianLayout]{cartesian layout} is also stored in the \link[igraph:aaa-igraph-package]{igraph} object.
+To make those \link[igraph:vertex_attr_names]{igraph vertex attributes} distinguishable from \link[=NodeAttributes]{nodeAttributes}
+they are named \code{"cartesianLayout...x"}, \code{"cartesianLayout...y"} and \code{"cartesianLayout...z"}.
+
+In the \link[=RCX-object]{RCX} attributes it is also possible to define a \link[=CySubNetworks]{subnetwork}, to which an attribute applies.
+Those attributes are added with \code{"...123"} added to its name, where \code{"123"} is the \link[=CySubNetworks]{subnetwork id}.
+The \link[=CySubNetworks]{subnetwork id} itself are added as \link[igraph:graph_attr_names]{igraph graph attributes}, and are named
+\verb{subnetwork...123...nodes"} and \code{"subnetwork...123...edges"}, where \code{"123"} is the \link[=CySubNetworks]{subnetwork id}.
+
+Altogether, the conventions look as follows:
+\code{"[attribute...]<name>[...<subnetwork>][...dataType]"}
+}
 \examples{
-NULL
+## Read from a CX file
+## reading the provided example network of the package
+cxFile <- system.file(
+ "extdata", 
+ "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
+ package = "RCX"
+)
+
+rcx = readCX(cxFile)
+
+## convert the network to igraph
+ig = toIgraph(rcx)
+
+## convert it back
+rcxFromIg = fromIgraph(ig)
 }
 \seealso{
-\link{toCX}, \link{rcxToJson}, \link{readCX}, \link{writeCX}
+\link{graphNEL}
 }

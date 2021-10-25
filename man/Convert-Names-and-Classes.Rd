@@ -43,6 +43,11 @@ cyTableColumn  <=>  CyTableColumnAspect```
 \examples{
 aspectName2Class("nodes")
 ##[1] "NodesAspect"
+
 aspectClass2Name("NodesAspect")
 ##[1] "nodes"
+
+aspectClasses
+
+subAspectClasses
 }

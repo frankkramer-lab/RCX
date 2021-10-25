@@ -40,6 +40,7 @@
 #' @param version named character (optional); version of the aspect (default:"1.0")
 #' @param consistencyGroup named numerical (optional); consistency group of the aspect (default:1)
 #' @param properties named list (optional); properties that need to be fetched or updated independently of aspect data
+#' @param aspectClasses named character; accession names and aspect classes [aspectClasses]
 #'
 #' @return `r .CLS$metaData` object or [RCX][RCX-object] object
 #' @name Meta-data
@@ -47,13 +48,13 @@
 #' @export
 #'
 #' @example man-roxygen-examples/meta-data-update.R
-updateMetaData = function(x, version = NULL, consistencyGroup = NULL, properties=NULL){
+updateMetaData = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=NULL){
     UseMethod("updateMetaData", x)
 }
 
 #' @rdname Meta-data
 #' @export
-updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, properties=NULL){
+updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=NULL){
     rcx = x
     fname = "updateMetaData"
     if(missing(rcx)) .stop("paramMissingRCX")
@@ -77,25 +78,37 @@ updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, proper
             consistencyGroupTmp = NULL
             propertiesTmp = NULL
             
-            name = aspectClass2Name(.aspectClass(aspect))
-            
-            if(!is.null(existingMetaData)){
-                if(name %in% existingMetaData$name){
-                    versionTmp = existingMetaData[existingMetaData$name==name, "version"]
-                    consistencyGroupTmp = existingMetaData[existingMetaData$name==name, "consistencyGroup"]
-                    propertiesTmp = existingMetaData[existingMetaData$name==name, "properties"][[1]]
+            cls = NA
+            if(is.null(aspectClasses)){
+                cls = .aspectClass(aspect)
+                name = aspectClass2Name(cls)
+            }else{
+                if(any(class(aspect) %in% aspectClasses)){
+                    cls = class(aspect)[class(aspect) %in% aspectClasses]
+                    name = names(aspectClasses)[aspectClasses==cls]
                 }
             }
             
-            if((!is.null(version)) && (name %in% names(version))) versionTmp = version[name]
-            if((!is.null(consistencyGroup)) && (name %in% names(consistencyGroup))) consistencyGroupTmp = consistencyGroup[name]
-            if((!is.null(properties)) && (name %in% names(properties))) propertiesTmp = properties[[name]]
-            
-            metaData = plyr::rbind.fill(metaData,
-                                        updateMetaData(aspect,
-                                                       versionTmp,
-                                                       consistencyGroupTmp,
-                                                       propertiesTmp))
+            if(! is.na(cls)){
+                if(!is.null(existingMetaData)){
+                    if(name %in% existingMetaData$name){
+                        versionTmp = existingMetaData[existingMetaData$name==name, "version"]
+                        consistencyGroupTmp = existingMetaData[existingMetaData$name==name, "consistencyGroup"]
+                        propertiesTmp = existingMetaData[existingMetaData$name==name, "properties"][[1]]
+                    }
+                }
+                
+                if((!is.null(version)) && (name %in% names(version))) versionTmp = version[name]
+                if((!is.null(consistencyGroup)) && (name %in% names(consistencyGroup))) consistencyGroupTmp = consistencyGroup[name]
+                if((!is.null(properties)) && (name %in% names(properties))) propertiesTmp = properties[[name]]
+                
+                metaData = plyr::rbind.fill(metaData,
+                                            updateMetaData(aspect,
+                                                           versionTmp,
+                                                           consistencyGroupTmp,
+                                                           propertiesTmp,
+                                                           aspectClasses))
+            }
         }
     }
 
@@ -107,10 +120,10 @@ updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, proper
 
 #' @rdname Meta-data
 #' @export
-updateMetaData.default = function(x, version = NULL, consistencyGroup = NULL, properties=NULL){
+updateMetaData.default = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=NULL){
     aspect = x
     fname = "updateMetaData"
-    .checkClassOneOf(aspect, .CLS, "aspect", fname)
+    # .checkClassOneOf(aspect, .CLS, "aspect", fname)
     if(!is.null(version)) .checkCharacter(version, "version", fname)
     if(!is.null(consistencyGroup)) .checkNumeric(consistencyGroup, "consistencyGroup", fname)
     if(!is.null(properties)) {
@@ -118,21 +131,35 @@ updateMetaData.default = function(x, version = NULL, consistencyGroup = NULL, pr
         if(length(properties)!=0) .checkNamedList(properties, "properties", fname)
     }
     
-    name = aspectClass2Name(.aspectClass(aspect))
-    version = ifelse(is.null(version),"1.0",version)
-    idCounter = ifelse(hasIds(aspect), maxId(aspect), NA)
-    elementCount = countElements(aspect)
-    consistencyGroup = ifelse(is.null(consistencyGroup),1,consistencyGroup)
     
-    metaData = data.frame(name=name,
-                          version=version,
-                          idCounter=idCounter,
-                          elementCount=elementCount,
-                          consistencyGroup=consistencyGroup,
-                          stringsAsFactors=FALSE, check.names=FALSE)
+    cls = NA
+    if(is.null(aspectClasses)){
+        cls = .aspectClass(aspect)
+        name = aspectClass2Name(cls)
+    }else{
+        if(any(class(aspect) %in% aspectClasses)){
+            cls = class(aspect)[class(aspect) %in% aspectClasses]
+            name = names(aspectClasses)[aspectClasses==cls]
+        }
+    }
     
-    if(!is.null(properties)) metaData$properties[[1]] = properties
-    #if(!is.null(properties)) metaData$properties[[1]] = unlist(properties)
+    if(! is.na(cls)){
+        version = ifelse(is.null(version),"1.0",version)
+        idCounter = ifelse(hasIds(aspect), maxId(aspect), NA)
+        elementCount = countElements(aspect)
+        consistencyGroup = ifelse(is.null(consistencyGroup),1,consistencyGroup)
+        
+        metaData = data.frame(name=name,
+                              version=version,
+                              idCounter=idCounter,
+                              elementCount=elementCount,
+                              consistencyGroup=consistencyGroup,
+                              stringsAsFactors=FALSE, check.names=FALSE)
+        
+        if(!is.null(properties)) metaData$properties[[1]] = properties
+    }else{
+        metaData = NULL
+    }
     
     return(metaData)
 }

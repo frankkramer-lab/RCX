@@ -3,7 +3,7 @@
 ##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## Description:
-##    Base functions to create, parse, modify CX networks from/to JSON data
+##    Conversion from and to igraph
 ################################################################################
 
 
@@ -26,7 +26,7 @@
 #'
 #' @examples
 #' NULL
-addAttributeData = function(ig, attributeRef, attribute){
+.addAttributeData = function(ig, attributeRef, attribute){
     if("dataType" %in% names(attribute)){
         attribute$dataType[attribute$dataType == "string"] = NA
         attribute$dataType[attribute$dataType == "boolean"] = NA
@@ -116,23 +116,50 @@ getAttributeData = function(attributeRef, igAttributes){
 }
 
 ##########################################################################################
-## Nodes
-##########################################################################################
-## property |options          |values  |description
-## ---------|-----------------|--------|------------------------------------------------
-## <a id="nodeid">"id"</a>|Required, Unique |integer |CX internal node id, starts at 0
-## "n"      |Optional         |string  |node name, eg. "EGFR", "node 1"
-## "r"      |Optional         |string  |represents, eg. "HGNC:AKT1"
-## **Note:** At least one node has to be present!
+## iGraph
 ##########################################################################################
 
 
-#TODO: finish docu!!
-#TODO: replace $ as separator, since it causes errors in Cytoscape
 #' Convert an RCX object from and to an igraph object
 #' 
 #' Convert an [RCX][RCX-object] object to an [igraph][igraph::igraph()] object
 #' 
+#' @details 
+#' In the [igraph][igraph::igraph()] object the attributes are not separated from the graph like in [RCX][RCX-object].
+#' Therefore, for converting an [RCX][RCX-object] object to an [igraph][igraph::igraph()] object, and back,
+#' some adjustments in the naming of the attributes have to be made.
+#' 
+#' For nodes the `name` can be present in the [nodes][Nodes] aspect, as name in the [nodeAttributes][NodeAttributes] aspect.
+#' Also `name` is used in [igraph][igraph::igraph()] for naming the vertices.
+#' To avoid collisions in the conversion, the [nodes][Nodes] name is saved in [igraph][igraph::igraph()] as `nodeName`, 
+#' while the [nodeAttributes][NodeAttributes] property `name` is saved as `"attribute...name"`.
+#' These names are also used for the conversion back to [RCX][RCX-object], but here the `name` used in the 
+#' [nodes][Nodes] aspect can be changed by the `nodeName` parameter.
+#' 
+#' Similar to the node name, if `"represents"` is present as property in [nodeAttributes][NodeAttributes] its name is changed to
+#' `"attribute...represents"`.
+#' 
+#' The conversion of [edges][Edges] works analogously:
+#' If `"interaction"` is present as property in [edgeAttributes][EdgeAttributes] its name is changed to `"attribute...interaction"`.
+#' 
+#' [Nodes] and [edges][Edges] must have IDs in the [RCX][RCX-object], but not in the [igraph][igraph::igraph()] object.
+#' To define an [vertex][igraph::vertex_attr] or [edge][igraph::vertex_attr] attribute to be used as ID, the parameters
+#' `nodeId` and `edgeId` can be used to define ether an attribute name (default:"id") or set it to `NULL` to generate ID automatically.
+#' 
+#' The attributes also may have a special data type assigned.
+#' The data type then is saved by adding `"...dataType"` to the attribute name.
+#' 
+#' The [cartesian layout][CartesianLayout] is also stored in the [igraph][igraph::igraph()] object.
+#' To make those [igraph vertex attributes][igraph::vertex_attr_names()] distinguishable from [nodeAttributes][NodeAttributes]
+#' they are named `"cartesianLayout...x"`, `"cartesianLayout...y"` and `"cartesianLayout...z"`.
+#' 
+#' In the [RCX][RCX-object] attributes it is also possible to define a [subnetwork][CySubNetworks], to which an attribute applies.
+#' Those attributes are added with `"...123"` added to its name, where `"123"` is the [subnetwork id][CySubNetworks].
+#' The [subnetwork id][CySubNetworks] itself are added as [igraph graph attributes][igraph::graph_attr_names()], and are named
+#' `subnetwork...123...nodes"` and `"subnetwork...123...edges"`, where `"123"` is the [subnetwork id][CySubNetworks].
+#' 
+#' Altogether, the conventions look as follows:
+#' `"[attribute...]<name>[...<subnetwork>][...dataType]"`
 #' 
 #'
 #' @param rcx [RCX][RCX-object] object
@@ -140,12 +167,12 @@ getAttributeData = function(attributeRef, igAttributes){
 #'
 #' @return [igraph][igraph::igraph()] or [RCX][RCX-object] object
 #' @export
-#' @seealso [toCX], [rcxToJson], [readCX], [writeCX]
+#' @seealso [graphNEL]
 #' 
 #' @name Igraph
 #'
-#' @examples
-#' NULL
+#' @example man-roxygen-examples/CX_load.R
+#' @example man-roxygen-examples/igraph.R
 toIgraph = function(rcx, directed=FALSE){
     fname = "toIgraph"
     if(missing(rcx)) .stop("paramMissingRCX")
@@ -169,22 +196,39 @@ toIgraph = function(rcx, directed=FALSE){
                                        directed = directed,
                                        vertices = nodes)
     ig = igraph::set_vertex_attr(ig, "id", value = igraph::vertex_attr(ig, "name"))
-    # ig = igraph::set_vertex_attr(ig, "name", value = igraph::vertex_attr(ig, "nodeName"))
-    # ig = igraph::delete_vertex_attr(ig, "nodeName")
     
     if("nodeAttributes" %in% aspects){
         attributes = rcx$nodeAttributes
-        ig = addAttributeData(ig, "node", attributes)
+        ig = .addAttributeData(ig, "node", attributes)
     }
     
     if("edgeAttributes" %in% aspects){
         attributes = rcx$edgeAttributes
-        ig = addAttributeData(ig, "edge", attributes)
+        ig = .addAttributeData(ig, "edge", attributes)
     }
     
     if("networkAttributes" %in% aspects){
         attributes = rcx$networkAttributes
-        ig = addAttributeData(ig, "network", attributes)
+        ig = .addAttributeData(ig, "network", attributes)
+    }
+    
+    if("cySubNetworks" %in% aspects){
+        subNetworks = rcx$cySubNetworks
+        for (subNetI in 1:nrow(subNetworks)) {
+            subNet = subNetworks[subNetI,]
+            if(!is.null(subNet$nodes)){
+                ig = igraph::set_graph_attr(
+                    ig, 
+                    paste0("subnetwork...",subNet$id,"...nodes"), 
+                    subNet$nodes)
+            }
+            if(!is.null(subNet$edges)){
+                ig = igraph::set_graph_attr(
+                    ig, 
+                    paste0("subnetwork...",subNet$id,"...edges"), 
+                    subNet$edges)
+            }
+        }
     }
     
     if("cartesianLayout" %in% aspects){
@@ -238,11 +282,12 @@ toIgraph = function(rcx, directed=FALSE){
 #' @param nodeName character; igraph attribute name used for [node][Nodes] names
 #' @param nodeIgnore character; igraph attribute names that should be ignored
 #' @param edgeId character; igraph attribute name used for [edge][Edges] ids
+#' @param edgeInteraction character; igraph attribute name used for [edge][Edges] interaction
 #' @param edgeIgnore character; igraph attribute names that should be ignored
 #' @param suppressWarning logical; whether to suppress a warning message, if the validation of the [RCX][RCX-object] object fails
 fromIgraph = function(ig, 
                       nodeId="id", nodeName="nodeName", nodeIgnore=c("name"), 
-                      edgeId="id", edgeIgnore=c("name"),
+                      edgeId="id", edgeInteraction="edgeInteraction", edgeIgnore=c(),
                       suppressWarning=F){
     fname = "fromIgraph"
     if(! "igraph" %in% class(ig)) .stop("wrongClass",c(.formatLog("ig", fname), "igraph"))
@@ -250,6 +295,7 @@ fromIgraph = function(ig,
     attrNames = igraph::vertex_attr_names(ig)
     
     ## Nodes:
+    ## filter name and represents and treat it differently
     tmpName = igraph::vertex_attr(ig, nodeName)
     tmpRep = igraph::vertex_attr(ig, "represents")
     if(is.null(nodeId)) {
@@ -319,7 +365,7 @@ fromIgraph = function(ig,
     
     ## the remaining attributes must be nodeAttributes
     ## trim datatypes from attributes
-    tmpDataTypes = attrNames[endsWith(attrNames, "\\.\\.\\.dataType")]
+    tmpDataTypes = attrNames[endsWith(attrNames, "...dataType")]
     attrNames = attrNames[! attrNames %in% tmpDataTypes]
     tmpDataTypes = gsub("\\.\\.\\.dataType", "", tmpDataTypes)
     
@@ -328,10 +374,13 @@ fromIgraph = function(ig,
     if(length(attrNames)!=0){
         tmpNodeAttr = lapply(attrNames, function(a){
             tmpAcc = a
+            ## revert convention for name in nodeAttributes
             a = gsub("attribute\\.\\.\\.", "", a)
             
+            ## get all values that are not NA
             tmpVal = igraph::vertex_attr(ig, tmpAcc)
             tmpSel = !is.na(tmpVal)
+            
             tmpList = is.list(tmpVal)
             if(tmpList) tmpSel = ! sapply(tmpVal, is.null)
             
@@ -340,14 +389,19 @@ fromIgraph = function(ig,
             tmpSub = NULL
             if(length(tmpSplit)==2) tmpSub = rep(as.numeric(tmpSplit[2]), length(tmpSel))[tmpSel]
             
-            #if(tmpAcc %in% tmpDataTypes) tmpDT = igraph::vertex_attr(ig, paste0(tmpAcc,"\\.\\.\\.dataType"))
-            tmpValUnlist = ifelse(tmpList, unlist(tmpVal), tmpVal)
-            if(is.logical(tmpValUnlist)) {
-                tmpDT = rep("boolean", length(tmpSel))
-            }else if(is.numeric(tmpValUnlist)) {
-                tmpDT = rep("double", length(tmpSel))
+            ## assign the correct data types
+            if(tmpAcc %in% tmpDataTypes) {
+                tmpDT = igraph::vertex_attr(ig, paste0(tmpAcc,"...dataType"))
             }else{
-                tmpDT = rep("string", length(tmpSel))
+                tmpValUnlist = ifelse(tmpList, unlist(tmpVal), tmpVal)
+                
+                if(is.logical(tmpValUnlist)) {
+                    tmpDT = rep("boolean", length(tmpSel))
+                }else if(is.numeric(tmpValUnlist)) {
+                    tmpDT = rep("double", length(tmpSel))
+                }else{
+                    tmpDT = rep("string", length(tmpSel))
+                }
             }
             
             tmpList = rep(tmpList, length(tmpSel))
@@ -376,10 +430,12 @@ fromIgraph = function(ig,
     }else{
         tmpCols = c("from", "to", edgeId)
     }
-    tmpData = igraph::as_long_data_frame(ig)[tmpCols]
+    tmpData = unique(igraph::as_long_data_frame(ig)[tmpCols])
     tmpSource = tmpId[tmpData$from]
     tmpTarget = tmpId[tmpData$to]
-    tmpInter = igraph::edge_attr(ig, "interacts")
+    
+    ## filter interaction and treat it differently
+    tmpInter = igraph::edge_attr(ig, "interaction")
     if(is.null(edgeId)){
         tmpEId = 1:length(tmpSource)
     }else{
@@ -417,14 +473,18 @@ fromIgraph = function(ig,
             tmpSub = NULL
             if(length(tmpSplit)==2) tmpSub = rep(as.numeric(tmpSplit[2]), length(tmpSel))[tmpSel]
             
-            # if(tmpAcc %in% tmpDataTypes) tmpDT = igraph::edge_attr(ig, paste0(tmpAcc,"...dataType"))
-            tmpValUnlist = ifelse(tmpList, unlist(tmpVal), tmpVal)
-            if(is.logical(tmpValUnlist)) {
-                tmpDT = rep("boolean", length(tmpSel))
-            }else if(is.numeric(tmpValUnlist)) {
-                tmpDT = rep("double", length(tmpSel))
+            if(tmpAcc %in% tmpDataTypes) {
+                tmpDT = igraph::vertex_attr(ig, paste0(tmpAcc,"...dataType"))
             }else{
-                tmpDT = rep("string", length(tmpSel))
+                tmpValUnlist = ifelse(tmpList, unlist(tmpVal), tmpVal)
+                
+                if(is.logical(tmpValUnlist)) {
+                    tmpDT = rep("boolean", length(tmpSel))
+                }else if(is.numeric(tmpValUnlist)) {
+                    tmpDT = rep("double", length(tmpSel))
+                }else{
+                    tmpDT = rep("string", length(tmpSel))
+                }
             }
             
             tmpList = rep(tmpList, length(tmpSel))
@@ -454,6 +514,36 @@ fromIgraph = function(ig,
     tmpDataTypes = attrNames[endsWith(attrNames, "...dataType")]
     attrNames = attrNames[! attrNames %in% tmpDataTypes]
     tmpDataTypes = gsub("\\.\\.\\.dataType", "", tmpDataTypes)
+    
+    ## special handling of the subnetworks
+    tmpSubNetworks = attrNames[startsWith(attrNames, "subnetwork...")]
+    attrNames = attrNames[! attrNames %in% tmpSubNetworks]
+    cySubNetworks = NULL
+    if(length(tmpSubNetworks)!=0){
+        snids = as.numeric(unique(sapply(strsplit(tmpSubNetworks,"\\.\\.\\."), function(x){x[2]})))
+        for (snid in snids) {
+            nodesData = NULL
+            tmpNodesName = paste0("subnetwork...",snid,"...nodes")
+            if(tmpNodesName %in% tmpSubNetworks){
+                nodesData = igraph::graph_attr(ig, tmpNodesName)
+            }
+            edgesData = NULL
+            tmpEdgesName = paste0("subnetwork...",snid,"...edges")
+            if(tmpNodesName %in% tmpSubNetworks){
+                edgesData = igraph::graph_attr(ig, tmpEdgesName)
+            }
+            
+            ## create subnetworks aspect
+            tmpSubnetwork = createCySubNetworks(snid, nodes = nodesData, edges = edgesData)
+            
+            ## add it to the list
+            if(is.null(cySubNetworks)){
+                cySubNetworks = tmpSubnetwork
+            }else{
+                cySubNetworks = updateCySubNetworks(cySubNetworks, tmpSubnetwork, keepOldIds = FALSE)
+            }
+        }
+    }
     
     ## process all attributes
     tmpNetAttr = lapply(attrNames, function(a){
@@ -504,9 +594,10 @@ fromIgraph = function(ig,
                     edgeAttributes = edgeAttributes,
                     networkAttributes = networkAttributes,
                     cartesianLayout = cartesianLayout,
+                    cySubNetworks = cySubNetworks,
                     checkReferences = F)
     
-    if((! validate(rcx, F)) && (! suppressWarning)) warning("RCX object didn't validate! (Most likely because references to CySubNetworks are missing)")
+    if((! validate(rcx, F)) && (! suppressWarning)) warning("RCX object didn't validate!")
     return(rcx)
 }
 

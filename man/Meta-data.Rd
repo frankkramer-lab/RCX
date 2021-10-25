@@ -7,11 +7,29 @@
 \alias{updateMetaData.default}
 \title{Update RCX meta-data}
 \usage{
-updateMetaData(x, version = NULL, consistencyGroup = NULL, properties = NULL)
+updateMetaData(
+  x,
+  version = NULL,
+  consistencyGroup = NULL,
+  properties = NULL,
+  aspectClasses = NULL
+)
 
-\method{updateMetaData}{RCX}(x, version = NULL, consistencyGroup = NULL, properties = NULL)
+\method{updateMetaData}{RCX}(
+  x,
+  version = NULL,
+  consistencyGroup = NULL,
+  properties = NULL,
+  aspectClasses = NULL
+)
 
-\method{updateMetaData}{default}(x, version = NULL, consistencyGroup = NULL, properties = NULL)
+\method{updateMetaData}{default}(
+  x,
+  version = NULL,
+  consistencyGroup = NULL,
+  properties = NULL,
+  aspectClasses = NULL
+)
 }
 \arguments{
 \item{x}{\link[=RCX-object]{RCX} object or an aspect of a RCX; its class must be one of the standard RCX aspect classes}
@@ -21,6 +39,8 @@ updateMetaData(x, version = NULL, consistencyGroup = NULL, properties = NULL)
 \item{consistencyGroup}{named numerical (optional); consistency group of the aspect (default:1)}
 
 \item{properties}{named list (optional); properties that need to be fetched or updated independently of aspect data}
+
+\item{aspectClasses}{named character; accession names and aspect classes \link{aspectClasses}}
 }
 \value{
 MetaDataAspect object or \link[=RCX-object]{RCX} object

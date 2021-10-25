@@ -1,41 +1,27 @@
 #' R package implementing the Cytoscape Exchange (CX) format
 #'
-#' \tabular{ll}{
-#' Package: \tab RCX\cr
-#' Type: \tab Package\cr
-#' Version: \tab 2.0.7\cr
-#' Date: \tab 2016-12-02\cr
-#' License: \tab TBD\cr
-#' }
+#' Create, handle, validate, visualize and convert networks in the Cytoscape exchange (CX) format to standard data types and objects. 
+#' 
+#' The CX format is also used by the NDEx platform, a online commons for biological networks, and the network visualization software Cytocape.
+#'
+#' \code{browseVignettes("RCy3")}
 #'
 #' @author Florian Auer \email{florian.auer@informatik.uni-augsburg.de}
-#' @name RCX-package
-#' @aliases RCX
+#' @name RCX
 #' @docType package
-#' @title RCX and RCXgraph data structure package
-#' @keywords package
-#' @examples
-#' \dontrun{
-#' require(RCX)
-#' ###TODO: add some sample code
-#' }
 NULL
 
-#TODO: validate: metaData aspect
-#TODO: validate: check node/edge/networkAttributes subnetworkIds
-#TODO: validate: view, but which id??
-#TODO: rcx to rcxgraph: include the node/edge attributes differently, but leave untouched in rcx; the lists in attributes cause an error in rcy3
-#TODO: diff on RCX: diff(rcx, by=c(<aspectNames>)
-#TODO: list aspects: listAspects(rcx, verbose)
 
-
-
-#TODO: add addRCX to combine two networks. That needs a diff of two aspects!
-#' Create an RCX objects from aspects
+#' Create an RCX object from aspects
 #' 
-#' ddd
+#' An RCX object consists of several aspects, but at least one node in the [nodes][Nodes] aspect.
+#' The network can either created by creating every single aspect first and the create the network
+#' with all aspects present, or by creating the aspect only with the nodes and adding the remaining 
+#' aspects one by one.
 #' 
-#' \code{vignette("CX-Data", package = "RCX")}
+#' \code{vignette("01. RCX - an R package implementing the Cytoscape Exchange (CX) format", package = "RCX")}
+#' \code{vignette("02. Creating RCX from scratch", package = "RCX")}
+#' \code{vignette("Appendix: The RCX and CX Data Model", package = "RCX")}
 #'
 #' @param nodes \code{\link{Nodes}} aspect;
 #' @param edges \code{\link{Edges}} aspect (optional);

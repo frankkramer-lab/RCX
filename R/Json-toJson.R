@@ -7,7 +7,6 @@
 ################################################################################
 
 
-#TODO: add examples
 #' Convert an [RCX][RCX-object] object to CX (JSON)
 #' 
 #' This function converts an [RCX][RCX-object] object to JSON in a valid CX data structure 
@@ -33,7 +32,17 @@
 #' @seealso [toCX], [rcxToJson], [readCX], [writeCX]
 #'
 #' @examples
-#' NULL
+#' rcx = createRCX(
+#'   nodes = createNodes(
+#'     name = LETTERS[1:10]
+#'   ),
+#'   edges = createEdges(
+#'     source=c(1,2),
+#'     target = c(2,3)
+#'   )
+#' )
+#' 
+#' json = toCX(rcx, pretty=TRUE)
 toCX = function(rcx, verbose=F, pretty=F){
   fname = "toCX"
   if(missing(rcx)) .stop("paramMissingRCX")
@@ -378,6 +387,7 @@ rcxToJson.CyNetworkRelationsAspect = function(aspect, verbose=F, ...){
 }
 
 #TODO: node=all: "nodes":["all"] or "nodes":"all"???
+## ask NDEx since no network with this was found
 #' @rdname rcxToJson
 #' @export
 rcxToJson.CySubNetworksAspect = function(aspect, verbose=F, ...){
@@ -458,15 +468,15 @@ rcxToJson.CyVisualProperty = function(aspect, verbose=F, propertyOf="", ...){
       tmp = c(tmp,
               paste0('"view":',aspect$view[n]))
     }
-    if(("properties" %in% names(aspect))&&(!is.na(aspect$properties[[n]]))){
+    if(("properties" %in% names(aspect))&&(all(!is.na(aspect$properties[[n]])))){
       tmp = c(tmp,
               rcxToJson(aspect$properties[[n]], verbose))
     }
-    if(("dependencies" %in% names(aspect))&&(!is.na(aspect$dependencies[[n]]))){
+    if(("dependencies" %in% names(aspect))&&(all(!is.na(aspect$dependencies[[n]])))){
       tmp = c(tmp,
               rcxToJson(aspect$dependencies[[n]], verbose))
     }
-    if(("mappings" %in% names(aspect))&&(!is.na(aspect$mappings[[n]]))){
+    if(("mappings" %in% names(aspect))&&(all(!is.na(aspect$mappings[[n]])))){
       tmp = c(tmp,
               rcxToJson(aspect$mappings[[n]], verbose))
     }

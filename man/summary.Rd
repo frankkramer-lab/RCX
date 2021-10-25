@@ -21,6 +21,7 @@
 \alias{summary.AspectRefColumn}
 \alias{summary.AspectReqRefColumn}
 \alias{summary.AspectValueColumn}
+\alias{summary.AspectAttributeColumn}
 \alias{summary.AspectListLengthColumn}
 \title{RCX and aspect summary}
 \usage{
@@ -62,6 +63,8 @@
 
 \method{summary}{AspectValueColumn}(object, ...)
 
+\method{summary}{AspectAttributeColumn}(object, ...)
+
 \method{summary}{AspectListLengthColumn}(object, ...)
 }
 \arguments{
@@ -89,6 +92,8 @@ for example ids of an aspect, required and optional references to ids of aspects
 \item \code{AspectReqRefColumn}: Summarize a required property, that references the ids of an other aspect
 
 \item \code{AspectValueColumn}: Summarize the occurrences of the different elements in the property
+
+\item \code{AspectAttributeColumn}: Summarize the different attributes in the property
 
 \item \code{AspectListLengthColumn}: The property is a list of vectors, so summarize the length of the vectors
 }}

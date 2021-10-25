@@ -7,18 +7,20 @@
 \alias{processCX}
 \title{Read CX from file, parse the JSON and convert it to an \link[=RCX-object]{RCX} object}
 \usage{
-readCX(file, verbose = F)
+readCX(file, verbose = F, aspectClasses = NULL)
 
 readJSON(file, verbose = F)
 
 parseJSON(json, verbose = F)
 
-processCX(aspectList, verbose = F)
+processCX(aspectList, verbose = F, aspectClasses = NULL)
 }
 \arguments{
 \item{file}{character; the name of the file which the data are to be read from}
 
 \item{verbose}{logical; whether to print what is happening}
+
+\item{aspectClasses}{named character; accession names and aspect classes \link{aspectClasses}}
 
 \item{json}{character; raw JSON data}
 

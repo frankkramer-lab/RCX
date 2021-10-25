@@ -69,5 +69,5 @@ edges = createEdges(source = c(0,0), target = c(1,2))
 refersTo(edges)
 }
 \seealso{
-\code{\link[=hasIds]{hasIds()}}, \code{\link[=idProperty]{idProperty()}}, \code{\link[=referedBy]{referedBy()}}, \code{\link[=maxId]{maxId()}}
+\code{\link[=hasIds]{hasIds()}}, \code{\link[=idProperty]{idProperty()}}, \code{\link[=referredBy]{referredBy()}}, \code{\link[=maxId]{maxId()}}
 }

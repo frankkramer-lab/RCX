@@ -27,7 +27,7 @@
 #' @param aspect an object of one of the aspect classes (e.g. `r .CLS$nodes`, `r .CLS$edges`, etc.)
 #' @return logical
 #' 
-#' @seealso [idProperty()], [refersTo()], [referedBy()], [maxId()]
+#' @seealso [idProperty()], [refersTo()], [referredBy()], [maxId()]
 #' 
 #' @export
 #' @examples
@@ -95,7 +95,7 @@ hasIds.CySubNetworksAspect = function (aspect) {
 #' @param aspect an object of one of the aspect classes (e.g. `r .CLS$nodes`, `r .CLS$edges`, etc.)
 #' @return character; Name of the ID property or *NULL*
 #' 
-#' @seealso [hasIds()], [refersTo()], [referedBy()], [maxId()]
+#' @seealso [hasIds()], [refersTo()], [referredBy()], [maxId()]
 #' 
 #' @export
 #' @examples
@@ -160,7 +160,7 @@ idProperty.CySubNetworksAspect = function (aspect) {
 #' @param aspect an object of one of the aspect classes (e.g. `r .CLS$nodes`, `r .CLS$edges`, etc.)
 #' @return named list; Name of the refering property and aspect class name.
 #' 
-#' @seealso [hasIds()], [idProperty()], [referedBy()], [maxId()]
+#' @seealso [hasIds()], [idProperty()], [referredBy()], [maxId()]
 #' 
 #' @export
 #' @examples
@@ -248,10 +248,10 @@ refersTo.CySubNetworksAspect = function (aspect) {
 
 
 ##########################################################################################
-## referedBy
+## referredBy
 ##########################################################################################
-## referedBy.default ==> NULL
-## referedBy.RCX ==> list(NodesAspect=c("EdgesAspect", "NodeAttributesAspect"),
+## referredBy.default ==> NULL
+## referredBy.RCX ==> list(NodesAspect=c("EdgesAspect", "NodeAttributesAspect"),
 ##                        EdgesAspect=c("EdgeAttributesAspect"))     
 ##                   # only show present aspects
 ##########################################################################################
@@ -262,9 +262,10 @@ refersTo.CySubNetworksAspect = function (aspect) {
 #' As example, the aspect *NodesAspect* is refered by the property *source* and *target* of 
 #' the *EdgesAspect* aspect.
 #' 
-#' @note Uses [hasIds()] and [refersTo()] to determine the refering aspects.
+#' @note Uses [hasIds()] and [refersTo()] to determine the referring aspects.
 #'
 #' @param rcx an object of one of the aspect classes (e.g. `r .CLS$nodes`, `r .CLS$edges`, etc.)
+#' @param aspectClasses named character; accession names and aspect classes [aspectClasses]
 #' @return named list; Aspect class names with names of aspect classes, that refer to them.
 #' 
 #' @seealso [hasIds()], [idProperty()], [refersTo()], [maxId()]
@@ -275,9 +276,9 @@ refersTo.CySubNetworksAspect = function (aspect) {
 #' edges = createEdges(source = c(0,0), target = c(1,2))
 #' rcx = createRCX(nodes = nodes, edges = edges)
 #' 
-#' referedBy(rcx)
-referedBy = function (rcx) {
-  fname="referedBy"
+#' referredBy(rcx)
+referredBy = function (rcx, aspectClasses=NULL) {
+  fname="referredBy"
   if(missing(rcx)) .stop("paramMissingRCX")
   .checkClass(rcx, .CLS$rcx, .formatO("rcx",fname))
   
@@ -286,12 +287,22 @@ referedBy = function (rcx) {
   for(aspect in rcx){
     ref = refersTo(aspect)
     
-    ## e.g. refersTo(edges):
-    ##  source="NodesAspect" 
-    ##  target="NodesAspect" 
-    for (r in names(ref)) {
-      if(is.null(result[[ref[r]]])) result[[ref[r]]]=c()
-      result[[ref[r]]]=unique(c(result[[ref[r]]], .aspectClass(aspect)))
+    if(is.null(aspectClasses)){
+      cls = .aspectClass(aspect)
+    }else{
+      if(any(class(aspect) %in% aspectClasses)){
+        cls = class(aspect)[class(aspect) %in% aspectClasses]
+      }
+    }
+    
+    if(! is.na(cls)){
+      ## e.g. refersTo(edges):
+      ##  source="NodesAspect" 
+      ##  target="NodesAspect" 
+      for (r in names(ref)) {
+        if(is.null(result[[ref[r]]])) result[[ref[r]]]=c()
+        result[[ref[r]]]=unique(c(result[[ref[r]]], cls))
+      }
     }
   }
   return(result)
@@ -318,7 +329,7 @@ referedBy = function (rcx) {
 #' @param x an object of one of the aspect classes (e.g. `r .CLS$nodes`, `r .CLS$edges`, etc.) or [RCX][RCX-object] class.
 #' @return integer; Highest id. For [RCX][RCX-object] objects all highest ids are returned in the vector named by the aspect class.
 #' 
-#' @seealso [hasIds()], [idProperty()], [refersTo()], [referedBy()], [maxId()]
+#' @seealso [hasIds()], [idProperty()], [refersTo()], [referredBy()], [maxId()]
 #' 
 #' @export
 #' @examples
@@ -381,7 +392,7 @@ maxId.RCX = function(x){
 #' @param x an object of one of the aspect classes (e.g. \code{\link{Nodes}}) or [RCX][RCX-object] class.
 #' @return integer; number of elements. For RCX objects all counts are returned in the vector named by the aspect class.
 #' 
-#' @seealso [hasIds()], [idProperty()], [refersTo()], [referedBy()], [maxId()]
+#' @seealso [hasIds()], [idProperty()], [refersTo()], [referredBy()], [maxId()]
 #' 
 #' @export
 #' @examples
@@ -439,7 +450,7 @@ countElements.MetaDataAspect = function(x){
 ## Conversion between RCX accession name and class name
 ##########################################################################################
 
-#TODO: usfull???
+
 #' Convert aspect class name to RCX accession
 #' 
 #' The aspects in an RCX object are accessed by a `name` and return the aspect as an object of `cls`.
@@ -461,12 +472,18 @@ countElements.MetaDataAspect = function(x){
 #' @examples
 #' aspectName2Class("nodes")
 #' ##[1] "NodesAspect"
+#' 
 #' aspectClass2Name("NodesAspect")
 #' ##[1] "nodes"
+#' 
+#' aspectClasses
+#' 
+#' subAspectClasses
 aspectName2Class = function(name){
   result = NA
-  if(name %in% .CLSnames){
-    result = .CLS[[name]]
+  n = names(aspectClasses)
+  if(name %in% n){
+    result = aspectClasses[n==name]
   }
   return(result)
 }
@@ -475,10 +492,75 @@ aspectName2Class = function(name){
 #' @export
 aspectClass2Name = function(cls){
   result = NA
-  if(cls %in% .CLS){
-    result = .CLSnames[[cls]]
+  n = names(aspectClasses)
+  if(cls %in% aspectClasses){
+    result = n[aspectClasses==cls]
   }
   return(result)
 }
 
 
+#' aspectClasses and subAspectClasses
+#' 
+#' `aspectClasses` and `subAspectClasses` contain the accession name and the classes of the corresponding (sub)aspect.
+#' 
+#' `updateAspectClasses` adds aspect classes to the list and avoids duplicate accession names and aspect classes.
+#'
+#' @param aspectClasses named character; accession names and aspect classes 
+#' @param aspect named character; new accession names and aspect classes
+#'
+#' @return named character; accession names and aspect classes
+#' @export
+#'
+#' @examples
+#' aspectClasses
+#' 
+#' aspectClasses = updateAspectClasses(
+#'   aspectClasses, 
+#'   c(bla="BlaAspect")
+#' )
+#' 
+#' aspectClasses
+#' 
+#' aspectClasses = updateAspectClasses(
+#'   aspectClasses, 
+#'   c(bla="BlaAspect", blubb="BubbAspect")
+#' )
+#' 
+#' aspectClasses
+#' subAspectClasses
+aspectClasses = c(rcx = "RCX",
+                  metaData = "MetaDataAspect",
+                  nodes = "NodesAspect",
+                  edges = "EdgesAspect",
+                  nodeAttributes = "NodeAttributesAspect",
+                  edgeAttributes = "EdgeAttributesAspect",
+                  networkAttributes = "NetworkAttributesAspect",
+                  cartesianLayout = "CartesianLayoutAspect",
+                  cyGroups = "CyGroupsAspect",
+                  cyVisualProperties = "CyVisualPropertiesAspect",
+                  cyHiddenAttributes = "CyHiddenAttributesAspect",
+                  cyNetworkRelations = "CyNetworkRelationsAspect",
+                  cySubNetworks = "CySubNetworksAspect",
+                  cyTableColumn = "CyTableColumnAspect")
+
+
+#' @rdname aspectClasses
+#' @export
+subAspectClasses = c(property = "CyVisualProperty",
+                     properties = "CyVisualPropertyProperties",
+                     dependencies = "CyVisualPropertyDependencies",
+                     mappings = "CyVisualPropertyMappings")
+
+
+#' @rdname aspectClasses
+#' @export
+updateAspectClasses = function(aspectClasses, aspect){
+  aspect = aspect[! aspect %in% aspectClasses]
+  aspect = aspect[! names(aspect) %in% names(aspectClasses)]
+
+  if(length(aspect)!=0){
+    aspectClasses = append(aspectClasses, c(networkProvenance="NetworkProvenanceAspect"))
+  }
+  return(aspectClasses)
+}

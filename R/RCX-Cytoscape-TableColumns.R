@@ -14,8 +14,6 @@
 ##########################################################################################
 
 
-#TODO: Add/update check of subnetwork ids to all other functions (.paramIsOptionalId)
-#TODO: Add check for allowed data types to all functions (character, numeric, etc)
 #' Cytoscape table column properties
 #' 
 #' This function is used to create Cytoscape table column aspects.

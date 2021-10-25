@@ -161,7 +161,7 @@ NULL
 #' @note Internal function only for convenience
 #' @keywords internal
 #' 
-#' Only get the class of aspects defined in `.CLS` and `.CLSvp`.
+#' Only get the class of aspects that are defined in `aspectClasses`
 #' 
 #' @param x a potential aspect
 #'
@@ -186,9 +186,11 @@ NULL
 #' 
 #' }
 .aspectClass = function(x){
-    cls = c(class(x)[class(x) %in% .CLS],
-            class(x)[class(x) %in% .CLSvp])
-    return(cls[1])
+    cls = NA
+    if(any(class(x) %in% aspectClasses)){
+        cls = class(x)[class(x) %in% aspectClasses]
+    }
+    return(cls)
 }
 
 
@@ -224,8 +226,6 @@ NULL
 }
 
 
-#TODO: link to CX data types
-#TODO: 
 #' Infer the data type from values and check if the value elements are a list
 #' 
 #' Each element has an R data type (i.e. class). If more than one element are present in one list element, it is marked as list
@@ -324,7 +324,6 @@ NULL
 }
 
 
-#TODO: link to CySubNetworks doku
 #' Create a default *AttributeAspect
 #' 
 #' Some aspects like *`r .CLS$nodeAttributes`* or *`r .CLS$edgeAttributes`* use a key-value scheme. 
@@ -332,7 +331,7 @@ NULL
 #' 
 #' @note Internal function only for convenience
 #' @keywords internal
-#' @seealso \code{\link{.mergeIdAspect}}, \code{\link{.mergeAttributesAspect}}
+#' @seealso \code{\link{.mergeIdAspect}}, \code{\link{.mergeAttributesAspect}}, \code{\link{CySubNetworks}}
 #'
 #' @param propertyOf integer; refers to the IDs of an other aspect
 #' @param name character; key of the attribute
@@ -361,7 +360,7 @@ NULL
                                   name=name,
                                   stringsAsFactors = F,
                                   check.names = F)
-    #TODO: B not numeric?!
+
     ## with characters and numbers mixed
     attributesAspect$value = value
     

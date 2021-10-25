@@ -1,0 +1,458 @@
+---
+title: "01. RCX - an R package implementing the Cytoscape Exchange (CX) format"
+author: 
+- name: Florian J. Auer
+  email: Florian.Auer@informatik.uni-augsburg.de
+  affiliation: &id Augsburg of University
+date: "`r Sys.Date()`"
+output:
+  md_document:
+    variant: markdown_github
+vignette: >
+  %\VignetteIndexEntry{01. RCX - an R package implementing the Cytoscape Exchange (CX) format}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{yml, include=FALSE, eval=FALSE}
+## for generating the github README.MD
+output:
+  md_document:
+    variant: markdown_github
+```
+
+
+```{r, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=75,
+                              args.newline = TRUE,
+                              arrow = TRUE),
+               tidy=TRUE)
+```
+
+
+# Introduction
+
+Networks are a powerful and flexible methodology for expressing biological knowledge for computation and communication. 
+Biological networks can hold a variety of different types of information, like genetic or metabolic interactions, gene, and transcriptional regulation, protein-protein interaction (PPI), or cell signaling networks and pathways.
+They often form a valuable resource for hypothesis generation and further investigations, and in the course of the analyses, they are processed and enriched with additional information from experiments.
+As a result further networks are generated, whether as intermediate results that should be documented in the process, as the outcome of those analyses, or as visual representations and illustrations used in reports and publications.
+As a consequence, these resulting networks do not follow anymore the strict rules the source networks were subjected, therefore a more flexible format is needed to capture their content.
+
+In addition, suitable solutions for transmission conflict with those for storage, or usage in applications and analyses.
+Therefore, seamless conversion between those different formats becomes as important as the data itself.
+
+
+## The Cytoscape Exchange (CX)
+
+A possible solution as flexible transmission format is provided by the Cytoscape Exchange (CX) format.
+CX is a JSON-based, aspect-oriented data structure, which means that the network is divided into several independent modules ("aspects").
+This way, every aspect of a network, meaning nodes, edges, its attributes, and visual representations can be handled individually without interference.
+Each aspect has its own schema for its contained information, and links between aspects are realized by referencing the unique internal IDs of other aspects.
+The CX data model was developed by the NDEx project, in collaboration with the Cytoscape Consortium (http://www.cytoscapeconsortium.org/) as a transmission format between their tools, and since adopted by many others.
+More details about the CX data model can be found on its documentation website: https://home.ndexbio.org/data-model/
+
+## The NDEx platform
+
+The Network Data Exchange, or NDEx, is an online commons for biological networks (Pratt et al., 2015, Cell Systems 1, 302-305, October 28, 2015 ©2015 Elsevier Inc. [ScienceDirect](http://www.sciencedirect.com/science/article/pii/S2405471215001477)).
+It is an open-source software framework to manipulate, store, and exchange networks of various types and formats. 
+NDEx can be used to upload, share and publicly distribute networks while providing an output in formats, that can be used by plenty of other applications.
+
+The public NDEx server is a network data commons that provides pathway collections like the Pathway Interaction Database of the NCI (http://www.ndexbio.org/#/user/301a91c6-a37b-11e4-bda0-000c29202374) and the Cancer Cell Maps Initiative (http://www.ndexbio.org/#/user/b47268a6-8112-11e6-b0a6-06603eb7f303). 
+Public networks can be searched and retrieved from the platform for further use.
+Own networks can be uploaded and shared with certain collaborators or groups privately or provided publicly to the community.
+Furthermore, private installation of the NDEx platform can be used to store and collaborate on networks locally.
+
+The ndexr package available on Bioconductor (https://doi.org/doi:10.18129/B9.bioc.ndexr) allows connecting with the NDEx platform from within R.
+This package provides an interface to query the public NDEx server, as well as private installations, to upload, download or modify biological networks.
+
+## Cytoscape
+
+The most prominent software environment for biological network analysis and visualization is Cytoscape (https://cytoscape.org/). 
+It provides support for large networks and comes with a rich set of features for custom visualization, and advanced layout and analysis algorithms. 
+One of these visualization features is the "attribute-to-visual mapping", where the network's data translates to its visual representation.
+Based on this visualization strategy, Cytoscape contributed aspects to the CX-format to capture the visual representation as part of the network.
+Because of these aspects, the visualization not only can be documented along with the network, but also reproduced on other platforms, and even shared between networks with the same attributes used for creating the visualization.
+
+
+## RCX - an adaption of the CX format
+CX is a JSON-based data structure designed as a flexible model for transmitting networks with a focus on flexibility, modularity, and extensibility. 
+Although those features are widely used in common REST protocols they don't quite fit the R way of thinking about data.
+
+This package provides an adaption of the CX format to standard R data formats and types to create and modify, load, export, and visualize those networks.
+This document aims to help the user to install and benefit from the wide range of functionality of this implementation.
+For an overview of the differences of the RCX implementation to the CX specification see [Appendix: The RCX and CX Data Model](Appendix_The_RCX_and_CX_Data_Model.Rmd)
+
+# Installation
+
+```{r, eval=FALSE}
+if(!"RCX" %in% installed.packages()){
+  require(devtools)
+  install_github("frankkramer-lab/RCX")
+}
+library(RCX)
+```
+
+
+```{r installBioconductor, eval=FALSE, include=FALSE}
+if(!"RCX" %in% installed.packages()){
+  install.packages("BiocManager")
+  BiocManager::install("RCX")
+}
+library(RCX)
+```
+
+
+# The basics
+
+In the following, it will be explained, how to read and write networks from/to CX files, create and modify RCX networks, validate its contents and finally visualize them.
+
+```{r, echo=FALSE, message=FALSE}
+library(RCX)
+```
+
+## Read and write CX files
+
+Networks can be downloaded from the [NDEx plattform](http://ndexbio.org/) as CX files in JSON format.
+Those files can be read, and are automatically transformed into RCX networks that can be used in R.
+Here we load a provided example network from file:
+
+```{r readRCX, tidy=FALSE}
+cxFile <- system.file(
+  "extdata", 
+  "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
+  package = "RCX"
+)
+
+rcx = readCX(cxFile)
+```
+This network also can be accessed and downloaded from NDEx at https://www.ndexbio.org/viewer/networks/66a902f5-2022-11e9-bb6a-0ac135e8bacf
+
+```{r eval=FALSE, include=FALSE}
+Alternatively, the Bioconductor package [ndexr](https://doi.org/doi:10.18129/B9.bioc.ndexr) can be used to download the network from NDEx:
+```
+
+```{r eval=FALSE, include=FALSE}
+library(ndexr)
+
+## UUID of the network
+networkId = "66a902f5-2022-11e9-bb6a-0ac135e8bacf"
+
+## Establish a server connection
+ndexcon = ndex_connect()
+
+## Get the network data 
+rcx = ndex_get_network(ndexcon, networkId) 
+```
+
+RCX networks can be saved in a similar manner:
+
+```{r writeCX, eval=FALSE}
+writeCX(rcx, "path/to/some-file.cx")
+```
+
+However, there might some errors occur while reading CX file.
+This might happen, because the definition of the CX has changed over time, and so the definition of some aspects. 
+Therefore it is possible, that there are still some networks stored at the NDEx platform following a deprecated format.
+In those cases it might be helpful to process the CX network step by step:
+
+**1.** just read the JSON content without parsing
+```{r readJSON}
+json = readJSON(cxFile)
+
+substr(json, 1,77)
+```
+This also allows to handle a CX network in JSON format, even if it comes from a different source instead of a file.
+
+**2.** parse the JSON
+```{r parseJSON}
+aspectList = parseJSON(json)
+
+str(aspectList, 2)
+```
+The result of the parsing are nested lists containing all aspects and its contents.
+This format not easy to handle in R, but allows error correction previous to forming aspect and RCX objects.
+
+**3.** process the aspect data
+```{r processCX}
+rcx = processCX(aspectList)
+```
+
+All the above function for processing CX networks come with an option to show the performed steps.
+This might be helpful for finding occurring errors:
+
+```{r readRCXverbose}
+rcx = readCX(cxFile, verbose = TRUE)
+```
+This shows, that some aspects that are contained in the CX file are ignored while creating the RCX network.
+Those are for example aspects needed for transmission of the CX (`status`, `numberVerification`), or deprecated aspects (`provenanceHistory`).
+For more details about the differences in aspects see [Appendix: The RCX and CX Data Model](Appendix_The_RCX_and_CX_Data_Model.Rmd).
+
+## Explore the RCX object
+
+The simplest way to have a look at the content of an RCX object is by printing it:
+
+```{r printRCX, eval=FALSE}
+print(rcx)
+## OR:
+rcx
+```
+
+However, especially for large networks this can produce long and hardly readable output.
+To get a better overview of the contained aspects, the mandatory and automatically generated `metaData` aspect provides information about the contained aspects.
+This includes information about the number of elements or the highest used ID, if an aspect uses internal IDs:
+
+```{r printMetaData}
+rcx$metaData
+```
+
+Besides exploring the RCX-object manually, a summary of the object, or single aspects, can provide more insight on them:
+
+```{r summaryRCX}
+summary(rcx$nodeAttributes)
+```
+We already can quickly see that there are many different node attributes are used.
+The different node attributes are:
+
+```{r uniqueNodeAttributes}
+unique(rcx$nodeAttributes$name)
+```
+
+
+## Visualize the network
+
+This package provides simple functions to visualize the network encoded in the RCX object.
+
+```{r visualizeRCX, eval=FALSE}
+visualize(rcx)
+```
+![Imatinib Inhibition of BCR-ABL (66a902f5-2022-11e9-bb6a-0ac135e8bacf)](1_network_orig.png)
+
+The visualization also utilizes the same JavaScript library as the NDEx platform. 
+Therefore the visual result is the same as when the network is uploaded to the NDEx platform.
+Additionally, this allows the visualization to be exported as a single HTML file, which can directly be hosted on a web-server or included in existing websites:
+
+```{r writeHTML, eval=FALSE}
+writeHTML(rcx, "path/to/some-file.html")
+```
+
+Networks with many nodes and edges, or those without a provided layout, often are difficult to interpret visually.
+To untangle the "hairball" it is possible to apply different layout option provided by the [Cytoscape.js](https://js.cytoscape.org/) framework.
+A force driven layout is a good starting point in those cases.
+For demonstration purposes, let's delete the visual layout of our network first:
+
+```{r deleteLayout}
+## save them for later
+originalVisualProperties = rcx$cyVisualProperties
+
+## and delete them from the RCX network
+rcx$cyVisualProperties = NULL
+rcx = updateMetaData(rcx)
+
+rcx$metaData
+```
+
+Lets have a look at the visualization now:
+
+```{r visualizeNoCVP, eval=FALSE}
+visualize(
+  rcx, 
+  layout = c(name="cose")
+)
+```
+
+![Force-driven visualization of the network without visual properties](1_network_no_cvp.png)
+
+Unfortunately no labels are shown in the network.
+We can fix that by defining a simple pass-through mapping for the node labels and add it to the network:
+
+```{r createVP, tidy=FALSE}
+cyMapping <- createCyVisualPropertyMappings(
+  name= "NODE_LABEL" ,
+  type = "PASSTHROUGH",
+  definition = "COL=label,T=string"
+)
+
+cyVisualProperties <- createCyVisualProperties(
+  defaultNodes = createCyVisualProperty(
+    mappings = cyMapping
+  )
+)
+
+rcx <- updateCyVisualProperties(rcx, cyVisualProperties)
+```
+
+By default the visualization is opened in RStudio, but it also can be forced to open in an external browser.
+The `Cytoscape.js` parameters used to customize the layout algorithm can be found in it documentation at https://js.cytoscape.org/#layouts/cose
+
+```{r visualizeRCXlayout, eval=FALSE, tidy=FALSE}
+visualize(
+  rcx, 
+  layout = c(
+    name="cose", 
+    idealEdgeLength="80", 
+    edgeElasticity="250"), 
+  openExternal = TRUE)
+```
+![](1_network_cose_with_label.png)
+
+## Validation
+
+The correctness of the RCX network is important for the conversion to CX, and therefore to be used at all platforms and tools.
+The validity of the an RCX network can be checked simply:
+
+```{r validate}
+validate(rcx)
+```
+The verbose output also shows at which tests are performed.
+Let's manually introduce an error in an aspect and validate only this one again.
+Therefore we simply duplicate a node ID.
+```{r validationError}
+nodes = rcx$nodes
+nodes$id[1] = nodes$id[2]
+
+test = validate(nodes)
+test
+```
+As expected, the test fails and returns `FALSE`.
+
+# Get information about the networks
+
+It is always useful to get some basic information about the network.
+For example this can be the number of elements in the different aspects of the network:
+
+```{r elementsAll}
+countElements(rcx)
+```
+
+This also works for single aspects:
+
+```{r elementsSet}
+countElements(rcx$nodes)
+```
+To determine, if an aspect contains IDs (on the contrary to knowing it beforehand), this can be checked with:
+
+```{r hasId}
+hasIds(rcx$nodes)
+```
+
+If an aspect has IDs, one can check what the highest used ID is, to know at which ID the next elements have to continue before adding them.
+This can even be done for the whole network at once.
+```{r madId}
+maxId(rcx$nodes)
+maxId(rcx)
+```
+Since we now know, that the nodes aspect has IDs, we can also determine the name of the property that holds the IDs:
+```{r idProperty}
+idProperty(rcx$nodes)
+```
+Other aspects use those IDs to reference to them.
+Let's find out, which aspect is referred by others:
+```{r referredBy}
+referredBy(rcx)
+```
+The nodes aspect is referred by the edges aspect, so we can find out which properties of the edges aspect refer to it:
+
+
+```{r refersTo}
+refersTo(rcx$edges)
+```
+It might have gotten to your attention, that there is a difference between the aspect name and the aspect class.
+This has been done intentionally to avoid naming conflicts.
+The different naming can be converted to each other:
+
+```{r aspectClassName}
+## all classes
+aspectClasses
+
+## class of nodes
+aspectName2Class("nodes")
+
+## accession name of NodesAspect
+aspectClass2Name("NodesAspect")
+
+## back and forth
+class(rcx[[aspectClass2Name("NodesAspect")]])
+```
+**Note:** These function can help especially for writing extension to the RCX data model (see [03 Extending the RCX Data Model](Extending_the_RCX_Data_Model.Rmd)).
+
+# Conversion to R graph data models
+
+The RCX package provides conversion to and from objects of iGraph and Bioconductor graph, both widely used libraries for graph manipulation and network analysis. 
+
+## igraph
+
+igraph is a library for creating and manipulating graphs and analyzing (especially large) networks.
+RCX networks can be simply converted to igraph objects as follows:
+
+```{r toIgraph}
+library(igraph)
+ig = toIgraph(rcx)
+summary(ig)
+```
+
+To ensure a consistent conversion in both direction, some conventions have to be matched:
+For example avoiding collisions between `name` used in nodes, `name` used as nodes attribute, and the `name` used by igraph, the first two were re-named in igraph to `nodeName` and `attribute...name` respectively.
+A similar convention is used for the cartesian coordinates:
+In the igraph object they are saved as `cartesianLayout...x`, `cartesianLayout...y`, and `cartesianLayout...z`.
+If the vertex attributes match this naming convention, they assigned to the correct aspect when converted back:
+
+```{r fromIgraph}
+rcxFromIg = fromIgraph(ig)
+```
+
+Igraph objects can not hold information about the visual representation of the network, and therefore the Cytoscape aspects are lost in the conversion.
+But we can simply add the `CyVisualProperties` aspect we saved previously to get back to the original layout:
+
+```{r fromIgVisualProperty}
+rcxFromIg = updateCyVisualProperties(rcxFromIg, originalVisualProperties)
+```
+
+```{r visualizeIg, eval=FALSE}
+visualize(rcxFromIg)
+```
+
+![Imatinib Inhibition of BCR-ABL (66a902f5-2022-11e9-bb6a-0ac135e8bacf)](1_network_orig.png)
+
+
+# Bioconductor graph (graphNEL)
+
+Bioconductor graph is a package that implements some simple graph handling capabilities.
+It can handle multi-edges, but only if the graph is directed and the source and target start and end not between the same nodes.
+Unfortunaltelly this is the case in our sample network.
+A quick fix is simply switching the direction of source and target for the multi-edges:
+
+```{r multiFix}
+dubEdges = duplicated(rcx$edges[c("source","target")])
+
+s = rcx$edges$source
+rcx$edges$source[dubEdges] = rcx$edges$target[dubEdges]
+rcx$edges$target[dubEdges] = s[dubEdges]
+
+gNel = toGraphNEL(rcx, directed = TRUE)
+rcxBack = fromGraphNEL(gNel)
+```
+
+Then we can simply convert the RCX to a graphNEL object:
+
+```{r rcxToGraphNel}
+gNel = toGraphNEL(rcx, directed = TRUE)
+gNel
+```
+For the conversion igraph is used as an intermediate format, therefore, the same conventions apply as for the igraph conversion.
+The conversion back to the RCX object works analogously: 
+
+```{r rcxFromGraphNel}
+rcxBack = fromGraphNEL(gNel)
+rcxBack$metaData
+```
+
+As igraph, graphNEL objects can not hold information about the visual representation of the network, so here too we can restore the original layout by adding the `CyVisualProperties` aspect we saved previously.
+
+# Session info
+```{r sessionInfo}
+sessionInfo()
+```
+
+

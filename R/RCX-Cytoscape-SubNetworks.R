@@ -13,7 +13,6 @@
 ##########################################################################################
 
 
-##TODO: are nodes/edges required? or only one? 
 #' Cytoscape subnetworks
 #' 
 #' This function is used to create Cytoscape subnetwork aspects.
@@ -94,7 +93,7 @@ createCySubNetworks = function(id, nodes=NULL, edges=NULL){
     return(cySubNetworks)
 }
 
-#TODO: add link cyNetworkRelations and mention in details
+
 #' Update Cytoscape subnetworks
 #' 
 #' This functions add subnetworks in the form of a \code{\link{CySubNetworks}} object to an other \code{\link{CySubNetworks}} or an [RCX][RCX-object] object.
@@ -143,15 +142,15 @@ updateCySubNetworks.CySubNetworksAspect = function(x, cySubNetworks, stopOnDupli
     .checkClass(cySubNetworks, .CLS$cySubNetworks, "x", fname)
     .checkClass(cySubNetworks, .CLS$cySubNetworks, "cySubNetworks", fname)
     
-    aspect = .mergeIdAspect(cySubNetworks, cySubNetworks, 
-                            idProperty(cySubNetworks), idProperty(cySubNetworks), 
+    aspect = .mergeIdAspect(cySubNetworksOld, cySubNetworks, 
+                            idProperty(cySubNetworksOld), idProperty(cySubNetworks), 
                             stopOnDuplicates, keepOldIds,
                             fname)
     .addClass(aspect) = .CLS$cySubNetworks
     return(aspect)
 }
 
-#TODO: for validation: check if all subnetwork ids are covered by network relations (necessary?)
+
 #' @rdname updateCySubNetworks
 #' @export
 updateCySubNetworks.RCX = function(x, cySubNetworks, stopOnDuplicates=F, keepOldIds=T, checkReferences=T, ...){

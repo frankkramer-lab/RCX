@@ -151,13 +151,14 @@ print.CyVisualPropertiesAspect = function(x, propertyOf="all", fields="all", ...
     if((propertyOf!="all") && (propertyOf %in% names(x))){
         elements = propertyOf
     }else{
-        elements = .DICT$VPpropertiesOf[.DICT$VPpropertiesOf %in% names(x)]
+        elements = names(.DICT$VPpropertiesOf)[names(.DICT$VPpropertiesOf) %in% names(x)]
     }
     
     cat("Cytoscape visual properties:\n")
     for(n in elements){
         cat(paste0("[[cyVisualProperties]][[",n,"]] = Cytoscape visual property:\n"))
         print(x[[n]], fields, ...)
+        cat("\n")
     }
 }
 

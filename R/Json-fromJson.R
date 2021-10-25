@@ -56,6 +56,7 @@
 #' @param json character; raw JSON data
 #' @param aspectList list; list containing the aspect data (parsed JSON)
 #' @param verbose logical; whether to print what is happening
+#' @param aspectClasses named character; accession names and aspect classes [aspectClasses]
 #'
 #' @export
 #' @seealso [jsonToRCX], [writeCX]
@@ -74,10 +75,10 @@
 #' json = readJSON(cxFile)
 #' aspectList = parseJSON(json)
 #' rcx = processCX(aspectList)
-readCX = function(file, verbose=F){
+readCX = function(file, verbose=F, aspectClasses=NULL){
   json = readJSON(file, verbose)
   aspectList = parseJSON(json, verbose)
-  rcx = processCX(aspectList, verbose)
+  rcx = processCX(aspectList, verbose, aspectClasses=aspectClasses)
   return(rcx)
 }
 
@@ -114,7 +115,7 @@ parseJSON = function(json, verbose=F){
 
 #' @describeIn readCX Processes the list of aspect data and creates an [RCX][RCX-object]
 #' @export
-processCX = function(aspectList, verbose=F){
+processCX = function(aspectList, verbose=F, aspectClasses=NULL){
   ## get the names of the aspects
   jsonNames = sapply(aspectList, names)
   
@@ -174,10 +175,21 @@ processCX = function(aspectList, verbose=F){
         }else{
           if(!is.null(aspect)){
             if(verbose) cat(paste0("Add aspect \"",acc,"\" to RCX..."))
-            cname = sub("Aspect", "", .aspectClass(aspect))
-            cname = paste0("update",cname)
-            rcx = do.call(cname,
-                          list(rcx, aspect))
+            
+            cls = NA
+            if(is.null(aspectClasses)){
+              cls = .aspectClass(aspect)
+            }else{
+              if(any(class(aspect) %in% aspectClasses)){
+                cls = class(aspect)[class(aspect) %in% aspectClasses]
+              }
+            }
+            if(! is.na(cls)){
+              cname = sub("Aspect", "", cls)
+              cname = paste0("update",cname)
+              rcx = do.call(cname,
+                            list(rcx, aspect))
+            }
             if(verbose) cat("done!\n")
           }else{
             if(verbose) cat(paste0("Can't process aspect \"",acc,"\", so skip it..."))

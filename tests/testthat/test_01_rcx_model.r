@@ -1,104 +1,83 @@
 ################################################################################
 ## Authors:
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
-##
-## History:
-##   Created on 05 February 2017 by Auer
-##   Copied from NDExR package on 3 August 2017 by Auer
+##   Florian Auer [Florian.Auer@informatik.uni-augsburg.de]
 ##
 ## Description:
 ##    Tests for RCX data model:
-##    Check from and to JSON (rcx_fromJSON, rcx_toJSON)
-##    Check new RCX objects (rcx_new)
-##    Check MetaData update (rcx_updateMetaData)
+##    Check from and to JSON 
+##    Check create and update
+##    Check MetaData update
 ##
-## Usage:
-##  devtools::test(filter='05_*')
 ################################################################################
 
-# library(RCX)
-# context('RCX data model')
-# 
-# 
-# test_that('Create nodes aspect', {
-#     nodes1 = createNodesAspect(id=c(0,1,2,3))
-# 
-#     nodes2a = createNodesAspect(id=c(0,1,2,3), name=c("a","b","c","d"))
-#     nodes2b = createNodesAspect(name=c("a","b","c","d"))
-# 
-#     nodes3a = createNodesAspect(id=c(0,1,2,3), represent=c("aa","bb","cc","dd"))
-#     nodes3b = createNodesAspect(represent=c("aa","bb","cc","dd"))
-# 
-#     nodes4a = createNodesAspect(id=c(0,1,2,3), name=c("a","b","c","d"), represent=c("aa","bb","cc","dd"))
-#     nodes4b = createNodesAspect(name=c("a","b","c","d"), represent=c("aa","bb","cc","dd"))
-# 
-#     expect_is(nodes1, 'NodesAspect')
-#     expect_is(nodes2a, 'NodesAspect')
-#     expect_is(nodes2b, 'NodesAspect')
-#     expect_is(nodes3a, 'NodesAspect')
-#     expect_is(nodes3b, 'NodesAspect')
-#     expect_is(nodes4a, 'NodesAspect')
-#     expect_is(nodes4b, 'NodesAspect')
-# 
-#     expect_equal(nodes2a, nodes2b)
-#     expect_equal(nodes3a, nodes3b)
-#     expect_equal(nodes4a, nodes4b)
-# 
-#     expect_error(createNodesAspect())
-#     expect_error(createNodesAspect(id=c(0,1,1,2)))
-#     expect_error(createNodesAspect(id=c(0,1,2), name=c("a","b","c","d")))
-#     expect_error(createNodesAspect(id=c(0,1,2,3), name=c("a","b","c")))
-#     expect_error(createNodesAspect(id=c(0,1,2), name=c("a","b","c","d"), represent=c("aa","bb","cc","dd")))
-#     expect_error(createNodesAspect(id=c(0,1,2,3), name=c("a","b","c"), represent=c("aa","bb","cc","dd")))
-#     expect_error(createNodesAspect(id=c(0,1,2,3), name=c("a","b","c","d"), represent=c("aa","bb","cc")))
-# })
-# 
-# 
-# test_that('Create edges aspect', {
-#     edges1 = createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3,2))
-#     edges2 = createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2))
-#     edges3 = createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA, "activates"))
-#     edges4 = createEdgesAspect(source=c(), target=c())
-# 
-#     expect_is(edges1, "EdgesAspect")
-#     expect_is(edges2, "EdgesAspect")
-#     expect_is(edges3, "EdgesAspect")
-#     expect_is(edges4, "EdgesAspect")
-# 
-#     expect_equal(edges1, edges2)
-# 
-#     expect_error(createEdgesAspect())
-#     expect_error(createEdgesAspect(source=c(1,2,2,4)))
-#     expect_error(createEdgesAspect(target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(source=c(1,2,2), target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3)))
-#     expect_error(createEdgesAspect(id=c(0,1,2), source=c(1,2,2,4), target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(id=c(0,1,2,2), source=c(1,2,2,4), target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
-#     expect_error(createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
-# })
-# 
-# 
-# test_that('Create nodeAttributes aspect', {
-#     propertyOf = c(1,3,4,4)
-#     name = c("alias","alias","alias","relatedTo")
-#     value1 = list("bla",NA,c("bla","blubb"),3)
-#     subnetworkId
-# 
-#     expect_is(edges1, "EdgesAspect")
-#     expect_is(edges2, "EdgesAspect")
-#     expect_is(edges3, "EdgesAspect")
-#     expect_is(edges4, "EdgesAspect")
-# 
-#     expect_equal(edges1, edges2)
-# 
-#     expect_error(createEdgesAspect())
-#     expect_error(createEdgesAspect(source=c(1,2,2,4)))
-#     expect_error(createEdgesAspect(target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(source=c(1,2,2), target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3)))
-#     expect_error(createEdgesAspect(id=c(0,1,2), source=c(1,2,2,4), target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(id=c(0,1,2,2), source=c(1,2,2,4), target=c(4,1,3,2)))
-#     expect_error(createEdgesAspect(source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
-#     expect_error(createEdgesAspect(id=c(0,1,2,3), source=c(1,2,2,4), target=c(4,1,3,2), interaction=c("bind","bind", NA)))
-# })
+library(RCX)
+
+
+testNetworks = c(
+ "Direct-p53-effectors-67c3b75d-6191-11e5-8ac5-06603eb7f303.cx",
+ "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx",
+ "WP3633-d1663a2f-56bc-11eb-9e72-0ac135e8bacf.cx",
+ "RCX_Data_Structure.cx"
+ )
+
+for(net in testNetworks){
+ context(paste0("Network: ",net))
+
+  test_that(paste0("Test ",net), {
+   cxFile <- system.file(
+    "extdata", 
+    net, 
+    package = "RCX"
+   )
+   
+   rcx = readCX(cxFile)
+   expect_is(rcx, 'RCX')
+   expect_named(rcx)
+   expect_is(rcx$nodes, 'NodesAspect')
+   expect_is(rcx$edges, 'EdgesAspect')
+   expect_is(rcx$metaData, 'MetaDataAspect')
+   
+   cxFile = tempfile(fileext = ".cx")
+   writeCX(rcx, cxFile)
+   
+   rcx2 = readCX(cxFile)
+   expect_is(rcx2, 'RCX')
+   expect_named(rcx2)
+   expect_is(rcx2$nodes, 'NodesAspect')
+   expect_is(rcx2$edges, 'EdgesAspect')
+   expect_is(rcx2$metaData, 'MetaDataAspect')
+   
+   expect_equal(
+     sort(names(rcx)), 
+     sort(names(rcx2))
+   )
+   
+   expect_equal(
+     rcx$metaData,
+     rcx2$metaData
+   )
+   
+   expect_equal(
+    rcx$nodes,
+    rcx2$nodes
+   )
+   
+   expect_equal(
+    rcx$edges,
+    rcx2$edges
+   )
+   
+   expect_equal(
+    rcx$cyVisualProperties,
+    rcx2$cyVisualProperties
+   )
+   
+   # expect_equal(
+   #  lapply(rcx, colnames),
+   #  lapply(rcx2, colnames)
+   # )
+   
+  })
+ 
+}
+

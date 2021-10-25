@@ -49,6 +49,7 @@
                       wrongClassOf=paste0('Class of object ',info[1],' is not one of ',info[2],'!'), #
                       validationFail=paste0("Aspect (",info[1],") failed validation!\nCheck if the aspect is valid: validate(",info[1],")"),
                       igraphEdgesRequired="RCX object requires edges to be converted to an igraph object!",
+                      graphNELEdgesRequired="RCX object requires edges to be converted to an graphNEL object!",
                       e404="THIS ERROR SHOULD NEVER HAPPEN!!!")
     if(is.null(code)) return(errorCodes[sort(names(errorCodes))])
     return(errorCodes[[code]])

@@ -232,7 +232,7 @@
 
 #' @rdname convert2json
 .convert2json.logical = function(x){
-  x[!is.na(x)] = ifelse(x[!is.na(x)],"true","false")
+  x[!is.na(x)] = ifelse(x[!is.na(x)],'"true"','"false"')
   return(x)
 }
 
@@ -306,7 +306,11 @@
 #' @rdname convert-data-types-and-values
 .convertValues = function(df, cols=c(value="value", isList="isList")){
   result = sapply(df[,cols["value"]], function(v){
-    v = .convert2json(v)
+    if(is.null(v)){
+      v=""
+    }else{
+      v = .convert2json(v)
+    }
     v = paste0(v, collapse = ",")
     return(v)
   })

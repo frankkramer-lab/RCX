@@ -3,3 +3,4 @@
 ^R/old/*\.R$
 ^man-roxygen$
 ^man-roxygen-examples$
+^data-raw$

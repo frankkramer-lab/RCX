@@ -43,5 +43,5 @@ edges = createEdges(source = c(0,0), target = c(1,2))
 hasIds(edges)
 }
 \seealso{
-\code{\link[=idProperty]{idProperty()}}, \code{\link[=refersTo]{refersTo()}}, \code{\link[=referedBy]{referedBy()}}, \code{\link[=maxId]{maxId()}}
+\code{\link[=idProperty]{idProperty()}}, \code{\link[=refersTo]{refersTo()}}, \code{\link[=referredBy]{referredBy()}}, \code{\link[=maxId]{maxId()}}
 }

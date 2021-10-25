@@ -19,7 +19,6 @@
 ##########################################################################################
 
 
-#TODO: see also CX documentation
 #' Nodes
 #' 
 #' This function creates nodes for networks.

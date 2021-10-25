@@ -35,7 +35,17 @@ the corresponding \link{rcxToJson} functions for those aspect classes have to be
 them in the resulting CX.
 }
 \examples{
-NULL
+rcx = createRCX(
+  nodes = createNodes(
+    name = LETTERS[1:10]
+  ),
+  edges = createEdges(
+    source=c(1,2),
+    target = c(2,3)
+  )
+)
+
+json = toCX(rcx, pretty=TRUE)
 }
 \seealso{
 \link{toCX}, \link{rcxToJson}, \link{readCX}, \link{writeCX}

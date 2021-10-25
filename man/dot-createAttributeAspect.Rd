@@ -41,6 +41,6 @@ Internal function only for convenience
 NULL
 }
 \seealso{
-\code{\link{.mergeIdAspect}}, \code{\link{.mergeAttributesAspect}}
+\code{\link{.mergeIdAspect}}, \code{\link{.mergeAttributesAspect}}, \code{\link{CySubNetworks}}
 }
 \keyword{internal}

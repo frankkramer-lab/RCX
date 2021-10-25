@@ -49,5 +49,5 @@ countElements(nodes)
 countElements(rcx)
 }
 \seealso{
-\code{\link[=hasIds]{hasIds()}}, \code{\link[=idProperty]{idProperty()}}, \code{\link[=refersTo]{refersTo()}}, \code{\link[=referedBy]{referedBy()}}, \code{\link[=maxId]{maxId()}}
+\code{\link[=hasIds]{hasIds()}}, \code{\link[=idProperty]{idProperty()}}, \code{\link[=refersTo]{refersTo()}}, \code{\link[=referredBy]{referredBy()}}, \code{\link[=maxId]{maxId()}}
 }

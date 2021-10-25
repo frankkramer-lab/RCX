@@ -231,7 +231,6 @@ NULL
     return(pass)
 }
 
-#TODO: check if this is still used???
 #' @describeIn dot_test checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
 .test_ListAllNumericOrInDict = function(aspect, column, dic, verbose=F){
     pass = all(sapply(aspect[,column], function(x){is.numeric(x)||is.na(x)||is.null(x)||(x %in% .DICT[[dic]])}))

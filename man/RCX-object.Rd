@@ -3,7 +3,7 @@
 \name{RCX-object}
 \alias{RCX-object}
 \alias{createRCX}
-\title{Create an RCX objects from aspects}
+\title{Create an RCX object from aspects}
 \usage{
 createRCX(
   nodes,
@@ -52,10 +52,15 @@ createRCX(
 RCX object
 }
 \description{
-ddd
+An RCX object consists of several aspects, but at least one node in the \link[=Nodes]{nodes} aspect.
+The network can either created by creating every single aspect first and the create the network
+with all aspects present, or by creating the aspect only with the nodes and adding the remaining
+aspects one by one.
 }
 \details{
-\code{vignette("CX-Data", package = "RCX")}
+\code{vignette("01. RCX - an R package implementing the Cytoscape Exchange (CX) format", package = "RCX")}
+\code{vignette("02. Creating RCX from scratch", package = "RCX")}
+\code{vignette("Appendix: The RCX and CX Data Model", package = "RCX")}
 }
 \examples{
 ## minimal example

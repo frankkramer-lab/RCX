@@ -72,7 +72,9 @@ logical; whether the object passed all tests.
 Validate RCX objects and its aspects.
 }
 \details{
-Something.
+Different tests are performed on aspects and the RCX network.
+This includes checks of the correct aspect structure, data types, uniqueness of IDs and attribute names,
+presence of NA values, and references between the aspects.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -114,5 +116,19 @@ Something.
 }}
 
 \examples{
-NULL
+## Read from a CX file
+## reading the provided example network of the package
+cxFile <- system.file(
+ "extdata", 
+ "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
+ package = "RCX"
+)
+
+rcx = readCX(cxFile)
+
+## validate the network
+validate(rcx)
+
+## validate a single aspect
+validate(rcx$nodes)
 }

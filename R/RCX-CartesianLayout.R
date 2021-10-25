@@ -15,9 +15,6 @@
 ##########################################################################################
 
 
-#TODO: add link to CySubNetworks and CyNetworkRelations (done, but check!)
-#TODO: check for subnetwork id! Also do in *Attribute aspects!
-#TODO: check for subnetwork type=view!
 #' Cartesian layout
 #' 
 #' This function creates a cartesian layout aspect, that stores coordinates of nodes.

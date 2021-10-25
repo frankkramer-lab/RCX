@@ -204,9 +204,8 @@ updateCyGroups.RCX = function(x, cyGroups, stopOnDuplicates=F, keepOldIds=T, che
         .checkRefs(ids, rcx$edges$id, c("cyGroups$internalEdges", "rcx$edges$id"), fname)
     }
     
-    cyGroups = rcx$cyGroups
-    if(! is.null(cyGroups)){
-        cyGroups = updateCyGroups(cyGroups, cyGroups, stopOnDuplicates, keepOldIds)
+    if(! is.null(rcx$cyGroups)){
+        cyGroups = updateCyGroups(rcx$cyGroups, cyGroups, stopOnDuplicates, keepOldIds)
         .addClass(cyGroups) = .CLS$cyGroups
     }
     

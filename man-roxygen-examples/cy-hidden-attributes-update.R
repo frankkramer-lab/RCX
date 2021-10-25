@@ -47,7 +47,7 @@ cySubNetworks = createCySubNetworks(
   edges = list("all", c(0,2))                    
 )
 rcx = updateCySubNetworks(rcx, cySubNetworks)
-#TODO: check when subnetwork works
+
 ## add a network relation
 rcx = updateCyHiddenAttributes(rcx, hiddenAttributes1)
 

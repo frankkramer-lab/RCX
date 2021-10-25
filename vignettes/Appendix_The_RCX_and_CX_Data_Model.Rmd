@@ -1,0 +1,384 @@
+---
+title: "Appendix: The RCX and CX Data Model"
+author: 
+- name: Florian J. Auer
+  email: Florian.Auer@informatik.uni-augsburg.de
+  affiliation: &id University Augsburg
+date: "`r Sys.Date()`"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Appendix: The RCX and CX Data Model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTFv2.4.0"}
+---
+
+# CX data structure
+
+The CX data structure can be divided into three main classes:
+
+* [Meta aspects:](#metaaspects)
+  necessary for data transmission
+  * [metaData](#metadata)
+  * [status](#status)
+
+* [Core aspects:](#coreaspects)
+  essential for defining a network
+  * [nodes](#nodes)
+  * [edges](#edges)
+  * [nodeAttributes](#nodeattributes)
+  * [edgeAttributes](#edgeattributes)
+  * [networkAttributes](#networkattributes)
+  * [cartesianLayout](#cartesianlayout)
+
+* [Cytoscape aspects:](#cytoscapeaspects)
+  aspects needed to define the visual layout of a network in [Cytoscape](https://cytoscape.org/)
+  * [cyGroups](#groups)
+  * [cyVisualProperties](#visualproperties)
+  * [cyHiddenAttributes](#hiddneattributes)
+  * [cyNetworkRelations](#networkrelations)
+  * [cySubnetworks](#subnetworks)
+  * [cyTableColumn](#tablecolumn)
+  
+## Aspect dependencies
+
+Aspects with IDs:
+
+* [nodes](#nodes)
+* [edges](#edges)
+* [cyGroups](#groups)
+* [cySubnetworks](#subnetworks)
+
+Aspects, that reference IDs:
+
+* [edges](#edges) reference [nodes](#nodes) by "source" and "target"
+* [nodeAttributes](#nodeattributes) reference [nodes](#nodes) by "propertyOf"
+* [edgeAttributes](#edgeattributes) reference [edges](#edges) by "propertyOf"
+* [cartesianLayout](#cartesianlayout) references [cySubnetworks](#subnetworks) by "view"
+* [cyGroups](#groups) reference [nodes](#nodes) by "nodes" and [edges](#edges) by "internalEdges" and "externalEdges"
+* sub-aspect [cyVisualProperty](#visualproperty) of [cyVisualProperties](#visualproperties) references [cySubnetworks](#subnetworks) by "appliesTo" and "view"
+* [cySubnetworks](#subnetworks) reference [nodes](#nodes) by "nodes" and [edges](#edges) by "edges"
+
+
+# <a id="datatypes">Data types</a>
+CX is a JSON based format, that means that JavaScript data types are used.
+Those will be mapped to and from R data types as follows:
+
+|data type        |example          |R data type     |
+|:----------------|:----------------|:---------------|
+|boolean          |"true"           |logical         |
+|double           |"2.3"            |numeric         |
+|integer          |"23"             |integer         |     
+|long             |"123456"         |integer         |
+|string           |"blue"           |character       |
+|list_of_boolean  |["true","false"] |list(logical)   |
+|list_of_double   |["2.3","4.5"]    |list(numeric)   |
+|list_of_integer  |["23","45"]      |list(integer)   |
+|list_of_long     |["23","45"]      |list(integer)   |
+|list_of_string   |["Marco","Polo"] |list(character) |
+
+# NDEx conventions
+
+## Handling of Identifiers
+All identifiers should be either:
+
+* $\lt$prefix$\gt$:$\lt$id$\gt$ format
+* a string without " : "
+* a URI
+
+## Citations
+It is recomended to use the attribute "citation" on [edges](#edges) or [nodes](#nodes) to store citations to specify literature references or other sources of information that are relevant to the network. 
+Citations are primarily described by five [dublin core terms](http://purl.org/dc/terms). The "dc" prefix is implicitly interpreted as referencing dublin core in the context of the citations aspect.
+
+The five primary dublin core terms defined for citations are:
+
+* dc:title
+    * http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=terms#terms-title
+* dc:contributor
+    * http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=terms#terms-contributor
+* dc:identifier
+    + http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=terms#terms-identifier
+    + Ideally citations make use of the "identifier" key to link to their source. This can be a URI, but might also use the "source:id" format, where source is usually "pmid" or "doi".
+* dc:type
+    * http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=terms#terms-type
+* dc:description
+    * http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=elements#description
+    * This should be a description of the resource, and it is preferable that information that can be expressed in more specific attributes should not be in this attribute. The "description" attribute could contain the title, authors, and/or journal reference, but in that case it would not be expected to be machine parsable.
+
+# <a id="metaaspects">Meta aspects</a>
+
+## <a id="metadata">metaData</a>
+
+As a transfer format,the owner (sender) is considered to have a complete picture of the network including all metadata and aspects associated with the network. When a sender has the choice of sending an element as either pre- or post-metadata. In RCX both are combined when converting a CX file. The content a the metaData aspect is specified as:
+
+|RCX property	    |RCX specifics   |CX property      |CX options                         |description |
+|:----------------|:---------------|:----------------|:-----------|:----------------------------------|
+|name             |                |name             |Required in pre- and post-metadata |The name of the aspect |
+|version          |default:"1.0"   |version          |Required in pre-metadata           |version of this aspect schema ("1.1.0", "2.0.0", etc.) |
+|idCounter        |auto-generated  |idCounter        |Required if the aspect exports IDs |Integer (All Element IDs are integers; see [node id](#nodes), [edge id](#edges), [cytoscape groups](#groups)) |
+|elementCount     |auto-generated  |elementCount     |Optional                           |number (integer) of elements in this aspect |
+|consistencyGroup |default:1       |consistencyGroup |Optional                           |An integer identifier shared by aspects to indicate that they are mutually consistent |
+|properties		    |                |properties		   |Optional					                    |An aspect-defined property list |
+|-                |*not supported* |checksum         |Optional *(Deprecated)* 	            |*NDEx CX implementation does not support this attribute. This attribute is ignored in NDEx* |
+
+## <a id="status">status</a>
+
+A complete CX stream ends with a status aspect object. This aspect tells the recipient if the CX is successfully generated by the source.
+
+**Note:** This aspect is auto-generated in RCX and cannot be changed!
+
+|property |options   |values            |description |
+|:--------|:---------|:-----------------|:-----------------------------------------------|
+|success  |Required  |"true" or "false" |Was the CX successfully generated by the source |
+|error    |Required  |string or ""      |error message or "" if sucess=="true" |
+
+
+# <a id="coreaspects">Core aspects</a>
+## <a id="nodes">nodes</a>		
+
+|RCX property		 |CX property            |CX options          |values  |description                      |
+|:---------------|:----------------------|:-------------------|:-------|:--------------------------------|
+|id              |@id                    |Required, Unique    |integer |CX internal id, starts at 0, exported to metaData! |
+|name            |n                      |Optional            |string  |node name, eg. "EGFR", "node 1"  |
+|represents      |r                      |Optional            |string  |represents, eg. "HGNC:AKT1"      |
+**Note:** At least one node has to be present, therefore this aspect is mandatory!
+
+
+## <a id="edges">edges</a> 
+|RCX property    |CX property            |CX options          |values  |description                      |
+|:---------------|:----------------------|:-------------------|:-------|:--------------------------------|
+|id              |@id                    |Required, Unique    |integer |CX internal id, starts at 0, exported to metaData! |
+|source          |s                      |Required            |integer |source, reference to CX internal [node id](#nodes) |
+|target          |t                      |Required            |integer |target, reference to CX internal [node id](#nodes) |
+|interaction     |i                      |Optional            |string  |intercation, eg. "binds" |
+
+
+## <a id="nodeAttributes">nodeAttributes</a> 
+|RCX property    |RCX specifics    |CX property   |options  |values                    |description |
+|:---------------|:----------------|:-------------|:--------|:-------|:--------------------------------|
+|propertyOf      |                 |po            |Required |integer                   |property of, reference to CX internal [node id](#nodeid) |
+|name            |                 |n             |Required |string                    |attribute name, eg. "weight", "name", "selected" |
+|value           |                 |v             |Required |string or list of strings |attribute value(s), eg. ["2", "0.34", "2.3"], "Node 6", "true" |
+|dataType        |default:"string" |d             |Optional |string                    |[data type](#datatypes), default "string" |
+|isList          |default:FALSE    |d             |Optional |string                    |If set to TRUE, the CX [data type](#datatypes) will be modified |
+|subnetworkId    |default:NA       |s             |Optional |integer                   |reference to CX internal [subnetwork id](#subnetworks) |
+
+### NDEx conventions
+|names               |description                                                                                  |
+|:-------------------|:--------------------------------------------------------------------------------------------|
+|alias               |alternative identifiers for the node. Same meaning as BioPAX "aliases"                       |
+|relatedTo           |identifiers denoting concepts related to the node. Same meaning as BioPAX "relatedTerms"     |
+
+
+## <a id="edgeAttributes">edgeAttributes</a>
+|RCX property    |RCX specifics    |CX property   |options  |values                    |description |
+|:---------------|:----------------|:-------------|:--------|:-------|:--------------------------------|
+|propertyOf      |                 |po            |Required |integer                   |property of, reference to CX internal [edge id](#nodeid) |
+|name            |                 |n             |Required |string                    |attribute name, eg. "weight", "name", "selected" |
+|value           |                 |v             |Required |string or list of strings |attribute value(s), eg. ["2", "0.34", "2.3"], "Node 6", "true" |
+|dataType        |default:"string" |d             |Optional |string                    |[data type](#datatypes), default "string" |
+|isList          |default:FALSE    |d             |Optional |boolean                   |If set to TRUE, the CX [data type](#datatypes) will be modified |
+|subnetworkId    |default:NA       |s             |Optional |integer                   |reference to CX internal [subnetwork id](#subnetworks) |
+
+
+## <a id="networkAttributes">networkAttributes</a>
+|RCX property    |RCX specifics    |CX property   |options  |values                    |description |
+|:---------------|:----------------|:-------------|:--------|:-------|:--------------------------------|
+|name            |                 |n             |Required |string                    |attribute name, eg. "dc:title" |
+|value           |                 |v             |Required |string or list of strings |attribute value(s), eg. "Result of heat | diffusion analysis" |
+|dataType        |default:"string" |d             |Optional |string                    |[data type](#datatypes), default "string" |
+|isList          |default:FALSE    |d             |Optional |boolean                   |If set to TRUE, the CX [data type](#datatypes) will be modified |
+|subnetworkId    |default:NA       |s             |Optional |integer                   |reference to CX internal [subnetwork id](#subnetworks) |
+
+### NDEx conventions
+|names     |description                                                                                   |
+|:------------------------|:---------------------------------------------------------------------------------------------|
+|name                     |the name of the network |
+|description              |a description of the network |
+|version                  |NDEx will treat this attribute as the version of the network. Format is not controlled but best practice is to use string conforming to Semantic Versioning. |
+|ndex:sourceFormat        |used by NDEx to indicate format of an original file imported, can determine semantics as well. The NDEx UI will allow export options based on this value. Applications that alter a network such that it can no longer be exported in the format should remove the value.  |
+
+
+## <a id="cartesianlayout">cartesianLayout</a>
+
+Cartesian layout elements store coordinates of nodes.
+
+|RCX property    |CX property |options          |values                    |description |
+|:---------------|:-----------|:----------------|:-------------------------|:---------------------------------------------------------|
+|node            |node        |Required         |integer                   |reference to CX internal [node id](#nodes) |
+|x               |x           |Required         |numeric                   |x coordinate |
+|y               |y           |Required         |numeric                   |y coordinate |
+|z               |z           |Optional         |numeric                   |z coordinate |
+|view            |view        |Optional         |integer                   |reference to CX internal reference to CX internal [subnetwork id](#subnetworks) of type view |
+
+
+
+# <a id="cytoscape">Cytoscape aspects</a>
+
+See [Cytoscape Styles](http://manual.cytoscape.org/en/stable/Styles.html) on how styles are created in Cytoscape.
+The following aspects are based on how Cytoscape defines the visual representation of networks.
+For further information see [Using Visual Properies in RCy3](https://bioconductor.org/packages/release/bioc/vignettes/RCy3/inst/doc/Custom-Graphics.html), which gives an overview of how to handle Visual properties in R automation.
+
+## <a id="groups">cyGroups</a>
+|RCX property  |CX property    |options          |values          |description |
+|:-------------|:--------------|:----------------|:---------------|:-----------------------------------------------|
+|id            |@id            |Required, Unique |integer         |CX internal id, starts at 0, exported to metaData! |
+|n             |n              |Required         |string          |name of this group |
+|nodes         |nodes          |Optional         |list of integer |the nodes making up the group, reference to CX internal [node id](#nodes) |
+|externalEdges |external_edges |Optional         |list of integer |the external edges making up the group, reference to CX internal [edge id](#edges) |
+|internalEdges |internal_edges |Optional         |list of integer |the internal edges making up the group, reference to CX internal [edge id](#edges) |
+|collapsed     |collapsed      |Optional         |boolean         |indicate whether the group is displayed as a single node |
+
+## <a id="visualproperties">CyVisualProperties</a>
+
+### <a id="visualpropertiescx">CyVisualProperties (CX)</a>
+
+|CX property   |options  |values                |description                                             |
+|:-------------|:--------|:---------------------|:-------------------------------------------------------|
+|properties_of |Required |string, dictionary    |to indicate the element type these properties belong to, allowed values are: "network", "nodes:default", "edges:default", "nodes", "edges" |
+|applies_to    |Required |integer               |the identifier of the element these properties apply to, reference to CX internal [node id](#nodes) or [edge id](#edges) |
+|view          |Optional |integer |reference to CX internal [subnetwork id](#subnetworks) of type view |
+|properties    |Optional |named list of strings |pairs of the actual properties, e.g. "NODE_BORDER_STROKE" : "SOLID", "NODE_BORDER_WIDTH" : "1.5", "NODE_FILL_COLOR" : "#FF3399" |
+|dependencies  |Required |named list of strings |pairs of the dependencies, e.g. "nodeCustomGraphicsSizeSync" : "true", "nodeSizeLocked" : "false" |
+|mappings      |Optional |named list of named list of strings, dictionary | e.g. "NODE_BORDER_WIDTH" : {"type" : "DISCRETE", "definition" : "COL=required,T=boolean,K=0=true,V=0=10.0"} |
+
+The JSON object model for the cyVisualProperties aspect is not suitable to be proper represented in R data structures, therefore it is split up into the main aspect and several sub-aspects. The R structure looks as follows:
+
+```
+CyVisualProperties
+├──network = CyVisualProperty
+├──nodes = CyVisualProperty
+├──edges = CyVisualProperty
+├──defaultNodes = CyVisualProperty
+└──defaultEdges = CyVisualProperty
+
+CyVisualProperty
+├──properties = CyVisualPropertyProperties
+│   ├──name
+│   └──value 
+├──dependencies = CyVisualPropertyDependencies
+│   ├──name
+│   └──value 
+├──mappings = CyVisualPropertyMappings
+│   ├──name
+│   ├──type
+│   └──definition 
+├──appliesTo = <reference to subnetwork id>
+└──view = <reference to subnetwork id>
+```
+
+### <a id="visualpropertiesrcx">CyVisualProperties (RCX)</a>
+|RCX property  |options  |values                |description                                             |
+|:-------------|:--------|:---------------------|:-------------------------------------------------------|
+|network       |Optional |list of [CyVisualProperty](#visualproperty) |represents "property_of"="network" of [CyVisualProperties](#visualpropertiescx) |                                            |
+|nodes         |Optional |list of [CyVisualProperty](#visualproperty) |represents "property_of"="nodes:default" of [CyVisualProperties](#visualpropertiescx) |
+|edges         |Optional |list of [CyVisualProperty](#visualproperty) |represents "property_of"="edges" of [CyVisualProperties](#visualpropertiescx) |
+|defaultNodes  |Optional |list of [CyVisualProperty](#visualproperty) |represents "property_of"="nodes:default" of [CyVisualProperties](#visualpropertiescx) |
+|defaultEdges  |Optional |list of [CyVisualProperty](#visualproperty) |represents "property_of"="edges:default" of [CyVisualProperties](#visualpropertiescx) |
+
+#### <a id="visualproperty">CyVisualProperty</a>
+
+|RCX property  |RCX specifics |options  |values                |description                                             |
+|:-------------|:-------------|:--------|:---------------------|:-------------------------------------------------------|
+|properties    |default:NA    |Optional |[CyVisualPropertyProperties](#visualpropertyproperties) |represents "property_of"="network" of [CyVisualProperties](#visualpropertiescx) |                                            |
+|depencdencies |default:NA    |Optional |[CyVisualPropertyDependencies](#visualpropertydependencies) |represents "property_of"="nodes:default" of [CyVisualProperties](#visualpropertiescx) |
+|mappings      |default:NA    |Optional |[CyVisualPropertyMappings](#visualpropertymappings) |represents "property_of"="edges" of [CyVisualProperties](#visualpropertiescx) |
+|appliesTo     |default:NA    |Optional |integer |reference to CX internal [subnetwork id](#subnetworks)|
+|view          |default:NA    |Optional |integer |reference to CX internal [subnetwork id](#subnetworks) of type view |
+
+#### <a id="visualpropertyproperties">CyVisualPropertyProperties</a>
+
+|RCX property  |options  |values |description                                               |
+|:-------------|:--------|:------|:---------------------------------------------------------|
+|name          |Required |string |name of the property, e.g. "NODE_PAINT" or "EDGE_VISIBLE" |
+|value         |Required |string |value of the property, e.g. "#FF0000" or "true"           |
+
+#### <a id="visualpropertydependencies">CyVisualPropertyDependencies</a>
+
+|RCX property  |options  |values |description                                                                   |
+|:-------------|:--------|:------|:-----------------------------------------------------------------------------|
+|name          |Required |string |name of the dependency, e.g. "nodeCustomGraphicsSizeSync" or "nodeSizeLocked" |
+|value         |Required |string |value of the dependency, e.g. "true" or "false"                               |
+
+#### <a id="visualpropertymappings">CyVisualPropertyMappings</a>
+
+The JSON objects or the form `{"NODE_BORDER_WIDTH" : {"type" : "DISCRETE", "definition" : "COL=required,T=boolean,K=0=true,V=0=10.0"}}` are split up as follows:
+
+|RCX property  |options  |values |description                                                            |
+|:-------------|:--------|:------|:----------------------------------------------------------------------|
+|name          |Required |string |name of the property, e.g. "NODE_BORDER_WIDTH"                         |
+|type          |Required |string |value of the property, e.g. "DISCRETE"                                 |
+|definition    |Required |string |value of the property, e.g. "COL=required,T=boolean,K=0=true,V=0=10.0" |
+
+
+## <a id="hiddenattributes">cyHiddenAttributes</a>
+
+|RCX property    |RCX specifics    |CX property   |options  |values                    |description |
+|:---------------|:----------------|:-------------|:--------|:-------|:--------------------------------|
+|name            |                 |n             |Required |string                    |name of this hidden attribute |
+|value           |                 |v             |Required |string or list of strings |attribute value(s), eg. "layoutAlgorithm" | diffusion analysis" |
+|dataType        |default:"string" |d             |Optional |string                    |[data type](#datatypes), default "string" |
+|isList          |default:FALSE    |d             |Optional |boolean                   |If set to TRUE, the CX [data type](#datatypes) will be modified |
+|subnetworkId    |default:NA       |s             |Optional |integer                   |reference to CX internal [subnetwork id](#subnetworks) |
+
+
+## <a id="networkrelations">cyNetworkRelations</a>
+
+|RCX property    |RCX specifics    |CX property   |options  |values  |description                      |
+|:---------------|:----------------|:-------------|:--------|:-------|:--------------------------------|
+|child           |                 |c             |Required |integer |child network, reference to CX internal [subnetwork id](#subnetworks) |
+|parent          |default:NA       |p             |Optional |integer |parent network, reference to CX internal [subnetwork id](#subnetworks) |
+|name            |                 |name          |Optional |string  |the name of the child network; if missing, default is reader-dependent |
+|isView          |default:FALSE    |r             |Optional |boolean |relationship type, default "subnetwork" |
+
+
+## <a id="subnetworks">cySubNetworks</a>
+
+|RCX property  |CX property |options          |values          |description |
+|:-------------|:-----------|:----------------|:---------------|:-----------------------------------------------|
+|id            |@id         |Required, Unique |integer         |CX internal id, starts at 0, exported to metaData! |
+|nodes         |nodes       |Optional         |list of integer or "all" |the nodes making up the group, reference to CX internal [node id](#nodes) |
+|edges         |edges       |Optional         |list of integer or "all" |the edges making up the group, reference to CX internal [edge id](#edges) |
+
+
+## <a id="tablecolum">cyTableColum</a>
+
+These elements are used to represent Cytoscape table column labels and types. Its main use is to disambiguate empty table columns.
+
+|RCX property    |RCX specifics    |CX property   |options  |values                    |description |
+|:---------------|:----------------|:-------------|:--------|:-------|:--------------------------------|
+|name            |                 |n             |Required |string                    |name of the column; usually the different attributes of [nodes](#nodeattributes), [edges](#edgeattributes) and [networks](#networkattributes) |
+|appliesTo       |"nodes", "edges", or "networks" |applies_to    |Required |string: "node_table", "edge_table", or "network_table" |indicates the Cytoscape table this applies to |
+|dataType        |default:"string" |d             |Optional |string                    |[data type](#datatypes), default "string" |
+|isList          |default:FALSE    |d             |Optional |boolean                   |If set to TRUE, the CX [data type](#datatypes) will be modified |
+|subnetworkId    |default:NA       |s             |Optional |integer                   |reference to CX internal [subnetwork id](#subnetworks) |
+
+**Note:** Cytoscape does not currently support table columns for the root network, but this is option is included here for consistency
+
+
+# Deprecated aspects
+property          |description
+------------------|---------------------------------------------------------------------------------------------
+ndexStatus        |NDEx server will no longer generate this aspect from the server side. Network last updated before the v2.4.0 release will still have this aspect. Users can use the "Get Network Summary" API function to get the status and other information of a network.
+citations         |We recommend using the attribute "citation" on edges or nodes to store citations.
+nodeCitations     |We recommend using the attribute "citation" on nodes to store citations.
+edgeCitations     |We recommend using the attribute "citation" on edges to store citations.
+Supports          |We recommend using the attribute "supports" on edges or nodes.
+nodeSupports      |We recommend using the attribute "supports" on nodes.
+edgeSupports      |We recommend using the attribute "supports" on edges.
+functionTerms     |No recommendations for alternative representation.
+reiefiedEdges     |No recommendations for alternative representation.
+@context          |We recommend using the attribute "@context" on networks. The value of this attribute is a serialized string from a JSON dictionary that has a prefix as its key and a URL as its value. @context maps terms to IRIs. Terms are case sensitive.
+provenanceHistory |The server will just treat this as an opaque aspect. For recording the origin and significant events of this network, we recommend to use network attributes to store them. We recommend using prov:wasGeneratedBy and prov:wasDerivedFrom for the event and the list of contributing network URLs.
+
+
+**Note:** Starting from v2.4.0, NDEx server will no longer generate these aspects from the server side. Networks last updated before the v2.4.0 release will still have these aspects.
+
+
+# Session info
+```{r sessionInfo}
+sessionInfo()
+```
+
+
+

@@ -84,6 +84,35 @@
   return(aspect)
 }
 
+#' Mark attribute name columns within a data.frame
+#' 
+#' Assigns a class to a data.frame column to force a custom format in summary generation.
+#' 
+#' @note Internal function only for convenience
+#' @keywords internal
+#'
+#' @param aspect an aspect (data.frame)
+#' @param value character; property 
+#'
+#' @return the aspect (data.frame)
+#' @name markAttributeColumn
+#' @export
+#'
+#' @examples
+#' df = data.frame(name=c("a","b","c"),
+#'                 value=c("a","b","c"))
+#' RCX:::.markRefColumn(df) = "name"
+#' 
+#' summary(df)
+`.markAttributeColumn<-` = function(aspect, value){
+  if(value %in% colnames(aspect)){
+    rObject = aspect[[value]]
+    .addClass(rObject) = "AspectAttributeColumn"
+    aspect[[value]] = rObject
+  }
+  return(aspect)
+}
+
 
 
 #' Transform an aspect with data type
@@ -229,6 +258,7 @@ summary.NodeAttributesAspect = function(object, ...){
   object = .transformVLD(object)
   
   .markReqRefColumn(object) = "propertyOf"
+  .markAttributeColumn(object) = "name"
   
   NextMethod(object)
 }
@@ -246,6 +276,7 @@ summary.NetworkAttributesAspect = function(object, ...){
   object = .transformVLD(object)
   
   .markRefColumn(object) = "subnetworkId"
+  .markAttributeColumn(object) = "name"
   
   NextMethod(object)
 }
@@ -417,6 +448,23 @@ summary.AspectValueColumn = function(object, ...){
   result = table(object)
   return(result)
 }
+
+
+#' @describeIn summary Summarize the different attributes in the property
+#' @export
+summary.AspectAttributeColumn = function(object, ...){
+  .removeClass(object) = "AspectAttributeColumn"
+  result = c(length(object), 
+             length(unique(object[!is.na(object)])), 
+             class(object))
+  resultNames = c("Length",
+                  "Unique", 
+                  "Class")
+  
+  names(result) = resultNames
+  return(result)
+}
+
 
 #summary.AspectListLengthColumn = function(object, ..., digits, quantile.type = 7){
 #' @describeIn summary The property is a list of vectors, so summarize the length of the vectors

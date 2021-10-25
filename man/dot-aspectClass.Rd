@@ -38,9 +38,8 @@ class(x)
 }
 }
 \keyword{Only}
-\keyword{`.CLS`}
-\keyword{`.CLSvp`.}
-\keyword{and}
+\keyword{`aspectClasses`}
+\keyword{are}
 \keyword{aspects}
 \keyword{class}
 \keyword{defined}
@@ -48,4 +47,5 @@ class(x)
 \keyword{in}
 \keyword{internal}
 \keyword{of}
+\keyword{that}
 \keyword{the}

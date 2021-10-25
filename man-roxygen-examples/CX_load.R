@@ -1,4 +1,10 @@
 ## Read from a CX file
-## reading one of the provided examples of the package
-cx = file.path(system.file("data", package="RCX"), "Wnt signaling network.cx")
-rcx = read.rcx(cx)
+## reading the provided example network of the package
+cxFile <- system.file(
+ "extdata", 
+ "Imatinib-Inhibition-of-BCR-ABL-66a902f5-2022-11e9-bb6a-0ac135e8bacf.cx", 
+ package = "RCX"
+)
+
+rcx = readCX(cxFile)
+

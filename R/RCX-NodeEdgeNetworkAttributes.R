@@ -25,8 +25,7 @@
 ## "relatedTo"         |identifiers denoting concepts related to the node. Same meaning as BioPAX "relatedTerms"
 ##########################################################################################
 
-#TODO: add examples for data type
-#TODO: check data type values to be one of string, integer, etc.
+
 #' Node attributes
 #' 
 #' This function creates an aspect for additional attributes of nodes.
@@ -143,7 +142,6 @@ updateNodeAttributes.RCX = function(x, nodeAttributes, replace=T, stopOnDuplicat
         pos = unique(nodeAttributes$propertyOf)
         .checkRefs(pos, rcx$nodes$id, c("nodeAttributes$propertyOf", "rcx$nodes$id"), fname)
         
-        #TODO: change check in all aspects to check if subnetworkids are not NA
         ## Check if the provided subnetwork ids are present in the subnetwork aspect
         if("subnetworkId" %in% colnames(nodeAttributes)){
             subIds = nodeAttributes$subnetworkId
@@ -336,7 +334,6 @@ updateEdgeAttributes.RCX = function(x, edgeAttributes, replace=T, stopOnDuplicat
 ##########################################################################################
 
 
-#TODO: add description of (possible) data types to all functions
 #' Network attributes
 #' 
 #' This function creates an aspect for attributes of a network.

@@ -34,8 +34,14 @@ as well as the single values \emph{appliesTo} and \emph{view}, that define the s
 Properties are \code{\link{CyVisualPropertyProperties}} objects, that hold information like
 \code{"NODE_FILL_COLOR" : "#26CCC9"} or \code{"NODE_LABEL_TRANSPARENCY" : "255"} in a key-value like manner.
 
-Dependencies are \code{\link{CyVisualPropertyDependencies}} objects, that hold information like
-\code{"nodeSizeLocked" : "false"} or \verb{""arrowColorMatchesEdge" : "true"} in a key-value like manner.
+Dependencies are \code{\link{CyVisualPropertyDependencies}} objects, that hold information
+about dependencies between visual properties.
+Currently there are only three dependencies supported:
+\itemize{
+\item Lock Node with and height: \code{nodeSizeLocked = "false"}
+\item Fit Custom Graphics to node: \code{nodeCustomGraphicsSizeSync = "true"}
+\item Edge color to arrows: \code{arrowColorMatchesEdge = "false"}
+}
 
 Mappings are \code{\link{CyVisualPropertyMappings}} objects, that hold information as a triplet consisting of name, type and definition, like
 \code{"NODE_FILL_COLOR" : "DISCRETE" : "COL=molecule_type,T=string,K=0=miRNA,V=0=#FCEC00"},
@@ -69,5 +75,4 @@ createCyVisualPropertyDependencies(vpDependencyValue,
 }
 \seealso{
 \code{\link{updateCyVisualProperty}}, \code{\link{updateCyVisualProperties}}
-#TODO: link to data definition vignette
 }

@@ -3,20 +3,18 @@
 ##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## Description:
-##    Base functions to create, parse, modify CX networks from/to JSON data
+##    Validate the RCX networks and aspects
 ################################################################################
 
-
-#TODO: check if the r code in description works
-#TODO: add examples
-#TODO: add more description
 
 #' Validate RCX and its aspects
 #' 
 #' Validate RCX objects and its aspects.
 #' 
 #' @details
-#' Something.
+#' Different tests are performed on aspects and the RCX network.
+#' This includes checks of the correct aspect structure, data types, uniqueness of IDs and attribute names, 
+#' presence of NA values, and references between the aspects.
 #'
 #' @param x object to validate; [RCX][RCX-object] object or an aspect
 #' @param verbose logical; whether to print the test results.
@@ -24,8 +22,8 @@
 #' @return logical; whether the object passed all tests.
 #'
 #' @export
-#' @examples
-#' NULL
+#' @example man-roxygen-examples/CX_load.R
+#' @example man-roxygen-examples/validate.R
 validate = function(x, verbose=T){
     UseMethod("validate", x)
 }
@@ -433,7 +431,7 @@ validate.CyVisualProperty = function(x, verbose=T){
     pass = .test_IsCVPclass(aspect, property, verbose)
 
     requiredColumns = c("name", "value")
-    #TODO: here: create function for lists:
+    
     pass = pass & .test_RequiredColumnsPresent(aspect, requiredColumns, verbose)
     ## next tests only possible if required columns are present
     if(pass){
@@ -770,7 +768,17 @@ validate.RCX = function(x, verbose=T){
         valCyTableColumn = validate(rcx$cyTableColumn, verbose)
         pass = pass & valCyTableColumn
     }
-
+    
+    leftAspects = names(rcx)[! names(rcx) %in% names(aspectClasses)]
+    if(length(leftAspects)!=0){
+        if(verbose) cat("Checking Custom Aspects:\n")
+        test = TRUE
+        for(la in leftAspects) {
+           test = test & validate(rcx[[la]], verbose) 
+        }
+        if(verbose) .log(">> Cytoscape Table Column Aspect:", test, " ", T)
+        pass = pass & test
+    }
 
     if(verbose) cat("Checking RCX:\n")
     pass = pass & .test_IsClass(rcx, "rcx", verbose)
@@ -813,7 +821,9 @@ validate.RCX = function(x, verbose=T){
             if(verbose) .log("  - Reference aspect (subnetworks) present and correct", test)
             pass = pass & test
             if(test){
-                pass = pass & .test_IdsInAspect(rcx$nodeAttributes$subnetworkId,
+                ids = rcx$nodeAttributes$subnetworkId
+                ids = ids[!is.na(ids)]
+                pass = pass & .test_IdsInAspect(ids,
                                                 rcx$cySubNetworks,
                                                 "id",
                                                 paste0(.CLS$nodeAttributes,"$subnetworkId ids in ",.CLS$cySubNetworks,"$id"),
@@ -839,7 +849,9 @@ validate.RCX = function(x, verbose=T){
             if(verbose) .log("  - Reference aspect (subnetworks) present and correct", test)
             pass = pass & test
             if(test){
-                pass = pass & .test_IdsInAspect(rcx$edgeAttributes$subnetworkId,
+                ids = rcx$edgeAttributes$subnetworkId
+                ids = ids[!is.na(ids)]
+                pass = pass & .test_IdsInAspect(ids,
                                                 rcx$cySubNetworks,
                                                 "id",
                                                 paste0(.CLS$edgeAttributes,"$subnetworkId ids in ",.CLS$cySubNetworks,"$id"),
@@ -855,7 +867,9 @@ validate.RCX = function(x, verbose=T){
             if(verbose) .log("  - Reference aspect (subnetworks) present and correct", test)
             pass = pass & test
             if(test){
-                pass = pass & .test_IdsInAspect(rcx$networkAttributes$subnetworkId,
+                ids = rcx$networkAttributes$subnetworkId
+                ids = ids[!is.na(ids)]
+                pass = pass & .test_IdsInAspect(ids,
                                                 rcx$cySubNetworks,
                                                 "id",
                                                 paste0(.CLS$networkAttributes,"$subnetworkId ids in ",.CLS$cySubNetworks,"$id"),
@@ -881,7 +895,9 @@ validate.RCX = function(x, verbose=T){
             if(verbose) .log("  - Reference aspect (subnetworks) present and correct", test)
             pass = pass & test
             if(test){
-                pass = pass & .test_IdsInAspect(rcx$cartesianLayout$view,
+                ids = rcx$cartesianLayout$view
+                ids = ids[!is.na(ids)]
+                pass = pass & .test_IdsInAspect(ids,
                                                 rcx$cySubNetworks,
                                                 "id",
                                                 paste0(.CLS$cartesianLayout,"$view ids in ",.CLS$cySubNetworks,"$id"),

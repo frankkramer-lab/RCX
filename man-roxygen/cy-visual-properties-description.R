@@ -12,8 +12,12 @@
 #' Properties are \code{\link{CyVisualPropertyProperties}} objects, that hold information like 
 #' `"NODE_FILL_COLOR" : "#26CCC9"` or `"NODE_LABEL_TRANSPARENCY" : "255"` in a key-value like manner.
 #' 
-#' Dependencies are \code{\link{CyVisualPropertyDependencies}} objects, that hold information like 
-#' `"nodeSizeLocked" : "false"` or `""arrowColorMatchesEdge" : "true"` in a key-value like manner.
+#' Dependencies are \code{\link{CyVisualPropertyDependencies}} objects, that hold information 
+#' about dependencies between visual properties.
+#' Currently there are only three dependencies supported:
+#' - Lock Node with and height: `nodeSizeLocked = "false"` 
+#' - Fit Custom Graphics to node: `nodeCustomGraphicsSizeSync = "true"`
+#' - Edge color to arrows: `arrowColorMatchesEdge = "false"`
 #' 
 #' Mappings are \code{\link{CyVisualPropertyMappings}} objects, that hold information as a triplet consisting of name, type and definition, like
 #' `"NODE_FILL_COLOR" : "DISCRETE" : "COL=molecule_type,T=string,K=0=miRNA,V=0=#FCEC00"`,

@@ -14,7 +14,6 @@
 ##########################################################################################
 
 
-#TODO: change view to isView in cx-data-model
 #' Cytoscape network relations
 #' 
 #' This function is used to create Cytoscape network relations aspects.

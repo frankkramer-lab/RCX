@@ -1,0 +1,514 @@
+---
+title: "03. Extending the RCX Data Model"
+author: 
+- name: Florian J. Auer
+  email: Florian.Auer@informatik.uni-augsburg.de
+  affiliation: &id Augsburg of University
+date: "`r Sys.Date()`"
+output: 
+    BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{03. Extending the RCX Data Model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTFv2.4.0"}
+---
+
+```{r, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=75,
+                              args.newline = TRUE,
+                              arrow = TRUE),
+               tidy=TRUE)
+```
+
+The CX format is supposed to be flexible, so that own aspects can be defined by the user.
+However, the functions provided by the RCX package can not cover those extension.
+To work with those aspects in R it is necessary to implement function extending the RCX to custome aspects.
+In the following, we will explore how custom aspects can be realized and integrated in the RCX model.
+
+# A custom aspect
+
+For demonstration purposes we here define our own custom aspect for keeping the network provenance.
+While similar, this is not the deprecated `provenanceHistory` aspect from previous CX versions!
+In this example, the JSON structure should look like this:
+
+```{json}
+{
+  "networkProvenance": [
+    {
+      "@id": 1,
+      "time": 1445437740,
+      "action": "created",
+      "nodes": [1, 2, 3, 4, 5, 6],
+      "source": "https://www.ndexbio.org/viewer/networks/66a902f5-2022-11e9-bb6a-0ac135e8bacf"
+    },
+    {
+      "@id": 2,
+      "time": 1445437770,
+      "action": "merged",
+      "nodes": [7, 8, 9, 10],
+      "source": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE33075"
+    },
+    {
+      "@id": 3,
+      "time": 1445437799,
+      "action": "filtered",
+      "nodes": [],
+      "comment": "Some manual filtering was performed"
+    }
+  ]
+}
+```
+
+The network provenance structure consists of following properties:
+
+- `@id`: **(required)** and unique ID used in this aspect 
+- `time`: **(required)** timestamp in seconds since JAN 01 1970. (UTC)
+- `action`: **(required)** what was done 
+- `nodes`: **(required)** list of node IDs, can be empty 
+- `source`: **(optional)** where new data came from in this step
+- `comment`: **(optional)** some commentary on the performed action 
+
+It is quite a simple aspect, but it will show the single steps needed to adapt this aspect to the RCX model.
+
+# Create the custom aspect in R
+
+First, load the RCX library:
+
+```{r loadLib}
+library(RCX)
+```
+
+Following the naming convention of the package, we define a simple function to create the aspect in R:
+
+```{r create, tidy=FALSE}
+createNetworkProvenance <- function(
+  id = NULL, 
+  time, 
+  action, 
+  nodes, 
+  source = NULL, 
+  comment = NULL){
+  
+  ## generate id if not provided  
+  if(is.null(id)){
+    id = 0:(length(name) -1)
+  }
+  
+  ## create aspect with default values
+  res = data.frame(
+    id = id,
+    time = time,
+    action = action,
+    nodes = NA,
+    source = NA,
+    comment = NA,
+    stringsAsFactors=FALSE, check.names=FALSE
+  )
+  
+  ## add nodes
+  if(!is.list(nodes)) nodes <- list(nodes)
+  res$nodes = nodes
+  
+  
+  ## add source if provided
+  if(!is.null(source)){
+    res$source <- source
+  }
+  
+  ## add comment if provided
+  if(!is.null(comment)){
+    res$comment <- comment
+  }
+  
+  ## add a class name
+  class(res) <- append("NetworkProvenanceAspect", class(res))
+  return(res)
+}
+```
+
+Since this is only for demonstration purposes no checks or validations of the data is included.
+In practice, all data should be checked to avoid mistakes.
+Also for all following functions validation of the data has been omitted.
+
+Now that we can create objects of our own aspect, let's do it:
+
+```{r createExample, tidy=FALSE}
+networkProvenance <- createNetworkProvenance(
+  id = c(1,2,3), 
+  time = c(1445437740, 1445437770, 1445437799), 
+  action = c("created", "merged", "filtered"), 
+  nodes = list(
+    c(1, 2, 3, 4, 5, 6),
+    c(7, 8, 9, 10),
+    c()
+  ),
+  source = c(
+    "https://www.ndexbio.org/viewer/networks/66a902f5-2022-11e9-bb6a-0ac135e8bacf",
+    "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE33075",
+    NA
+  ), 
+  comment = c(NA, NA, "Some manual filtering was performed")
+)
+
+networkProvenance
+```
+
+# Update the aspect
+
+## Providing update methods
+
+For updating the aspect, as well as the RCX object with this aspect, the RCX package uses method dispatch and follows a convention for naming the functions `update<accession name>`.
+For example for `rcx$nodes` the update function **must** be named `updateNodes`!
+Firstly, we create for `networkProvenance` a generic function following this convention:
+
+```{r updateUseMethod}
+updateNetworkProvenance = function(x, aspect){
+    UseMethod("updateNetworkProvenance", x)
+}
+```
+
+The first argument must **always** be either an RCX object or a network provenance aspect, the second a network provenance aspect.
+
+Now let's add a method, that merges two network provenance aspects:
+
+```{r updateAspect}
+updateNetworkProvenance.NetworkProvenanceAspect = function(x, aspect){
+    res = plyr::rbind.fill(x, aspect)
+    
+    if(! "NetworkProvenanceAspect" %in% class(res)){
+      class(res) = append("NetworkProvenanceAspect", class(res))
+    }
+    return(res)
+}
+```
+
+To test this method, we split our previous example into two parts and merge them.
+If everything works, we should get the same aspect object as we got from `createNetworkProvenance`.
+
+```{r updateAspectExample, tidy=FALSE}
+## Split the original example
+## Create first part
+np1 <- createNetworkProvenance(
+  id = c(1,2), 
+  time = c(1445437740, 1445437770), 
+  action = c("created", "merged"),  
+  nodes = list(
+    c(1, 2, 3, 4, 5, 6),
+    c(7, 8, 9, 10)
+  ),
+  source = c(
+    "https://www.ndexbio.org/viewer/networks/66a902f5-2022-11e9-bb6a-0ac135e8bacf",
+    "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE33075"
+  )
+)
+
+## Create second part
+np2 <- createNetworkProvenance(
+  id = 3, 
+  time = 1445437799, 
+  action = "filtered",
+  nodes = c(),
+  comment = "Some manual filtering was performed"
+)
+
+## Merge the parts
+networkProvenance <- updateNetworkProvenance(np1, np2)
+
+networkProvenance
+```
+
+Now that we have the method for two network provenance aspects, we can create another method to merge an RCX object with a network provenance aspects. 
+For this, we simply can use the previous method in this one to merge the two network provenance aspects:
+
+```{r updateRCX}
+updateNetworkProvenance.RCX = function(x, aspect){
+    rcxAspect = x$networkProvenance
+    if(! is.null(rcxAspect)){
+      aspect = updateNetworkProvenance(rcxAspect, aspect)
+    }
+    
+    x$networkProvenance = aspect
+    
+    x = updateMetaData(x)
+    
+    return(x)
+}
+```
+
+So if we now update the RCX object with the network provenance parts one by one, we should end up with a combine one in the RCX.
+
+```{r updateRCXExample}
+## Prepare an RCX object
+rcx = createRCX(
+  nodes = createNodes(
+    name = LETTERS[1:10]
+  ),
+  edges = createEdges(
+    source=c(1,2),
+    target = c(2,3)
+  )
+)
+
+## Add the first part of network provenance
+rcx = updateNetworkProvenance(rcx, np1)
+
+## Add the second part
+rcx = updateNetworkProvenance(rcx, np2)
+
+rcx
+```
+
+As we see, this works as well, but there is one problem: 
+The meta-data does not contain the aspect yet.
+
+## Update meta-data for the aspect
+
+To include it, we have to provide information about the relation between accession name (`networkProvenance`) and the class of the aspect (`NetworkProvenanceAspect`).
+This information is kept in the `aspectClasses` vector. 
+To update this vector with a new aspect, we can use the `updateAspectClasses` function:
+
+```{r aspectClasses, tidy=FALSE}
+aspectClasses
+aspectClasses <- updateAspectClasses(
+  aspectClasses, 
+  c(networkProvenance="NetworkProvenanceAspect")
+)
+aspectClasses
+```
+
+The meta-data can be updated manually using the `updateMetaData` function.
+However, to get the updated `aspectClass` to work, we have to provide it to the update function:
+
+```{r updateMetadata}
+rcx = updateMetaData(rcx)
+rcx$metaData
+
+rcx = updateMetaData(rcx, aspectClasses=aspectClasses)
+rcx$metaData
+```
+
+Now the meta data is updated with our custom aspect.
+To automatically update the meta-data when the provenance history is updated, we can add it to our update method for the RCX object:
+
+```{r updateRCXwithMetadata}
+updateNetworkProvenance.RCX = function(x, aspect){
+    rcxAspect = x$networkProvenance
+    if(! is.null(rcxAspect)){
+      aspect = updateNetworkProvenance(rcxAspect, aspect)
+    }
+    
+    x$networkProvenance = aspect
+    
+    x = updateMetaData(x, aspectClasses=aspectClasses)
+    
+    return(x)
+}
+```
+
+The `idCounter` of the meta-data is not updated yet, although this aspect contains an ID.
+To enable this, we have to implement two methods:
+
+```{r idProperty}
+hasIds.NetworkProvenanceAspect = function (aspect) {
+  return(TRUE)
+}
+
+idProperty.NetworkProvenanceAspect = function (aspect) {
+  return("id")
+}
+```
+
+The first one simply tells that the network provenance aspect has IDs, the second one returns the property, that holds the id.
+When we now update the meta-data, the `idCounter` is updated as well.
+
+```{r idPropertyExample}
+rcx = updateMetaData(rcx, aspectClasses=aspectClasses)
+rcx$metaData
+```
+
+Alternatively, we could specify the timestamp as id, and subsequently omit the `id` column in general.
+
+```{r idPropertyTime}
+idProperty.NetworkProvenanceAspect = function (aspect) {
+  return("time")
+}
+
+rcx = updateMetaData(rcx, aspectClasses=aspectClasses)
+rcx$metaData
+```
+
+This might be useful in some cases, but for this example we stick to `id` as the dedicated column providing the IDs in our aspect.
+
+```{r idPropertyBack}
+idProperty.NetworkProvenanceAspect = function (aspect) {
+  return("id")
+}
+```
+
+## Aspect references
+
+Additionally, we can provide a method to determine to which other aspects our custom aspect is referring, and by which other aspects are referred.
+In our case this would be the nodes aspect with its IDs.
+This later could be used in the validation.
+
+```{r refersTo}
+refersTo.NetworkProvenanceAspect = function (aspect) {
+  nodes = aspectClasses["nodes"]
+  names(nodes) = NULL
+  result = c(nodes=nodes)
+  return(result)
+}
+
+refersTo(rcx$edges)
+refersTo(rcx$networkProvenance)
+referredBy(rcx)
+referredBy(rcx, aspectClasses)
+```
+
+## Convenience methods
+
+To be consistent with the other aspects of the RCX package, we can provide a custom print method, that adds the aspect name before printing:
+
+```{r print}
+print.NetworkProvenanceAspect = function(x, ...){
+    cat("Network provenance:\n")
+    class(x) = class(x)[class(x) != "NetworkProvenanceAspect"]
+    print(x, ...)
+}
+```
+
+There are also further function, like `summary` and `countElements` that could be adjusted, but for this example they are not needed and work analogously.
+
+```{r further, eval=FALSE}
+summary.NetworkProvenanceAspect = function(object, ...){ ... }
+countElements.NetworkProvenanceAspect = function(x){ ... }
+```
+
+# Validation of the aspect
+
+It is always a good idea to provide functions to validate the correctness of the data.
+Therefore, we implement the `validate` method for our aspect.
+What to evaluate in this method is up to the user, but the more checks and information provided, the more it helps other users to track down errors.
+
+```{r validate, tidy=FALSE}
+validate.NetworkProvenanceAspect = function(x, verbose=T){
+    if(verbose) cat("Checking Network Provenance Aspect:\n")
+    
+    test = all(! is.na(x$id))
+    if(verbose) cat(paste0("- Column (id) doesn't contain any NA values...",
+                           ifelse(test, "OK", "FAIL"),
+                           "\n"))
+    pass = test
+    
+    test = length(x$id) == length(unique(x$id))
+    if(verbose) cat(paste0("- Column (id) contains only unique values...",
+                           ifelse(test, "OK", "FAIL"),
+                           "\n"))
+    pass = pass & test
+    
+
+    if(verbose) cat(paste0(">> Network Provenance Aspect: ",
+                           ifelse(test, "OK", "FAIL"),
+                           "\n"))
+    invisible(pass)
+}
+
+validate(rcx, verbose = TRUE)
+```
+
+With this method, not only our custom aspect is evaluated solely, the method is also called when the whole RCX object is evaluated.
+Therefore, if validation for the aspect fails, also the validation of the RCX object fails.
+
+# Conversion to and from CX
+
+## Convert to CX
+
+Since we have our aspect data model already created in R, let's start with the conversion to CX in JSON format.
+To allow the aspect to be processed, we have to provide a method to take over this part.
+In the RCX package, the aspect class specific methods of `rcxToJson` convert the aspect to a JSON object. 
+
+```{r rcxToJson}
+rcxToJson.NetworkProvenanceAspect = function(aspect, verbose=F, ...){
+  if(verbose) cat("Convert network provenance to JSON...")
+  
+  ## rename id to @id
+  colnames(aspect) = gsub("id","\\@id",colnames(aspect))
+  
+  ## convert to json
+  json = jsonlite::toJSON(aspect, pretty = T)
+  
+  ## empty nodes are converted to "nodes": {},
+  ## the simplest fix is just replacing it
+  json = gsub('"nodes": \\{\\},', '"nodes": \\[\\],', json)
+  
+  ## add the aspect name
+  json = paste0('{"networkProvenance":',json,"}")
+  
+  if(verbose) cat("done!\n")
+  return(json)
+}
+
+cat(rcxToJson(rcx$networkProvenance))
+```
+
+The `rcxToJson` functions are used in the `toCX` and `writeCX` functions for converting and saving the RCX.
+So let's write the RCX to a file we can use later for reading.
+
+```{r writeCX}
+tempCX = tempfile(fileext = ".cx")
+writeCX(rcx, tempCX)
+```
+
+## Conversion from CX/JSON
+
+Similarly to `rcxToJson` there exists a method for doing the reverse.
+The `readCX` function combines several steps, that can be performed individually:
+
+1. `readJSON` which simply read the JSON from file
+2. `parseJSON` which parsed the JSON text to JSON data (list of lists)
+3. `processCX` takes the JSON data and calls for each aspect the `jsonToRCX`
+
+The correct aspect can be accessed in the `jsonData` list, which then has to be processed and a created object of the aspect returned.
+
+```{r jsonToRCX}
+jsonToRCX.networkProvenance = function(jsonData, verbose){
+  if(verbose) cat("Parsing network provenance...")
+  data = jsonData$networkProvenance
+  
+  ids = sapply(data, function(d){d$`@id`})
+  time = sapply(data, function(d){d$time})
+  action = sapply(data, function(d){d$action})
+  nodes = sapply(data, function(d){d$nodes})
+  source = sapply(data, function(d){d$source})
+  comment = sapply(data, function(d){d$comment})
+  
+  if(verbose) cat("create aspect...")
+  result = createNetworkProvenance(
+    id = ids,
+    time = time,
+    action = action,
+    nodes = nodes,
+    source = source,
+    comment = comment
+  )
+
+  if(verbose) cat("done!\n")
+  return(result)
+}
+rcxParsed = readCX(tempCX, aspectClasses = aspectClasses)
+```
+
+However, the meta-data has to be updated again manually with the `aspectClasses` available:
+
+```{r fromCXfinal}
+rcxParsed = updateMetaData(rcxParsed, aspectClasses=aspectClasses)
+rcxParsed$metaData
+```
+
+So we have successfully converted our custom aspect between CX and RCX!
+
+# Session info
+```{r sessionInfo}
+sessionInfo()
+```

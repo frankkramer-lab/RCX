@@ -66,7 +66,6 @@
 #' 
 #' @name CyVisualPropertyProperties
 #' @seealso \code{\link{updateCyVisualProperty}}, \code{\link{updateCyVisualProperties}}
-#' #TODO: link to data definition vignette
 #'
 #' @export
 #' @example man-roxygen-examples/cy-visual-property-properties-create.R
@@ -98,7 +97,7 @@ createCyVisualPropertyProperties = function(value, name=NULL){
 #' 
 #' @name CyVisualPropertyDependencies
 #' @seealso \code{\link{updateCyVisualProperty}}, \code{\link{updateCyVisualProperties}}
-#' #TODO: link to data definition vignette
+#' 
 #' @export
 #' @example man-roxygen-examples/cy-visual-property-dependencies-create.R
 createCyVisualPropertyDependencies = function(value, name=NULL){
@@ -131,7 +130,6 @@ createCyVisualPropertyDependencies = function(value, name=NULL){
 #' 
 #' @name CyVisualPropertyMappings
 #' @seealso \code{\link{updateCyVisualProperty}}, \code{\link{updateCyVisualProperties}}
-#' #TODO: link to data definition vignette
 #'
 #' @export
 #' @example man-roxygen-examples/cy-visual-property-mappings-create.R
@@ -187,7 +185,7 @@ createCyVisualPropertyMappings = function(type, definition, name=NULL){
 #' @example man-roxygen-examples/cy-visual-property-create.R
 createCyVisualProperty = function(properties=NULL, dependencies=NULL, mappings=NULL, appliesTo=NULL, view=NULL){
     fname="createCyVisualProperty"
-    if(all(missing(properties), missing(dependencies), missing(mappings)))  .stop("paramAllNull", "properties, dependencies or mappings")
+    if(all(is.null(properties), is.null(dependencies), is.null(mappings)))  .stop("paramAllNull", "properties, dependencies or mappings")
 
     if(!is.null(appliesTo)){
         if(is.logical(appliesTo) && all(is.na(appliesTo))) appliesTo = as.numeric(appliesTo)
@@ -291,11 +289,11 @@ createCyVisualProperty = function(properties=NULL, dependencies=NULL, mappings=N
 #' @example man-roxygen-examples/cy-visual-properties-create.R
 createCyVisualProperties = function(network=NULL, nodes=NULL, edges=NULL, defaultNodes=NULL, defaultEdges=NULL){
     fname="createCyVisualProperties"
-    if(all(missing(network), 
-           missing(nodes), 
-           missing(edges), 
-           missing(defaultNodes), 
-           missing(defaultEdges)))  
+    if(all(is.null(network), 
+           is.null(nodes), 
+           is.null(edges), 
+           is.null(defaultNodes), 
+           is.null(defaultEdges)))  
         .stop("paramAllNull", "network, nodes, edges, defaultNodes or defaultEdges")
     
     
@@ -360,14 +358,12 @@ updateCyVisualProperty = function(cyVisualProperty, additionalProperty, replace=
 #' @rdname updateCyVisualProperty
 #' @export
 updateCyVisualProperty.CyVisualPropertyProperties = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
-    fname="addCyVisualProperty"
+    fname="updateCyVisualProperty"
     if(missing(cyVisualProperty)) .stop("paramMissing", "cyVisualProperty")
     if(missing(additionalProperty)) .stop("paramMissing", "additionalProperty")
     .checkClass(cyVisualProperty, .CLSvp$properties, "cyVisualProperty", fname)
     .checkClass(additionalProperty, .CLSvp$properties, "additionalProperty", fname)
     
-    #TODO: Add logging or Errors: add a .log parameter to functions to Show where the error occurrs; e.g. addVisiualProperties$nodes(appliesTo,view)$name
-    #TODO: Replace if(!...) with check(...and stop there) or stopifnot()
     result = .mergeAttributesAspect(cyVisualProperty,
                                     additionalProperty,
                                     replace, stopOnDuplicates,
@@ -469,7 +465,7 @@ getCyVisualProperty = function(cyVisualProperty, appliesTo=NA, view=NA){
     return(result)
 }
 
-#TODO: sort properties to be NAs (especially the default) at first
+
 #' @rdname updateCyVisualProperty
 #' @export
 updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
@@ -494,6 +490,8 @@ updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalP
     tmpDependencies = list()
     tmpMappings = list()
     
+    results = NULL
+    
     for (i in 1:length(uniqKeys)){
         key = uniqKeys[i]
         indexInCyVP = which(cyVPfilterKey==key)
@@ -503,27 +501,49 @@ updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalP
             tmpAppliesTo[i] = cyVisualProperty$appliesTo[indexInCyVP]
             tmpView[i] = cyVisualProperty$view[indexInCyVP]
             .logAV = paste0("<appliesTo=",tmpAppliesTo[i],",view=",tmpView[i],">")
-            prop = updateCyVisualProperty(
-                cyVisualProperty$properties[[indexInCyVP]],
-                additionalProperty$properties[[indexInAddP]],
-                replace,
-                stopOnDuplicates,
-                c(.log,paste0("properties",.logAV)))
             
-            deps = updateCyVisualProperty(
-                cyVisualProperty$dependencies[[indexInCyVP]],
-                additionalProperty$dependencies[[indexInAddP]],
-                replace,
-                stopOnDuplicates,
-                c(.log,paste0("dependencies",.logAV)))
+            prop = NULL
+            if(all(is.na(cyVisualProperty$properties[[indexInCyVP]]))){
+                prop = additionalProperty$properties[[indexInAddP]]
+            }else if(all(is.na(additionalProperty$properties[[indexInAddP]]))){
+                prop = cyVisualProperty$properties[[indexInCyVP]]
+            }else{
+                prop = updateCyVisualProperty(
+                    cyVisualProperty$properties[[indexInCyVP]],
+                    additionalProperty$properties[[indexInAddP]],
+                    replace,
+                    stopOnDuplicates,
+                    c(.log,paste0("properties",.logAV)))
+            }
             
-            mapp = updateCyVisualProperty(
-                cyVisualProperty$mappings[[indexInCyVP]],
-                additionalProperty$mappings[[indexInAddP]],
-                replace,
-                stopOnDuplicates,
-                c(.log,paste0("mappings",.logAV)))
+            deps = NULL
+            if(all(is.na(cyVisualProperty$dependencies[[indexInCyVP]]))){
+                deps = additionalProperty$dependencies[[indexInAddP]]
+            }else if(all(is.na(additionalProperty$dependencies[[indexInAddP]]))){
+                deps = cyVisualProperty$dependencies[[indexInCyVP]]
+            }else{
+                deps = updateCyVisualProperty(
+                    cyVisualProperty$dependencies[[indexInCyVP]],
+                    additionalProperty$dependencies[[indexInAddP]],
+                    replace,
+                    stopOnDuplicates,
+                    c(.log,paste0("dependencies",.logAV)))
+            }
             
+            mapp = NULL
+            if(all(is.na(cyVisualProperty$mappings[[indexInCyVP]]))){
+                mapp = additionalProperty$mappings[[indexInAddP]]
+            }else if(all(is.na(additionalProperty$mappings[[indexInAddP]]))){
+                mapp = cyVisualProperty$mappings[[indexInCyVP]]
+            }else{
+                mapp = updateCyVisualProperty(
+                    cyVisualProperty$mappings[[indexInCyVP]],
+                    additionalProperty$mappings[[indexInAddP]],
+                    replace,
+                    stopOnDuplicates,
+                    c(.log,paste0("mappings",.logAV)))
+            }
+
             tmpProperties[[i]] = prop
             tmpDependencies[[i]] = deps
             tmpMappings[[i]] = mapp
@@ -547,6 +567,63 @@ updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalP
                                     mappings = tmpMappings,
                                     appliesTo = tmpAppliesTo,
                                     view = tmpView)
+    
+    
+    # for (i in 1:length(uniqKeys)){
+    #     key = uniqKeys[i]
+    #     indexInCyVP = which(cyVPfilterKey==key)
+    #     indexInAddP = which(addPfilterKey==key)
+    #     
+    #     if(length(indexInCyVP)!=0 && length(indexInAddP)!=0){
+    #         tmpAppliesTo[i] = cyVisualProperty$appliesTo[indexInCyVP]
+    #         tmpView[i] = cyVisualProperty$view[indexInCyVP]
+    #         .logAV = paste0("<appliesTo=",tmpAppliesTo[i],",view=",tmpView[i],">")
+    #         
+    #         
+    #         prop = updateCyVisualProperty(
+    #             cyVisualProperty$properties[[indexInCyVP]],
+    #             additionalProperty$properties[[indexInAddP]],
+    #             replace,
+    #             stopOnDuplicates,
+    #             c(.log,paste0("properties",.logAV)))
+    #         
+    #         deps = updateCyVisualProperty(
+    #             cyVisualProperty$dependencies[[indexInCyVP]],
+    #             additionalProperty$dependencies[[indexInAddP]],
+    #             replace,
+    #             stopOnDuplicates,
+    #             c(.log,paste0("dependencies",.logAV)))
+    #         
+    #         mapp = updateCyVisualProperty(
+    #             cyVisualProperty$mappings[[indexInCyVP]],
+    #             additionalProperty$mappings[[indexInAddP]],
+    #             replace,
+    #             stopOnDuplicates,
+    #             c(.log,paste0("mappings",.logAV)))
+    #         
+    #         tmpProperties[[i]] = prop
+    #         tmpDependencies[[i]] = deps
+    #         tmpMappings[[i]] = mapp
+    #     }else if(length(indexInCyVP)!=0){
+    #         tmpAppliesTo[i] = cyVisualProperty$appliesTo[indexInCyVP]
+    #         tmpView[i] = cyVisualProperty$view[indexInCyVP]
+    #         tmpProperties[[i]] = cyVisualProperty$properties[[indexInCyVP]]
+    #         tmpDependencies[[i]] = cyVisualProperty$dependencies[[indexInCyVP]]
+    #         tmpMappings[[i]] = cyVisualProperty$mappings[[indexInCyVP]]
+    #     }else{
+    #         tmpAppliesTo[i] = additionalProperty$appliesTo[indexInAddP]
+    #         tmpView[i] = additionalProperty$view[indexInAddP]
+    #         tmpProperties[[i]] = additionalProperty$properties[[indexInAddP]]
+    #         tmpDependencies[[i]] = additionalProperty$dependencies[[indexInAddP]]
+    #         tmpMappings[[i]] = additionalProperty$mappings[[indexInAddP]]
+    #     }
+    # }
+    # 
+    # result = createCyVisualProperty(properties = tmpProperties,
+    #                                 dependencies = tmpDependencies,
+    #                                 mappings = tmpMappings,
+    #                                 appliesTo = tmpAppliesTo,
+    #                                 view = tmpView)
     
     .addClass(result) = .CLSvp$property
     
@@ -595,12 +672,18 @@ updateCyVisualProperties.CyVisualPropertiesAspect = function(x, cyVisualProperti
     .checkClass(cyVisualPropertiesOld, .CLS$cyVisualProperties, "x", fname)
     .checkClass(cyVisualProperties, .CLS$cyVisualProperties, "cyVisualProperties", fname)
     
-    for(p in .DICT$VPpropertiesOf) {
+    for(p in names(.DICT$VPpropertiesOf)) {
         if(is.null(cyVisualPropertiesOld[[p]])){
             cyVisualPropertiesOld[[p]] = cyVisualProperties[[p]]
         }else{
-            cyVisualPropertiesOld[[p]] = updateCyVisualProperty(cyVisualPropertiesOld[[p]], cyVisualProperties[[p]], 
-                                                             replace, stopOnDuplicates, c("VisualProperties",p))
+            if(! is.null(cyVisualProperties[[p]])){
+                cat("\n")
+                cat(p)
+                cat("\n")
+                print(cyVisualProperties[[p]])
+                cyVisualPropertiesOld[[p]] = updateCyVisualProperty(cyVisualPropertiesOld[[p]], cyVisualProperties[[p]], 
+                                                                    replace, stopOnDuplicates, c("VisualProperties",p))
+            }
         }
     }
     
@@ -620,7 +703,6 @@ updateCyVisualProperties.RCX = function(x, cyVisualProperties, replace=T, stopOn
     .checkClass(rcx, .CLS$rcx, "rcx", fname)
     .checkClass(cyVisualProperties, .CLS$cyVisualProperties, "cyVisualProperties", fname)
     
-    #TODO: add check for appliesTo and view references
     if((! is.null(cyVisualProperties$appliesTo)) && (checkReferences)){
         .checkRefPresent(rcx, "cySubNetworks", .CLS$cySubNetworks, "rcx$cySubNetworks", fname)
         ids = unique(unlist(cyVisualProperties$appliesTo))

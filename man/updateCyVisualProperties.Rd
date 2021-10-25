@@ -55,18 +55,18 @@ default nodes and edges.
 }
 \details{
 \subsection{Structure of Cytoscape Visual Property}{\preformatted{CyVisualProperty
-├──properties = CyVisualPropertyProperties
-│   ├──name
-│   └──value 
-├──dependencies = CyVisualPropertyDependencies
-│   ├──name
-│   └──value 
-├──mappings = CyVisualPropertyMappings
-│   ├──name
-│   ├──type
-│   └──definition 
-├──appliesTo = <reference to subnetwork id>
-└──view = <reference to subnetwork id>
+|---properties = CyVisualPropertyProperties
+|   |--name
+|   |--value 
+|---dependencies = CyVisualPropertyDependencies
+|   |--name
+|   |--value 
+|---mappings = CyVisualPropertyMappings
+|   |--name
+|   |--type
+|   |--definition 
+|---appliesTo = <reference to subnetwork id>
+|---view = <reference to subnetwork id>
 }
 }
 

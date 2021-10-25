@@ -31,6 +31,8 @@ Internal function only for convenience
 ##############################
 requested error code: 
 <info[1]>}}
+\subsection{graphNELEdgesRequired}{
+\preformatted{RCX object requires edges to be converted to an graphNEL object!}}
 \subsection{idNonNeg}{
 \preformatted{Provided IDs (<info[1]>) must be non-neagtive!}}
 \subsection{idNotNum}{
