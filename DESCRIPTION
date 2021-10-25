@@ -5,24 +5,22 @@ Version: 0.99.0
 Author: Florian Auer <florian.auer@informatik.uni-augsburg.de>
 Maintainer: Florian Auer <florian.auer@informatik.uni-augsburg.de>
 Description: Create, handle, validate, visualize and convert networks in the Cytoscape exchange (CX) format to standard data types and objects. The CX format is also used by the NDEx platform, a online commons for biological networks, and the network visualization software Cytocape.
-License:  MIT + file LICENSE
+License: MIT + file LICENSE
 Depends:
     R (>= 4.0)
 Imports:
     jsonlite,
     plyr,
-    tidyr,
-    readr,
-    igraph,
-    graph
-RoxygenNote: 7.1.1
+    igraph
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 biocViews: Pathways, DataImport, Network
 Suggests: BiocStyle,
     testthat,
     knitr,
     rmarkdown,
-    base64enc
+    base64enc,
+    graph
 VignetteBuilder: knitr
 Encoding: UTF-8
 URL: https://github.com/frankkramer-lab/RCX

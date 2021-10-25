@@ -785,8 +785,6 @@ Now that we are finished, we can visualize the network again, this time with the
 visualize(rcx)
 ```
 
-![RCX data structure](RCX_Data_Structure.png){width=100%}
-
 Doing this manually might be laborious, but it is a good exercise to understand how visual properties and mappings work in detail.
 
 An easier method would be to the current network as CX file, load it in [Cytoscape](https://cytoscape.org/) or the online tool [NDExEdit (https://frankkramer-lab.github.io/NDExEdit)](https://frankkramer-lab.github.io/NDExEdit) to create the desired layout.

@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Appendix: The RCX and CX Data Model}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTFv2.4.0"}
+  %\VignetteEncoding{UTF-8}
 ---
 
 # CX data structure

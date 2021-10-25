@@ -5,9 +5,8 @@ author:
   email: Florian.Auer@informatik.uni-augsburg.de
   affiliation: &id Augsburg of University
 date: "`r Sys.Date()`"
-output:
-  md_document:
-    variant: markdown_github
+output: 
+    BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{01. RCX - an R package implementing the Cytoscape Exchange (CX) format}
   %\VignetteEngine{knitr::rmarkdown}
@@ -412,9 +411,6 @@ rcxFromIg = updateCyVisualProperties(rcxFromIg, originalVisualProperties)
 ```{r visualizeIg, eval=FALSE}
 visualize(rcxFromIg)
 ```
-
-![Imatinib Inhibition of BCR-ABL (66a902f5-2022-11e9-bb6a-0ac135e8bacf)](1_network_orig.png)
-
 
 # Bioconductor graph (graphNEL)
 

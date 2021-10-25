@@ -25,7 +25,7 @@ To simplify the conversion between those, these functions return the correspondi
 \details{
 The following accessions/classes are available within the standard RCX implementation:
 
-\strong{accession name <=> class name}\if{html}{\out{<div class="rcx  <=>  RCX">}}\preformatted{metaData  <=>  MetaDataAspect
+\strong{accession name <=> class name}\if{html}{\out{<div class="sourceCode rcx  <=>  RCX">}}\preformatted{metaData  <=>  MetaDataAspect
 nodes  <=>  NodesAspect
 edges  <=>  EdgesAspect
 nodeAttributes  <=>  NodeAttributesAspect
