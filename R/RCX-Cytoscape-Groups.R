@@ -50,7 +50,7 @@ createCyGroups = function(id=NULL, name, nodes=NULL, externalEdges=NULL, interna
     .checkAnyNotNull(c("nodes", "externalEdges", "internalEdges"), fname,
                      nodes, externalEdges, internalEdges)
     
-    if(missing(id) || is.null(id)) id = 0:(length(name) -1)
+    if(missing(id) || is.null(id)) id = seq(0,(length(name) -1))
     
     .checkIsUniqueId(id, "id", fname)
     .checkCharacter(name, "name", fname)
@@ -79,7 +79,7 @@ createCyGroups = function(id=NULL, name, nodes=NULL, externalEdges=NULL, interna
                           nodes=1,
                           externalEdges=1,
                           internalEdges=1,
-                          collapsed=F,
+                          collapsed=FALSE,
                           stringsAsFactors=FALSE, check.names=FALSE)
     
     if(is.null(nodes)){
@@ -146,14 +146,14 @@ createCyGroups = function(id=NULL, name, nodes=NULL, externalEdges=NULL, interna
 #' @seealso \code{\link{CyGroups}};
 #' @export
 #' @example man-roxygen-examples/cy-groups-update.R
-updateCyGroups = function(x, cyGroups, stopOnDuplicates=F, keepOldIds=T, ...){
+updateCyGroups = function(x, cyGroups, stopOnDuplicates=FALSE, keepOldIds=TRUE, ...){
     UseMethod("updateCyGroups", x)
 }
 
 
 #' @rdname updateCyGroups
 #' @export
-updateCyGroups.CyGroupsAspect = function(x, cyGroups, stopOnDuplicates=F, keepOldIds=T, ...){
+updateCyGroups.CyGroupsAspect = function(x, cyGroups, stopOnDuplicates=FALSE, keepOldIds=TRUE, ...){
     cyGroupsOld = x
     fname="updateCyGroups"
     if(missing(cyGroupsOld)) .stop("paramMissing", "x")
@@ -176,7 +176,7 @@ updateCyGroups.CyGroupsAspect = function(x, cyGroups, stopOnDuplicates=F, keepOl
 
 #' @rdname updateCyGroups
 #' @export
-updateCyGroups.RCX = function(x, cyGroups, stopOnDuplicates=F, keepOldIds=T, checkReferences=T, ...){
+updateCyGroups.RCX = function(x, cyGroups, stopOnDuplicates=FALSE, keepOldIds=TRUE, checkReferences=TRUE, ...){
     rcx = x
     fname="updateCyGroups"
     if(missing(rcx)) .stop("paramMissingRCX")

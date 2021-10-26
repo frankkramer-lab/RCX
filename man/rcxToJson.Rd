@@ -22,43 +22,43 @@
 \alias{rcxToJson.CyVisualPropertyMappings}
 \title{Convert RCX aspects to JSON}
 \usage{
-rcxToJson(aspect, verbose = F, ...)
+rcxToJson(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{default}(aspect, verbose = F, ...)
+\method{rcxToJson}{default}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{MetaDataAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{MetaDataAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{NodesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{NodesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{EdgesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{EdgesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{NodeAttributesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{NodeAttributesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{EdgeAttributesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{EdgeAttributesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{NetworkAttributesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{NetworkAttributesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CartesianLayoutAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CartesianLayoutAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyGroupsAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyGroupsAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyHiddenAttributesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyHiddenAttributesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyNetworkRelationsAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyNetworkRelationsAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CySubNetworksAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CySubNetworksAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyTableColumnAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyTableColumnAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyVisualPropertiesAspect}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyVisualPropertiesAspect}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyVisualProperty}(aspect, verbose = F, propertyOf = "", ...)
+\method{rcxToJson}{CyVisualProperty}(aspect, verbose = FALSE, propertyOf = "", ...)
 
-\method{rcxToJson}{CyVisualPropertyProperties}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyVisualPropertyProperties}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyVisualPropertyDependencies}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyVisualPropertyDependencies}(aspect, verbose = FALSE, ...)
 
-\method{rcxToJson}{CyVisualPropertyMappings}(aspect, verbose = F, ...)
+\method{rcxToJson}{CyVisualPropertyMappings}(aspect, verbose = FALSE, ...)
 }
 \arguments{
 \item{aspect}{aspects of an \link[=RCX-object]{RCX} object}

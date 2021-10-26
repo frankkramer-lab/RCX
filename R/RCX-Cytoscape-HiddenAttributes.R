@@ -58,8 +58,8 @@ createCyHiddenAttributes = function(name, value, dataType=NULL, isList=NULL, sub
                      name, value, dataType, isList, subnetworkId)
     
     aspect = data.frame(name=name,
-                        stringsAsFactors = F,
-                        check.names = F)
+                        stringsAsFactors = FALSE,
+                        check.names = FALSE)
     
     aspect$value = value
     
@@ -110,14 +110,14 @@ createCyHiddenAttributes = function(name, value, dataType=NULL, isList=NULL, sub
 #' @return \code{\link{CyHiddenAttributes}} or [RCX][RCX-object] object with added hidden attributes
 #' @export
 #' @example man-roxygen-examples/cy-hidden-attributes-update.R
-updateCyHiddenAttributes = function(x, hiddenAttributes, replace=T, stopOnDuplicates=F, ...){
+updateCyHiddenAttributes = function(x, hiddenAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateCyHiddenAttributes", x)
 }
 
 
 #' @rdname updateCyHiddenAttributes
 #' @export
-updateCyHiddenAttributes.CyHiddenAttributesAspect = function(x, hiddenAttributes, replace=T, stopOnDuplicates=F, ...){
+updateCyHiddenAttributes.CyHiddenAttributesAspect = function(x, hiddenAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     hiddenAttributesOld = x
     fname="updateCyHiddenAttributes"
     if(missing(hiddenAttributesOld)) .stop("paramMissing", "x")
@@ -159,7 +159,7 @@ updateCyHiddenAttributes.CyHiddenAttributesAspect = function(x, hiddenAttributes
 
 #' @rdname updateCyHiddenAttributes
 #' @export
-updateCyHiddenAttributes.RCX = function(x, hiddenAttributes, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateCyHiddenAttributes.RCX = function(x, hiddenAttributes, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="updateCyHiddenAttributes"
     if(missing(rcx)) .stop("paramMissingRCX")

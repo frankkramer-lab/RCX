@@ -49,9 +49,9 @@ createCySubNetworks = function(id, nodes=NULL, edges=NULL){
             id = 0
         }else{
             if(is.null(nodes)){
-                id = 0:(length(edges) -1)
+                id = seq(0, (length(edges) -1))
             }else{
-                id = 0:(length(nodes) -1)
+                id = seq(0, (length(nodes) -1))
             }
         }
     }
@@ -127,14 +127,14 @@ createCySubNetworks = function(id, nodes=NULL, edges=NULL){
 #' @seealso \code{\link{CyNetworkRelations}};
 #' @export
 #' @example man-roxygen-examples/cy-subnetworks-update.R
-updateCySubNetworks = function(x, cySubNetworks, stopOnDuplicates=F, keepOldIds=T, ...){
+updateCySubNetworks = function(x, cySubNetworks, stopOnDuplicates=FALSE, keepOldIds=TRUE, ...){
     UseMethod("updateCySubNetworks", x)
 }
 
 
 #' @rdname updateCySubNetworks
 #' @export
-updateCySubNetworks.CySubNetworksAspect = function(x, cySubNetworks, stopOnDuplicates=F, keepOldIds=T, ...){
+updateCySubNetworks.CySubNetworksAspect = function(x, cySubNetworks, stopOnDuplicates=FALSE, keepOldIds=TRUE, ...){
     cySubNetworksOld = x
     fname="updateCySubNetworks"
     if(missing(cySubNetworks)) .stop("paramMissing", "x")
@@ -153,7 +153,7 @@ updateCySubNetworks.CySubNetworksAspect = function(x, cySubNetworks, stopOnDupli
 
 #' @rdname updateCySubNetworks
 #' @export
-updateCySubNetworks.RCX = function(x, cySubNetworks, stopOnDuplicates=F, keepOldIds=T, checkReferences=T, ...){
+updateCySubNetworks.RCX = function(x, cySubNetworks, stopOnDuplicates=FALSE, keepOldIds=TRUE, checkReferences=TRUE, ...){
     rcx = x
     fname="addCySubNetworks"
     if(missing(rcx)) .stop("paramMissingRCX")

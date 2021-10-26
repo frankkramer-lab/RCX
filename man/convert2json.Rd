@@ -21,9 +21,9 @@
 
 \method{.convert2json}{logical}(x)
 
-\method{.convert2json}{list}(x, raw = c(), byElement = F, skipNa = T)
+\method{.convert2json}{list}(x, raw = c(), byElement = FALSE, skipNa = TRUE)
 
-\method{.convert2json}{data.frame}(x, raw = c(), skipNa = T)
+\method{.convert2json}{data.frame}(x, raw = c(), skipNa = TRUE)
 }
 \arguments{
 \item{x}{data element}

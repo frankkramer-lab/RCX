@@ -6,11 +6,11 @@
 \alias{updateNodes.RCX}
 \title{Update nodes}
 \usage{
-updateNodes(x, nodes, stopOnDuplicates = F, keepOldIds = T)
+updateNodes(x, nodes, stopOnDuplicates = FALSE, keepOldIds = TRUE)
 
-\method{updateNodes}{NodesAspect}(x, nodes, stopOnDuplicates = F, keepOldIds = T)
+\method{updateNodes}{NodesAspect}(x, nodes, stopOnDuplicates = FALSE, keepOldIds = TRUE)
 
-\method{updateNodes}{RCX}(x, nodes, stopOnDuplicates = F, keepOldIds = T)
+\method{updateNodes}{RCX}(x, nodes, stopOnDuplicates = FALSE, keepOldIds = TRUE)
 }
 \arguments{
 \item{x}{\code{\link{RCX-object}} or \code{\link{Nodes}} object; (to which the new \code{\link{Nodes}} will be added)}

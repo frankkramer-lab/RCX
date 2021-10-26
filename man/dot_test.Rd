@@ -37,78 +37,78 @@
 \alias{.test_DataTypeColumn}
 \title{Helping tests}
 \usage{
-.test_RequiredColumnsPresent(aspect, columns, verbose = F)
+.test_RequiredColumnsPresent(aspect, columns, verbose = FALSE)
 
-.test_ListRequiredColumnsPresent(aspect, columns, verbose = F)
+.test_ListRequiredColumnsPresent(aspect, columns, verbose = FALSE)
 
-.test_AllowedColumnsPresent(aspect, columns, verbose = F)
+.test_AllowedColumnsPresent(aspect, columns, verbose = FALSE)
 
-.test_ListAllowedColumnsPresent(aspect, columns, verbose = F)
+.test_ListAllowedColumnsPresent(aspect, columns, verbose = FALSE)
 
-.test_NoMergeColumn(aspect, column, verbose = F)
+.test_NoMergeColumn(aspect, column, verbose = FALSE)
 
-.test_AtLeastOneColumnPresent(aspect, columns, verbose = F)
+.test_AtLeastOneColumnPresent(aspect, columns, verbose = FALSE)
 
-.test_AtLeastOneElementPresent(aspect, element, verbose = F)
+.test_AtLeastOneElementPresent(aspect, element, verbose = FALSE)
 
-.test_OneNodePresent(nodesAspect, column, verbose = F)
+.test_OneNodePresent(nodesAspect, column, verbose = FALSE)
 
-.test_IsUnique(aspect, column, verbose = F)
+.test_IsUnique(aspect, column, verbose = FALSE)
 
-.test_ListAllUnique(aspect, column, verbose = F)
+.test_ListAllUnique(aspect, column, verbose = FALSE)
 
-.test_IsUniqueInLists(aspect, column, verbose = F)
+.test_IsUniqueInLists(aspect, column, verbose = FALSE)
 
-.test_ListAllUniqueInLists(aspect, column, verbose = F)
+.test_ListAllUniqueInLists(aspect, column, verbose = FALSE)
 
-.test_IsLogical(aspect, column, verbose = F)
+.test_IsLogical(aspect, column, verbose = FALSE)
 
-.test_IsNumeric(aspect, column, verbose = F)
+.test_IsNumeric(aspect, column, verbose = FALSE)
 
-.test_ElementIsNumeric(aspect, element, verbose = F)
+.test_ElementIsNumeric(aspect, element, verbose = FALSE)
 
-.test_IsCharacter(aspect, column, verbose = F)
+.test_IsCharacter(aspect, column, verbose = FALSE)
 
-.test_ListAllCharacter(aspect, element, verbose = F)
+.test_ListAllCharacter(aspect, element, verbose = FALSE)
 
-.test_IsList(aspect, column, verbose = F)
+.test_IsList(aspect, column, verbose = FALSE)
 
-.test_ElementIsList(aspect, element, verbose = F)
+.test_ElementIsList(aspect, element, verbose = FALSE)
 
-.test_IsPos(aspect, column, verbose = F)
+.test_IsPos(aspect, column, verbose = FALSE)
 
-.test_IsClass(x, cls, verbose = F)
+.test_IsClass(x, cls, verbose = FALSE)
 
-.test_IsNamedList(aspect, names, verbose = F)
+.test_IsNamedList(aspect, names, verbose = FALSE)
 
-.test_IsCVPclass(x, cls, verbose = F)
+.test_IsCVPclass(x, cls, verbose = FALSE)
 
-.test_ListOfCVPclass(x, cls, verbose = F)
+.test_ListOfCVPclass(x, cls, verbose = FALSE)
 
-.test_ContainsNA(aspect, column, verbose = F)
+.test_ContainsNA(aspect, column, verbose = FALSE)
 
-.test_ListAllContainsNA(aspect, element, verbose = F)
+.test_ListAllContainsNA(aspect, element, verbose = FALSE)
 
-.test_ListAllNumeric(aspect, column, verbose = F)
+.test_ListAllNumeric(aspect, column, verbose = FALSE)
 
-.test_ListAllNumericOrInDict(aspect, column, dic, verbose = F)
+.test_ListAllNumericOrInDict(aspect, column, dic, verbose = FALSE)
 
-.test_ListAllOfClass(aspect, cls, verbose = F)
+.test_ListAllOfClass(aspect, cls, verbose = FALSE)
 
-.test_AspectExist(rcx, aspect, verbose = F)
+.test_AspectExist(rcx, aspect, verbose = FALSE)
 
-.test_IdsInAspect(ids, aspect, column, info = "", verbose = F)
+.test_IdsInAspect(ids, aspect, column, info = "", verbose = FALSE)
 
-.test_ValuesInSet(aspect, column, set, ignoreNA = T, verbose = F)
+.test_ValuesInSet(aspect, column, set, ignoreNA = TRUE, verbose = FALSE)
 
-.test_DataTypeColumn(aspect, column, verbose = F)
+.test_DataTypeColumn(aspect, column, verbose = FALSE)
 }
 \arguments{
 \item{aspect}{one RCX aspect}
 
 \item{columns}{character; list of columns}
 
-\item{verbose}{logical (default=F); also log the results}
+\item{verbose}{logical (default=FALSE); also log the results}
 
 \item{column}{character; column name}
 
@@ -124,7 +124,7 @@
 
 \item{info}{character (default=""); additional message for verbose}
 
-\item{ignoreNA}{logical (default=T); ignore NA values}
+\item{ignoreNA}{logical (default=TRUE); ignore NA values}
 }
 \value{
 logical; pass or fail the test

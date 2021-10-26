@@ -11,40 +11,40 @@
 updateCyVisualProperty(
   cyVisualProperty,
   additionalProperty,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   .log = c()
 )
 
 \method{updateCyVisualProperty}{CyVisualPropertyProperties}(
   cyVisualProperty,
   additionalProperty,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   .log = c()
 )
 
 \method{updateCyVisualProperty}{CyVisualPropertyDependencies}(
   cyVisualProperty,
   additionalProperty,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   .log = c()
 )
 
 \method{updateCyVisualProperty}{CyVisualPropertyMappings}(
   cyVisualProperty,
   additionalProperty,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   .log = c()
 )
 
 \method{updateCyVisualProperty}{CyVisualProperty}(
   cyVisualProperty,
   additionalProperty,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   .log = c()
 )
 }

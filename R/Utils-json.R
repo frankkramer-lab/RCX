@@ -25,7 +25,7 @@
 #'                 list(n="SHC1", r="BLUBB"),
 #'                 list(n="IRS1"))
 #' RCX:::.jsonV(testData, "r")
-.jsonV = function(data, acc, default=NA, returnAllDefault=T){
+.jsonV = function(data, acc, default=NA, returnAllDefault=TRUE){
   result = sapply(data, function(a){
     if(!acc %in% names(a)) return(default)
     return(a[[acc]])
@@ -60,7 +60,7 @@
 #'                 list(n="SHC1", r="BLUBB"),
 #'                 list(n="IRS1"))
 #' RCX:::.jsonL(testData, "r")
-.jsonL = function(data, acc, default=NA, unList=T, returnAllDefault=T){
+.jsonL = function(data, acc, default=NA, unList=TRUE, returnAllDefault=TRUE){
   result = lapply(data, function(a){
     if(!acc %in% names(a)) return(default)
     a = a[[acc]]
@@ -72,7 +72,7 @@
       
       test = sapply(result, function(x){
         if(is.list(x)){
-          if(length(x)==0) return(T)
+          if(length(x)==0) return(TRUE)
           return(all(sapply(x, is.na)))
         } 
         return(all(is.na(x)))
@@ -210,11 +210,11 @@
 #' @rdname convert2json
 .convert2json.character = function(x){
   ## escape characters
-  x = gsub(r"(\)",r"(\\)",x, fixed=T)
-  x = gsub("\n",r"(\\n)",x, fixed=T)
-  x = gsub("\t",r"(\\t)",x, fixed=T)
-  x = gsub("\r",r"(\\r)",x, fixed=T)
-  x = gsub(r"(")",r"(\")",x, fixed=T)
+  x = gsub(r"(\)",r"(\\)",x, fixed=TRUE)
+  x = gsub("\n",r"(\\n)",x, fixed=TRUE)
+  x = gsub("\t",r"(\\t)",x, fixed=TRUE)
+  x = gsub("\r",r"(\\r)",x, fixed=TRUE)
+  x = gsub(r"(")",r"(\")",x, fixed=TRUE)
   
   isNa = is.na(x)
   x[!isNa] = paste0('"',x[!isNa],'"')
@@ -237,7 +237,7 @@
 }
 
 #' @rdname convert2json
-.convert2json.list = function(x, raw=c(), byElement=F, skipNa=T){
+.convert2json.list = function(x, raw=c(), byElement=FALSE, skipNa=TRUE){
   if(skipNa) x[is.na(x)] = NULL
   # if(skipNa) x[sapply(x,is.na)] = NULL
   x[sapply(x,is.null)] = NULL
@@ -259,7 +259,7 @@
 }
 
 #' @rdname convert2json
-.convert2json.data.frame = function(x, raw=c(), skipNa=T){
+.convert2json.data.frame = function(x, raw=c(), skipNa=TRUE){
   for(col in colnames(x)){
     if(!col %in% raw) x[,col] = .convert2json(x[,col])
   }
@@ -332,7 +332,7 @@
 #' @examples
 #' l  = list(NA,c(2,3), 5)
 #' RCX:::.convertRawList(l)
-.convertRawList = function(l, keepNa=T){
+.convertRawList = function(l, keepNa=TRUE){
   result = NULL
   if(!is.null(l)){
     result = sapply(l, function(v){

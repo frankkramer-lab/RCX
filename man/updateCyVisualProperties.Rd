@@ -9,25 +9,25 @@
 updateCyVisualProperties(
   x,
   cyVisualProperties,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCyVisualProperties}{CyVisualPropertiesAspect}(
   x,
   cyVisualProperties,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCyVisualProperties}{RCX}(
   x,
   cyVisualProperties,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

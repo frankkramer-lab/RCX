@@ -6,11 +6,11 @@
 \alias{writeHTML.CX}
 \title{Save network visualization as HTML file}
 \usage{
-writeHTML(x, file, layout = NULL, verbose = F)
+writeHTML(x, file, layout = NULL, verbose = FALSE)
 
-\method{writeHTML}{RCX}(x, file, layout = NULL, verbose = F)
+\method{writeHTML}{RCX}(x, file, layout = NULL, verbose = FALSE)
 
-\method{writeHTML}{CX}(x, file, layout = NULL, verbose = F)
+\method{writeHTML}{CX}(x, file, layout = NULL, verbose = FALSE)
 }
 \arguments{
 \item{x}{network; \link[=RCX-object]{RCX} or CX object}
@@ -20,6 +20,9 @@ writeHTML(x, file, layout = NULL, verbose = F)
 \item{layout}{named character or list; e.g. \code{c(name="random")}}
 
 \item{verbose}{logical; whether to print what is happening}
+}
+\value{
+file character; path, where the html file has been saved
 }
 \description{
 Save an interactive single page visualization of \link[=RCX-object]{RCX} and CX networks as an HTML file
@@ -56,30 +59,30 @@ rcx = createRCX(
 
 cx = toCX(rcx)
 
-\dontrun{
+htmlFile = tempfile(fileext = ".html")
+
 ## save the html
- writeHTML(rcx, "network.html")
+writeHTML(rcx, htmlFile)
 
 ## or
- writeHTML(cx, "network.html")
+writeHTML(cx, htmlFile)
 
 ## force a different layout
- writeHTML(rcx, "network.html", c(name="cose"))
+writeHTML(rcx, htmlFile, c(name="cose"))
 
 ## force a different layout with Java Script parameters
- writeHTML(rcx, "network.html", layout = c(name="random",animate="true"))
+writeHTML(rcx, htmlFile, layout = c(name="random",animate="true"))
 
 ## even pass a Java Script function
- writeHTML(
+writeHTML(
    rcx, 
-   "network.html", 
+   htmlFile, 
    layout = c(
      name="random",
      animate="true",
      animateFilter="function ( node, i ){ return true; }"
    )
- )
-}
+)
 }
 \seealso{
 \link{rcxToJson}, \link{readCX}, \link{writeCX}

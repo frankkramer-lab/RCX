@@ -74,7 +74,7 @@ This simplifies the extension of RCX for non-standard or self-defined aspects.
 
 The CX-JSON is parsed to R data types using the \link{jsonlite} package as follows:
 
-\code{jsonlite::fromJSON(cx, simplifyVector = F)}
+\code{jsonlite::fromJSON(cx, simplifyVector = FALSE)}
 
 This results in a list of lists (of lists...) to avoid automatic data type conversions, which affect the correctness and
 usability of the data. Simplified JSON data for example \link{NodeAttributes} would be coerced into a data.frame,

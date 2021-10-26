@@ -5,9 +5,9 @@
 \alias{.validateListOfCyVisualPropertyPandD}
 \title{Cytoscape visual property: List of property and dependency}
 \usage{
-.validateCyVisualPropertyPandD(aspect, property, verbose = T)
+.validateCyVisualPropertyPandD(aspect, property, verbose = TRUE)
 
-.validateListOfCyVisualPropertyPandD(aspect, property, verbose = T)
+.validateListOfCyVisualPropertyPandD(aspect, property, verbose = TRUE)
 }
 \arguments{
 \item{aspect}{either \link{CyVisualPropertyProperties} or \link{CyVisualPropertyDependencies} object}

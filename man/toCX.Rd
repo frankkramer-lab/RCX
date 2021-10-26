@@ -4,7 +4,7 @@
 \alias{toCX}
 \title{Convert an \link[=RCX-object]{RCX} object to CX (JSON)}
 \usage{
-toCX(rcx, verbose = F, pretty = F)
+toCX(rcx, verbose = FALSE, pretty = FALSE)
 }
 \arguments{
 \item{rcx}{\link[=RCX-object]{RCX} object}
@@ -37,7 +37,7 @@ them in the resulting CX.
 \examples{
 rcx = createRCX(
   nodes = createNodes(
-    name = LETTERS[1:10]
+    name = LETTERS[seq_len(10)]
   ),
   edges = createEdges(
     source=c(1,2),

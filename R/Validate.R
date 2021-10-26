@@ -24,14 +24,14 @@
 #' @export
 #' @example man-roxygen-examples/CX_load.R
 #' @example man-roxygen-examples/validate.R
-validate = function(x, verbose=T){
+validate = function(x, verbose=TRUE){
     UseMethod("validate", x)
 }
 
 
 #' @describeIn validate Default
 #' @export
-validate.default = function(x, verbose=T) {
+validate.default = function(x, verbose=TRUE) {
     if(verbose) cat("Default case is not validated!\n")
     return(TRUE)
 }
@@ -39,7 +39,7 @@ validate.default = function(x, verbose=T) {
 
 #' @describeIn validate Nodes
 #' @export
-validate.NodesAspect = function(x, verbose=T){
+validate.NodesAspect = function(x, verbose=TRUE){
     aspect = x
     if(verbose) cat("Checking Nodes Aspect:\n")
 
@@ -61,14 +61,14 @@ validate.NodesAspect = function(x, verbose=T){
     pass = pass & .test_NoMergeColumn(aspect, "oldId", verbose)
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Nodes Aspect:", pass, " ", T)
+    if(verbose) .log(">> Nodes Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Edges
 #' @export
-validate.EdgesAspect = function(x, verbose=T){
+validate.EdgesAspect = function(x, verbose=TRUE){
     aspect = x
     if(verbose) cat("Checking Edges Aspect:\n")
 
@@ -99,7 +99,7 @@ validate.EdgesAspect = function(x, verbose=T){
     pass = pass & .test_NoMergeColumn(aspect, "oldId", verbose)
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Edges Aspect:", pass, " ", T)
+    if(verbose) .log(">> Edges Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
@@ -114,7 +114,7 @@ validate.EdgesAspect = function(x, verbose=T){
 #' 
 #' @note Internal function only for convenience
 #' @keywords internal
-.validateAttributesAspect = function(aspect, verbose=T){
+.validateAttributesAspect = function(aspect, verbose=TRUE){
     if("subnetworkId" %in% colnames(aspect)){
         idColumn = c("propertyOf","name","subnetworkId")
     }else{
@@ -156,7 +156,7 @@ validate.EdgesAspect = function(x, verbose=T){
 
 #' @describeIn validate Node attributes
 #' @export
-validate.NodeAttributesAspect = function(x, verbose=T){
+validate.NodeAttributesAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Node Attributes Aspect:\n")
@@ -165,14 +165,14 @@ validate.NodeAttributesAspect = function(x, verbose=T){
 
     pass = pass & .validateAttributesAspect(aspect, verbose)
 
-    if(verbose) .log(">> Node Attributes Aspect:", pass, " ", T)
+    if(verbose) .log(">> Node Attributes Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Edge attributes
 #' @export
-validate.EdgeAttributesAspect = function(x, verbose=T){
+validate.EdgeAttributesAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Edge Attributes Aspect:\n")
@@ -181,14 +181,14 @@ validate.EdgeAttributesAspect = function(x, verbose=T){
 
     pass = pass & .validateAttributesAspect(aspect, verbose)
 
-    if(verbose) .log(">> Edge Attributes Aspect:", pass, " ", T)
+    if(verbose) .log(">> Edge Attributes Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Network attributes
 #' @export
-validate.NetworkAttributesAspect = function(x, verbose=T){
+validate.NetworkAttributesAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Network Attributes Aspect:\n")
@@ -225,14 +225,14 @@ validate.NetworkAttributesAspect = function(x, verbose=T){
     }
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Network Attributes Aspect:", pass, " ", T)
+    if(verbose) .log(">> Network Attributes Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cartesian layout
 #' @export
-validate.CartesianLayoutAspect = function(x, verbose=T){
+validate.CartesianLayoutAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cartesian Layout Aspect:\n")
@@ -268,14 +268,14 @@ validate.CartesianLayoutAspect = function(x, verbose=T){
     }
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Cartesian Layout Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cartesian Layout Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape Groups
 #' @export
-validate.CyGroupsAspect = function(x, verbose=T){
+validate.CyGroupsAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Groups Aspect:\n")
@@ -313,14 +313,14 @@ validate.CyGroupsAspect = function(x, verbose=T){
     pass = pass & .test_NoMergeColumn(aspect, "oldId", verbose)
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Cytoscape Groups Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cytoscape Groups Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape Visual Properties
 #' @export
-validate.CyVisualPropertiesAspect = function(x, verbose=T){
+validate.CyVisualPropertiesAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Visual Properties Aspect:\n")
@@ -341,13 +341,13 @@ validate.CyVisualPropertiesAspect = function(x, verbose=T){
         }
     }
     
-    if(verbose) .log(">> Cytoscape Visual Properties Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cytoscape Visual Properties Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 #' @describeIn validate Cytoscape Visual Properties
 #' @export
-validate.CyVisualProperty = function(x, verbose=T){
+validate.CyVisualProperty = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Visual Property sub-aspect:\n")
@@ -410,7 +410,7 @@ validate.CyVisualProperty = function(x, verbose=T){
         
     }
     
-    if(verbose) .log(">> Cytoscape Visual Property sub-aspect:", pass, " ", F)
+    if(verbose) .log(">> Cytoscape Visual Property sub-aspect:", pass, " ", FALSE)
     invisible(pass)
 }
 
@@ -427,7 +427,7 @@ validate.CyVisualProperty = function(x, verbose=T){
 #' 
 #' @note Internal function only for convenience
 #' @keywords internal
-.validateCyVisualPropertyPandD = function(aspect, property, verbose=T){
+.validateCyVisualPropertyPandD = function(aspect, property, verbose=TRUE){
     pass = .test_IsCVPclass(aspect, property, verbose)
 
     requiredColumns = c("name", "value")
@@ -450,7 +450,7 @@ validate.CyVisualProperty = function(x, verbose=T){
 
 
 #' @describeIn dot-validateCyVisualPropertyPandD List of property and dependency objects
-.validateListOfCyVisualPropertyPandD = function(aspect, property, verbose=T){
+.validateListOfCyVisualPropertyPandD = function(aspect, property, verbose=TRUE){
     pass = .test_ElementIsList(aspect, property, verbose)
     
     vp = aspect[[property]]
@@ -477,35 +477,35 @@ validate.CyVisualProperty = function(x, verbose=T){
 
 #' @describeIn validate Cytoscape visual property: Properties
 #' @export
-validate.CyVisualPropertyProperties = function(x, verbose=T){
+validate.CyVisualPropertyProperties = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Properties of Cytoscape Visual Properties Aspect:\n")
     
     pass = .validateCyVisualPropertyPandD(aspect, "properties", verbose)
 
-    if(verbose) .log(">> Properties of Cytoscape Visual Properties Aspect:", pass, " ", T)
+    if(verbose) .log(">> Properties of Cytoscape Visual Properties Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape visual property: Dependencies
 #' @export
-validate.CyVisualPropertyDependencies = function(x, verbose=T){
+validate.CyVisualPropertyDependencies = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Dependencies of Cytoscape Visual Properties Aspect:\n")
 
     pass = .validateCyVisualPropertyPandD(aspect, "dependencies", verbose)
 
-    if(verbose) .log(">> Dependencies of Cytoscape Visual Properties Aspect:", pass, " ", T)
+    if(verbose) .log(">> Dependencies of Cytoscape Visual Properties Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape visual property: Mappings
 #' @export
-validate.CyVisualPropertyMappings = function(x, verbose=T){
+validate.CyVisualPropertyMappings = function(x, verbose=TRUE){
     aspect = x
     if(verbose) cat("Checking Mappings of Cytoscape Visual Properties Aspect:\n")
 
@@ -528,14 +528,14 @@ validate.CyVisualPropertyMappings = function(x, verbose=T){
     
     pass = pass & .test_AllowedColumnsPresent(aspect, requiredColumns, verbose)
 
-    if(verbose) .log(">> Mappings of Cytoscape Visual Properties Aspect:", pass, " ", T)
+    if(verbose) .log(">> Mappings of Cytoscape Visual Properties Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape hidden attributes
 #' @export
-validate.CyHiddenAttributesAspect = function(x, verbose=T){
+validate.CyHiddenAttributesAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Hidden Attributes Aspect:\n")
@@ -572,14 +572,14 @@ validate.CyHiddenAttributesAspect = function(x, verbose=T){
     }
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Cytoscape Hidden Attributes Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cytoscape Hidden Attributes Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape network relations
 #' @export
-validate.CyNetworkRelationsAspect = function(x, verbose=T){
+validate.CyNetworkRelationsAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Network Relations Aspect:\n")
@@ -611,14 +611,14 @@ validate.CyNetworkRelationsAspect = function(x, verbose=T){
         pass = pass & .test_IsCharacter(aspect, "name", verbose)
     }
 
-    if(verbose) .log(">> Cytoscape Network Relations Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cytoscape Network Relations Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape sub-networks
 #' @export
-validate.CySubNetworksAspect = function(x, verbose=T){
+validate.CySubNetworksAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Subnetworks Aspect:\n")
@@ -650,14 +650,14 @@ validate.CySubNetworksAspect = function(x, verbose=T){
     pass = pass & .test_NoMergeColumn(aspect, "oldId", verbose)
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Cytoscape Subnetworks Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cytoscape Subnetworks Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 
 #' @describeIn validate Cytoscape table column aspect
 #' @export
-validate.CyTableColumnAspect = function(x, verbose=T){
+validate.CyTableColumnAspect = function(x, verbose=TRUE){
     aspect = x
     
     if(verbose) cat("Checking Cytoscape Table Column Aspect:\n")
@@ -678,7 +678,7 @@ validate.CyTableColumnAspect = function(x, verbose=T){
         
         pass = pass & .test_IsCharacter(aspect, "appliesTo", verbose)
         pass = pass & .test_ContainsNA(aspect, "appliesTo", verbose)
-        pass = pass & .test_ValuesInSet(aspect, "appliesTo", .DICT$TCappliesTo, F, verbose)
+        pass = pass & .test_ValuesInSet(aspect, "appliesTo", .DICT$TCappliesTo, FALSE, verbose)
 
         pass = pass & .test_IsCharacter(aspect, "name", verbose)
         pass = pass & .test_ContainsNA(aspect, "name", verbose)
@@ -696,29 +696,29 @@ validate.CyTableColumnAspect = function(x, verbose=T){
     }
     pass = pass & .test_AllowedColumnsPresent(aspect, allowedColumns, verbose)
 
-    if(verbose) .log(">> Cytoscape Table Column Aspect:", pass, " ", T)
+    if(verbose) .log(">> Cytoscape Table Column Aspect:", pass, " ", TRUE)
     invisible(pass)
 }
 
 #' @describeIn validate The whole RCX object with all its aspects
 #' @export
-validate.RCX = function(x, verbose=T){
+validate.RCX = function(x, verbose=TRUE){
     rcx = x
     
-    testNodes = .test_AspectExist(rcx, "nodes", F)
+    testNodes = .test_AspectExist(rcx, "nodes", FALSE)
     pass = testNodes
 
-    testEdges = .test_AspectExist(rcx, "edges", F)
-    testNodeAttributes = .test_AspectExist(rcx, "nodeAttributes", F)
-    testEdgeAttributes = .test_AspectExist(rcx, "edgeAttributes", F)
-    testNetworkAttributes = .test_AspectExist(rcx, "networkAttributes", F)
-    testCartesianLayout = .test_AspectExist(rcx, "cartesianLayout", F)
-    testCyGroups = .test_AspectExist(rcx, "cyGroups", F)
-    testCyVisualProperties = .test_AspectExist(rcx, "cyVisualProperties", F)
-    testCyHiddenAttributes = .test_AspectExist(rcx, "cyHiddenAttributes", F)
-    testCyNetworkRelations = .test_AspectExist(rcx, "cyNetworkRelations", F)
-    testCySubNetworks = .test_AspectExist(rcx, "cySubNetworks", F)
-    testCyTableColumn = .test_AspectExist(rcx, "cyTableColumn", F)
+    testEdges = .test_AspectExist(rcx, "edges", FALSE)
+    testNodeAttributes = .test_AspectExist(rcx, "nodeAttributes", FALSE)
+    testEdgeAttributes = .test_AspectExist(rcx, "edgeAttributes", FALSE)
+    testNetworkAttributes = .test_AspectExist(rcx, "networkAttributes", FALSE)
+    testCartesianLayout = .test_AspectExist(rcx, "cartesianLayout", FALSE)
+    testCyGroups = .test_AspectExist(rcx, "cyGroups", FALSE)
+    testCyVisualProperties = .test_AspectExist(rcx, "cyVisualProperties", FALSE)
+    testCyHiddenAttributes = .test_AspectExist(rcx, "cyHiddenAttributes", FALSE)
+    testCyNetworkRelations = .test_AspectExist(rcx, "cyNetworkRelations", FALSE)
+    testCySubNetworks = .test_AspectExist(rcx, "cySubNetworks", FALSE)
+    testCyTableColumn = .test_AspectExist(rcx, "cyTableColumn", FALSE)
 
     if(testNodes) {
         valNodes = validate(rcx$nodes, verbose)
@@ -776,7 +776,7 @@ validate.RCX = function(x, verbose=T){
         for(la in leftAspects) {
            test = test & validate(rcx[[la]], verbose) 
         }
-        if(verbose) .log(">> Cytoscape Table Column Aspect:", test, " ", T)
+        if(verbose) .log(">> Cytoscape Table Column Aspect:", test, " ", TRUE)
         pass = pass & test
     }
 
@@ -911,7 +911,7 @@ validate.RCX = function(x, verbose=T){
 
         atLeastOneColumns = c(nodes="nodes",externalEdges="edges",internalEdges="edges")
         for(col in names(atLeastOneColumns)){
-            test = F
+            test = FALSE
             if(atLeastOneColumns[col]=="nodes"){
                 test = testNodes & valNodes
             }else if(atLeastOneColumns[col]=="edges"){

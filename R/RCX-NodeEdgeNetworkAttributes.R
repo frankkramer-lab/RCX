@@ -102,13 +102,13 @@ createNodeAttributes = function(propertyOf, name, value, dataType=NULL, isList=N
 #' @seealso \code{\link{EdgeAttributes}}, \code{\link{NetworkAttributes}}
 #' @export
 #' @example man-roxygen-examples/nodeAttributes-update.R
-updateNodeAttributes = function(x, nodeAttributes, replace=T, stopOnDuplicates=F, ...){
+updateNodeAttributes = function(x, nodeAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateNodeAttributes", x)
 }
 
 #' @rdname updateNodeAttributes
 #' @export
-updateNodeAttributes.NodeAttributesAspect = function(x, nodeAttributes, replace=T, stopOnDuplicates=F, ...){
+updateNodeAttributes.NodeAttributesAspect = function(x, nodeAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     nodeAttr = x
     fname="addNodeAttributes"
     if(missing(nodeAttr)) .stop("paramMissing", "x")
@@ -128,7 +128,7 @@ updateNodeAttributes.NodeAttributesAspect = function(x, nodeAttributes, replace=
 
 #' @rdname updateNodeAttributes
 #' @export
-updateNodeAttributes.RCX = function(x, nodeAttributes, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateNodeAttributes.RCX = function(x, nodeAttributes, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="addNodeAttributes"
     if(missing(rcx)) .stop("paramMissingRCX")
@@ -259,14 +259,14 @@ createEdgeAttributes = function(propertyOf, name, value, dataType=NULL, isList=N
 #' @seealso \code{\link{NodeAttributes}}, \code{\link{NetworkAttributes}}
 #' @export
 #' @example man-roxygen-examples/edgeAttributes-update.R
-updateEdgeAttributes = function(x, edgeAttributes, replace=T, stopOnDuplicates=F, ...){
+updateEdgeAttributes = function(x, edgeAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateEdgeAttributes", x)
 }
 
 
 #' @rdname updateEdgeAttributes
 #' @export
-updateEdgeAttributes.EdgeAttributesAspect = function(x, edgeAttributes, replace=T, stopOnDuplicates=F, ...){
+updateEdgeAttributes.EdgeAttributesAspect = function(x, edgeAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     fname="updateEdgeAttributes"
     if(missing(x)) .stop("paramMissing", "x")
     if(missing(edgeAttributes)) .stop("paramMissing", "edgeAttributes")
@@ -285,7 +285,7 @@ updateEdgeAttributes.EdgeAttributesAspect = function(x, edgeAttributes, replace=
 
 #' @rdname updateEdgeAttributes
 #' @export
-updateEdgeAttributes.RCX = function(x, edgeAttributes, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateEdgeAttributes.RCX = function(x, edgeAttributes, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="updateEdgeAttributes"
     if(missing(rcx)) .stop("paramMissingRCX")
@@ -373,8 +373,8 @@ createNetworkAttributes = function(name, value, dataType=NULL, isList=NULL, subn
                      name, value, dataType, isList, subnetworkId)
 
     networkAttributesAspect = data.frame(name=name,
-                                         stringsAsFactors = F,
-                                         check.names = F)
+                                         stringsAsFactors = FALSE,
+                                         check.names = FALSE)
 
     networkAttributesAspect$value = value
     
@@ -424,14 +424,14 @@ createNetworkAttributes = function(name, value, dataType=NULL, isList=NULL, subn
 #' @seealso \code{\link{NetworkAttributes}}; \code{\link{NodeAttributes}}, \code{\link{EdgeAttributes}}
 #' @export
 #' @example man-roxygen-examples/networkAttributes-update.R
-updateNetworkAttributes = function(x, networkAttributes, replace=T, stopOnDuplicates=F, ...){
+updateNetworkAttributes = function(x, networkAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateNetworkAttributes", x)
 }
 
 
 #' @rdname updateNetworkAttributes
 #' @export
-updateNetworkAttributes.NetworkAttributesAspect = function(x, networkAttributes, replace=T, stopOnDuplicates=F, ...){
+updateNetworkAttributes.NetworkAttributesAspect = function(x, networkAttributes, replace=TRUE, stopOnDuplicates=FALSE, ...){
     networkAttributesOld = x
     fname="updateNetworkAttributes"
     if(missing(networkAttributesOld)) .stop("paramMissing", "x")
@@ -473,7 +473,7 @@ updateNetworkAttributes.NetworkAttributesAspect = function(x, networkAttributes,
 
 #' @rdname updateNetworkAttributes
 #' @export
-updateNetworkAttributes.RCX = function(x, networkAttributes, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateNetworkAttributes.RCX = function(x, networkAttributes, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="updateNetworkAttributes"
     if(missing(rcx)) .stop("paramMissingRCX")

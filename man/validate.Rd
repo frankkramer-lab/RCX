@@ -22,43 +22,43 @@
 \alias{validate.RCX}
 \title{Validate RCX and its aspects}
 \usage{
-validate(x, verbose = T)
+validate(x, verbose = TRUE)
 
-\method{validate}{default}(x, verbose = T)
+\method{validate}{default}(x, verbose = TRUE)
 
-\method{validate}{NodesAspect}(x, verbose = T)
+\method{validate}{NodesAspect}(x, verbose = TRUE)
 
-\method{validate}{EdgesAspect}(x, verbose = T)
+\method{validate}{EdgesAspect}(x, verbose = TRUE)
 
-\method{validate}{NodeAttributesAspect}(x, verbose = T)
+\method{validate}{NodeAttributesAspect}(x, verbose = TRUE)
 
-\method{validate}{EdgeAttributesAspect}(x, verbose = T)
+\method{validate}{EdgeAttributesAspect}(x, verbose = TRUE)
 
-\method{validate}{NetworkAttributesAspect}(x, verbose = T)
+\method{validate}{NetworkAttributesAspect}(x, verbose = TRUE)
 
-\method{validate}{CartesianLayoutAspect}(x, verbose = T)
+\method{validate}{CartesianLayoutAspect}(x, verbose = TRUE)
 
-\method{validate}{CyGroupsAspect}(x, verbose = T)
+\method{validate}{CyGroupsAspect}(x, verbose = TRUE)
 
-\method{validate}{CyVisualPropertiesAspect}(x, verbose = T)
+\method{validate}{CyVisualPropertiesAspect}(x, verbose = TRUE)
 
-\method{validate}{CyVisualProperty}(x, verbose = T)
+\method{validate}{CyVisualProperty}(x, verbose = TRUE)
 
-\method{validate}{CyVisualPropertyProperties}(x, verbose = T)
+\method{validate}{CyVisualPropertyProperties}(x, verbose = TRUE)
 
-\method{validate}{CyVisualPropertyDependencies}(x, verbose = T)
+\method{validate}{CyVisualPropertyDependencies}(x, verbose = TRUE)
 
-\method{validate}{CyVisualPropertyMappings}(x, verbose = T)
+\method{validate}{CyVisualPropertyMappings}(x, verbose = TRUE)
 
-\method{validate}{CyHiddenAttributesAspect}(x, verbose = T)
+\method{validate}{CyHiddenAttributesAspect}(x, verbose = TRUE)
 
-\method{validate}{CyNetworkRelationsAspect}(x, verbose = T)
+\method{validate}{CyNetworkRelationsAspect}(x, verbose = TRUE)
 
-\method{validate}{CySubNetworksAspect}(x, verbose = T)
+\method{validate}{CySubNetworksAspect}(x, verbose = TRUE)
 
-\method{validate}{CyTableColumnAspect}(x, verbose = T)
+\method{validate}{CyTableColumnAspect}(x, verbose = TRUE)
 
-\method{validate}{RCX}(x, verbose = T)
+\method{validate}{RCX}(x, verbose = TRUE)
 }
 \arguments{
 \item{x}{object to validate; \link[=RCX-object]{RCX} object or an aspect}

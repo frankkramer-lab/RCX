@@ -257,7 +257,7 @@ NULL
 #' @describeIn checks checks if `B` contains all elements of `A`, aka. references.
 .checkRefs = function(A, B, name, cname=c()){
     if(length(A)==0){
-        pass = T
+        pass = TRUE
     }else{
         pass = .elementsBContainsAllA(A, B)
     }

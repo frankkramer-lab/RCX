@@ -9,7 +9,7 @@ edges2 = createEdges(id=c(3,2,4),
 edges3 = updateEdges(edges1, edges2)
 
 ## add the edges
-edges4 = updateNodes(nodes1, nodes2, keepOldIds=FALSE)
+edges4 = updateEdges(edges1, edges2, keepOldIds=FALSE)
 
 ## force an error because of duplicated ids
 try(updateEdges(edges1, edges2, stopOnDuplicates=TRUE))

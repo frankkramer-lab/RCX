@@ -6,16 +6,16 @@
 \alias{updateEdges.RCX}
 \title{Update edges}
 \usage{
-updateEdges(x, edges, stopOnDuplicates = F, keepOldIds = T, ...)
+updateEdges(x, edges, stopOnDuplicates = FALSE, keepOldIds = TRUE, ...)
 
-\method{updateEdges}{EdgesAspect}(x, edges, stopOnDuplicates = F, keepOldIds = T, ...)
+\method{updateEdges}{EdgesAspect}(x, edges, stopOnDuplicates = FALSE, keepOldIds = TRUE, ...)
 
 \method{updateEdges}{RCX}(
   x,
   edges,
-  stopOnDuplicates = F,
-  keepOldIds = T,
-  checkReferences = T,
+  stopOnDuplicates = FALSE,
+  keepOldIds = TRUE,
+  checkReferences = TRUE,
   ...
 )
 }
@@ -47,4 +47,37 @@ To keep track of the changes, it is possible to keep the old IDs of the newly ad
 This can be omitted by setting \emph{keepOldIds} to \code{FALSE}.
 Otherwise, if a re-assignment of the IDs is not desired, this can be prevented by setting \emph{stopOnDuplicates} to \code{TRUE}.
 This forces the function to stop and raise an error, if duplicated IDs are present.
+}
+\examples{
+## create some edges
+edges1 = createEdges(source=c(1,1,0), target=c(2,0,1))
+edges2 = createEdges(id=c(3,2,4),
+                     source=c(0,0,1), 
+                     target=c(1,2,2),
+                     interaction=c("activates","inhibits", NA))
+
+## simply add the edges and keep old ids
+edges3 = updateEdges(edges1, edges2)
+
+## add the edges
+edges4 = updateEdges(edges1, edges2, keepOldIds=FALSE)
+
+## force an error because of duplicated ids
+try(updateEdges(edges1, edges2, stopOnDuplicates=TRUE))
+## =>Error:
+## Elements of "id" (in updateEdges) must not contain duplicates!
+
+## Prepare an RCX object
+rcx = createRCX(createNodes(name = c("EGFR","AKT1","WNT")))
+
+## add edges to the RCX object
+rcx = updateEdges(rcx, edges1)
+
+## add new edges and don't keep old ids
+rcx = updateEdges(rcx, edges2, keepOldIds=FALSE)
+
+## force an error because of duplicated ids
+try(updateEdges(rcx, edges2, stopOnDuplicates=TRUE))
+## =>Error:
+## Elements of "id" (in updateEdges) must not contain duplicates!
 }

@@ -6,16 +6,28 @@
 \alias{updateNodeAttributes.RCX}
 \title{Update node attributes}
 \usage{
-updateNodeAttributes(x, nodeAttributes, replace = T, stopOnDuplicates = F, ...)
+updateNodeAttributes(
+  x,
+  nodeAttributes,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  ...
+)
 
-\method{updateNodeAttributes}{NodeAttributesAspect}(x, nodeAttributes, replace = T, stopOnDuplicates = F, ...)
+\method{updateNodeAttributes}{NodeAttributesAspect}(
+  x,
+  nodeAttributes,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  ...
+)
 
 \method{updateNodeAttributes}{RCX}(
   x,
   nodeAttributes,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

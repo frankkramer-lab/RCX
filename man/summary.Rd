@@ -72,6 +72,9 @@
 
 \item{...}{additional arguments affecting the summary produced.}
 }
+\value{
+object summary as list
+}
 \description{
 \code{summary} is a generic function used to produce result summaries of the \link[=RCX-object]{RCX} object.
 The function invokes particular methods which depend on the class of the first argument.

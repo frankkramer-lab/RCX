@@ -5,15 +5,15 @@
 ## Description:
 ##   MetaData
 ##########################################################################################
-# property			|options							|description
-# --------------------|-----------------------------------|-------------------------------------------------------
-# "name"				|Required in pre- and post-metadata	|The name of the aspect
-# "version"			|Required in pre-metadata			|version of this aspect schema ("1.1.0", "2.0.0", etc.)
-# "idCounter"			|Required if the aspect exports IDs	|Integer (All Element IDs are integers; see [node id](#nodeid), [edge id](#edgeid), [cytoscape group id](#cygroupid))
-# "elementCount"      |Optional							|number (integer) of elements in this aspect
-# "consistencyGroup"	|Optional                           |An integer identifier shared by aspects to indicate that they are mutually consistent
-# "properties"		|Optional					        |An aspect-defined property list
-# "checksum"          |Optional (Deprecated) 	            |(NDEx CX implementation doesn???t support this attribute. This attribute is ignored in NDEx)
+# property           |options                            |description
+# -------------------|-----------------------------------|-------------------------------------------------------
+# "name"             |Required in pre- and post-metadata |The name of the aspect
+# "version"          |Required in pre-metadata           |version of this aspect schema ("1.1.0", "2.0.0", etc.)
+# "idCounter"        |Required if the aspect exports IDs |Integer (All Element IDs are integers; see [node id](#nodeid), [edge id](#edgeid), [cytoscape group id](#cygroupid))
+# "elementCount"     |Optional                           |number (integer) of elements in this aspect
+# "consistencyGroup" |Optional                           |An integer identifier shared by aspects to indicate that they are mutually consistent
+# "properties"       |Optional                           |An aspect-defined property list
+# "checksum"         |Optional (Deprecated)              |(NDEx CX implementation doesn't support this attribute. This attribute is ignored in NDEx)
 ##########################################################################################
 
 

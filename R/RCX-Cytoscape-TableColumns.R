@@ -55,13 +55,13 @@ createCyTableColumn = function(appliesTo, name, dataType=NULL, isList=NULL, subn
     
     aspect = data.frame(appliesTo=appliesTo,
                         name=name,
-                        stringsAsFactors = F,
-                        check.names = F)
+                        stringsAsFactors = FALSE,
+                        check.names = FALSE)
     
     if(is.null(dataType)) dataType = rep("character", length(name))
     aspect$dataType = dataType
     
-    if(is.null(isList)) isList = rep(F, length(name))
+    if(is.null(isList)) isList = rep(FALSE, length(name))
     aspect$isList = isList
     
     if(is.null(subnetworkId)) {
@@ -104,14 +104,14 @@ createCyTableColumn = function(appliesTo, name, dataType=NULL, isList=NULL, subn
 #' @seealso \code{\link{CySubNetworks}}
 #' @export
 #' @example man-roxygen-examples/cy-table-column-update.R
-updateCyTableColumn = function(x, cyTableColumns, replace=T, stopOnDuplicates=F, ...){
+updateCyTableColumn = function(x, cyTableColumns, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateCyTableColumn", x)
 }
 
 
 #' @rdname updateCyTableColumn
 #' @export
-updateCyTableColumn.CyTableColumnAspect = function(x, cyTableColumns, replace=T, stopOnDuplicates=F, ...){
+updateCyTableColumn.CyTableColumnAspect = function(x, cyTableColumns, replace=TRUE, stopOnDuplicates=FALSE, ...){
     tableColumnsOld = x
     fname="updateCyTableColumn"
     if(missing(tableColumnsOld)) .stop("paramMissing", "x")
@@ -153,7 +153,7 @@ updateCyTableColumn.CyTableColumnAspect = function(x, cyTableColumns, replace=T,
 
 #' @rdname updateCyTableColumn
 #' @export
-updateCyTableColumn.RCX = function(x, cyTableColumns, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateCyTableColumn.RCX = function(x, cyTableColumns, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="addCyTableColumn"
     if(missing(rcx)) .stop("paramMissingRCX")

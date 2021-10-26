@@ -26,7 +26,7 @@
 #' 
 #' The `parseJSON` function uses the [jsonlite] package, to parse JSON text:
 #'  
-#' `jsonlite::fromJSON(cx, simplifyVector = F)`
+#' `jsonlite::fromJSON(cx, simplifyVector = FALSE)`
 #' 
 #' The result is a list containing the aspect data as elements.
 #' If, for some reason, the JSON is not valid, the [jsonlite] package raises an error.
@@ -57,6 +57,8 @@
 #' @param aspectList list; list containing the aspect data (parsed JSON)
 #' @param verbose logical; whether to print what is happening
 #' @param aspectClasses named character; accession names and aspect classes [aspectClasses]
+#' 
+#' @return [RCX][RCX-object] object
 #'
 #' @export
 #' @seealso [jsonToRCX], [writeCX]
@@ -75,7 +77,7 @@
 #' json = readJSON(cxFile)
 #' aspectList = parseJSON(json)
 #' rcx = processCX(aspectList)
-readCX = function(file, verbose=F, aspectClasses=NULL){
+readCX = function(file, verbose=FALSE, aspectClasses=NULL){
   json = readJSON(file, verbose)
   aspectList = parseJSON(json, verbose)
   rcx = processCX(aspectList, verbose, aspectClasses=aspectClasses)
@@ -85,11 +87,11 @@ readCX = function(file, verbose=F, aspectClasses=NULL){
 
 #' @describeIn readCX Reads the CX/JSON from file and returns the content as text
 #' @export
-readJSON = function(file, verbose=F){
+readJSON = function(file, verbose=FALSE){
   if(verbose) cat(paste0("Read file \"",file,'"...'))
   
   fileCon = file(file)
-  json = readLines(fileCon, warn = F)
+  json = readLines(fileCon, warn = FALSE)
   close(fileCon)
   
   json = paste0(json,collapse = "\n")
@@ -103,10 +105,10 @@ readJSON = function(file, verbose=F){
 
 #' @describeIn readCX Parses the JSON text and returns a list with the aspect data
 #' @export
-parseJSON = function(json, verbose=F){
+parseJSON = function(json, verbose=FALSE){
   if(verbose) cat(paste0("Parse json..."))
   
-  jsonList = jsonlite::fromJSON(json, simplifyVector = F)
+  jsonList = jsonlite::fromJSON(json, simplifyVector = FALSE)
   
   if(verbose) cat("done!\n")
   return(jsonList)
@@ -115,7 +117,7 @@ parseJSON = function(json, verbose=F){
 
 #' @describeIn readCX Processes the list of aspect data and creates an [RCX][RCX-object]
 #' @export
-processCX = function(aspectList, verbose=F, aspectClasses=NULL){
+processCX = function(aspectList, verbose=FALSE, aspectClasses=NULL){
   ## get the names of the aspects
   jsonNames = sapply(aspectList, names)
   
@@ -154,8 +156,8 @@ processCX = function(aspectList, verbose=F, aspectClasses=NULL){
         if(!is.null(properties)){
           names(properties) = name
           properties = properties[sapply(properties, function(p){
-            if(length(p)==0) return(F)
-            return(ifelse(all(is.na(p)), F, T))
+            if(length(p)==0) return(FALSE)
+            return(ifelse(all(is.na(p)), FALSE, TRUE))
           })]
         }
 
@@ -224,7 +226,7 @@ processCX = function(aspectList, verbose=F, aspectClasses=NULL){
 #' 
 #' The CX-JSON is parsed to R data types using the [jsonlite] package as follows:
 #' 
-#' `jsonlite::fromJSON(cx, simplifyVector = F)`
+#' `jsonlite::fromJSON(cx, simplifyVector = FALSE)`
 #' 
 #' This results in a list of lists (of lists...) to avoid automatic data type conversions, which affect the correctness and
 #' usability of the data. Simplified JSON data for example [NodeAttributes] would be coerced into a data.frame, 
@@ -288,8 +290,8 @@ jsonToRCX.metaData = function(jsonData, verbose){
   result = list(
     name = .jsonV(data, "name"),
     version = .jsonV(data, "version"),
-    consistencyGroup = .jsonV(data, "consistencyGroup", returnAllDefault = F),
-    properties = .jsonL(data, "properties", unList=F, returnAllDefault = F)
+    consistencyGroup = .jsonV(data, "consistencyGroup", returnAllDefault = FALSE),
+    properties = .jsonL(data, "properties", unList=FALSE, returnAllDefault = FALSE)
   )
 
   if(verbose) cat("done!\n")
@@ -304,8 +306,8 @@ jsonToRCX.nodes = function(jsonData, verbose){
   data = jsonData$nodes
   
   id = .jsonV(data, "@id")
-  name = .jsonV(data, "n", returnAllDefault=F)
-  represents = .jsonV(data, "r", returnAllDefault=F)
+  name = .jsonV(data, "n", returnAllDefault=FALSE)
+  represents = .jsonV(data, "r", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createNodes(id,
@@ -325,7 +327,7 @@ jsonToRCX.edges = function(jsonData, verbose){
   id = .jsonV(data, "@id")
   source = .jsonV(data, "s")
   target = .jsonV(data, "t")
-  interacts = .jsonV(data, "i", returnAllDefault=F)
+  interacts = .jsonV(data, "i", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createEdges(id,
@@ -347,7 +349,7 @@ jsonToRCX.nodeAttributes = function(jsonData, verbose){
   name = .jsonV(data, "n")
   value = .jsonL(data, "v")
   dataType = .json2RDataType(.jsonV(data, "d"))
-  subnetworkId = .jsonV(data, "s", returnAllDefault=F)
+  subnetworkId = .jsonV(data, "s", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createNodeAttributes(propertyOf,
@@ -371,7 +373,7 @@ jsonToRCX.edgeAttributes = function(jsonData, verbose){
   name = .jsonV(data, "n")
   value = .jsonL(data, "v")
   dataType = .json2RDataType(.jsonV(data, "d"))
-  subnetworkId = .jsonV(data, "s", returnAllDefault=F)
+  subnetworkId = .jsonV(data, "s", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createEdgeAttributes(propertyOf,
@@ -395,7 +397,7 @@ jsonToRCX.networkAttributes = function(jsonData, verbose){
   name = .jsonV(data, "n")
   value = .jsonL(data, "v")
   dataType = .json2RDataType(.jsonV(data, "d"))
-  subnetworkId = .jsonV(data, "s", returnAllDefault=F)
+  subnetworkId = .jsonV(data, "s", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createNetworkAttributes(name,
@@ -417,8 +419,8 @@ jsonToRCX.cartesianLayout = function(jsonData, verbose){
   node = .jsonV(data, "node")
   x = .jsonV(data, "x")
   y = .jsonV(data, "y")
-  z = .jsonV(data, "z", returnAllDefault=F)
-  view = .jsonV(data, "view", returnAllDefault=F)
+  z = .jsonV(data, "z", returnAllDefault=FALSE)
+  view = .jsonV(data, "view", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createCartesianLayout(node, x, y, z, view)
@@ -435,10 +437,10 @@ jsonToRCX.cyGroups = function(jsonData, verbose){
   
   id = .jsonV(data, "@id")
   name = .jsonV(data, "n")
-  nodes = .jsonL(data, "nodes", returnAllDefault=F)
-  externalEdges = .jsonL(data, "external_edges", returnAllDefault=F)
-  internalEdges = .jsonL(data, "internal_edges", returnAllDefault=F)
-  collapsed = .jsonV(data, "collapsed", returnAllDefault=F)
+  nodes = .jsonL(data, "nodes", returnAllDefault=FALSE)
+  externalEdges = .jsonL(data, "external_edges", returnAllDefault=FALSE)
+  internalEdges = .jsonL(data, "internal_edges", returnAllDefault=FALSE)
+  collapsed = .jsonV(data, "collapsed", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createCyGroups(id,
@@ -461,7 +463,7 @@ jsonToRCX.cyHiddenAttributes = function(jsonData, verbose){
   name = .jsonV(data, "n")
   value = .jsonL(data, "v")
   dataType = .json2RDataType(.jsonV(data, "d"))
-  subnetworkId = .jsonV(data, "s", returnAllDefault=F)
+  subnetworkId = .jsonV(data, "s", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createCyHiddenAttributes(name,
@@ -481,9 +483,9 @@ jsonToRCX.cyNetworkRelations = function(jsonData, verbose){
   data = jsonData$cyNetworkRelations
   
   child = .jsonV(data, "c")
-  parent = .jsonL(data, "p", returnAllDefault=F)
-  name = .jsonL(data, "name", returnAllDefault=F)
-  isView = ifelse(.jsonL(data, "r")=="view", T, F)
+  parent = .jsonL(data, "p", returnAllDefault=FALSE)
+  name = .jsonL(data, "name", returnAllDefault=FALSE)
+  isView = ifelse(.jsonL(data, "r")=="view", TRUE, FALSE)
   
   if(verbose) cat("create aspect...")
   result = createCyNetworkRelations(child, parent, name, isView)
@@ -499,8 +501,8 @@ jsonToRCX.cySubNetworks = function(jsonData, verbose){
   data = jsonData$cySubNetworks
   
   id = .jsonV(data, "@id")
-  nodes = .jsonL(data, "nodes", returnAllDefault=F)
-  edges = .jsonL(data, "edges", returnAllDefault=F)
+  nodes = .jsonL(data, "nodes", returnAllDefault=FALSE)
+  edges = .jsonL(data, "edges", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createCySubNetworks(id,
@@ -524,7 +526,7 @@ jsonToRCX.cyTableColumn = function(jsonData, verbose){
                             NA)))
   name = .jsonV(data, "n")
   dataType = .json2RDataType(.jsonV(data, "d"))
-  subnetworkId = .jsonV(data, "s", returnAllDefault=F)
+  subnetworkId = .jsonV(data, "s", returnAllDefault=FALSE)
   
   if(verbose) cat("create aspect...")
   result = createCyTableColumn(appliesTo,
@@ -558,7 +560,7 @@ jsonToRCX.cyVisualProperties = function(jsonData, verbose){
     if(!all(is.na(x))) x = createCyVisualPropertyDependencies(x)
     return(x)
   })
-  vpPM = .jsonL(data, "mappings", unList=F)
+  vpPM = .jsonL(data, "mappings", unList=FALSE)
   vpPM = lapply(vpPM,function(x){
     if(!all(is.na(x))) {
       n = names(x)

@@ -4,7 +4,7 @@
 \alias{.validateAttributesAspect}
 \title{Helper for validating node- and edge-attributes aspects}
 \usage{
-.validateAttributesAspect(aspect, verbose = T)
+.validateAttributesAspect(aspect, verbose = TRUE)
 }
 \arguments{
 \item{aspect}{an RCX aspect}

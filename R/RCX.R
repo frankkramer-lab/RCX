@@ -44,7 +44,7 @@ NULL
 #' @example man-roxygen-examples/rcx-create.R
 createRCX = function(nodes, edges, nodeAttributes, edgeAttributes, networkAttributes, cartesianLayout, 
                      cyGroups, cyVisualProperties, cyHiddenAttributes, cyNetworkRelations, cySubNetworks, cyTableColumn,
-                     checkReferences=T){
+                     checkReferences=TRUE){
   fname = "createRCX"
   if(missing(nodes)) .stop("paramMissing", "nodes is required (i.e. at least one node)!")
   .checkClass(nodes, .CLS$nodes, "nodes", fname)

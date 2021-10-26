@@ -9,25 +9,25 @@
 updateCyHiddenAttributes(
   x,
   hiddenAttributes,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCyHiddenAttributes}{CyHiddenAttributesAspect}(
   x,
   hiddenAttributes,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCyHiddenAttributes}{RCX}(
   x,
   hiddenAttributes,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

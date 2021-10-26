@@ -104,14 +104,14 @@ createCartesianLayout = function(node, x, y, z=NULL, view=NULL){
 #' @return *`r .CLS$cartesianLayout`* or [RCX][RCX-object] object with added layout
 #' @export
 #' @example man-roxygen-examples/cartesian-layout-update.R
-updateCartesianLayout = function(x, cartesianLayout, replace=T, stopOnDuplicates=F, ...){
+updateCartesianLayout = function(x, cartesianLayout, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateCartesianLayout", x)
 }
 
 
 #' @rdname updateCartesianLayout
 #' @export
-updateCartesianLayout.CartesianLayoutAspect = function(x, cartesianLayout, replace=T, stopOnDuplicates=F, ...){
+updateCartesianLayout.CartesianLayoutAspect = function(x, cartesianLayout, replace=TRUE, stopOnDuplicates=FALSE, ...){
     cartesianLayoutOld = x
     fname="addCartesianLayout"
     if(missing(cartesianLayoutOld)) .stop("paramMissing", "x")
@@ -152,7 +152,7 @@ updateCartesianLayout.CartesianLayoutAspect = function(x, cartesianLayout, repla
 
 #' @rdname updateCartesianLayout
 #' @export
-updateCartesianLayout.RCX = function(x, cartesianLayout, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateCartesianLayout.RCX = function(x, cartesianLayout, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="addCartesianLayout"
     if(missing(rcx)) .stop("paramMissingRCX")

@@ -37,6 +37,8 @@
 #' @param x network; [RCX][RCX-object] or CX object
 #' @param layout named character or list; e.g. `c(name="random")`
 #' @param openExternal logical; whether to open in an external browser instead of the RStudio viewer
+#' 
+#' @return `NULL`
 #'
 #' @export
 #' @seealso [rcxToJson], [readCX], [writeCX]
@@ -51,7 +53,7 @@
 #'   )
 #' )
 #' 
-#' \dontrun{
+#' \donttest{
 #' ## visualize the network
 #'  visualize(rcx)
 #' 
@@ -75,25 +77,26 @@
 #'  visualize(
 #'    rcx, 
 #'    layout = c(name="cose"),
-#'    openExternal = T
+#'    openExternal = TRUE
 #'  )
 #' }
-visualize = function(x, layout=NULL, openExternal=F){
+visualize = function(x, layout=NULL, openExternal=FALSE){
   UseMethod("visualize", x)
 }
 
 
 #' @rdname visualize
 #' @export
-visualize.RCX = function(x, layout=NULL, openExternal=F) {
+visualize.RCX = function(x, layout=NULL, openExternal=FALSE) {
   cx = toCX(x)
   visualize(cx, layout, openExternal)
+  return(NULL)
 }
 
 
 #' @rdname visualize
 #' @export
-visualize.CX = function(x, layout=NULL, openExternal=F) {
+visualize.CX = function(x, layout=NULL, openExternal=FALSE) {
   tempDir <- tempfile()
   dir.create(tempDir)
   htmlFile <- file.path(tempDir, "index.html")
@@ -106,6 +109,7 @@ visualize.CX = function(x, layout=NULL, openExternal=F) {
   else
     viewer(htmlFile)
   
+  return(NULL)
 }
 
 
@@ -137,6 +141,8 @@ visualize.CX = function(x, layout=NULL, openExternal=F) {
 #' @param file character; path, where the html file should be saved
 #' @param layout named character or list; e.g. `c(name="random")` 
 #' @param verbose logical; whether to print what is happening 
+#' 
+#' @return file character; path, where the html file has been saved
 #'
 #' @export
 #' @seealso [rcxToJson], [readCX], [writeCX]
@@ -153,47 +159,48 @@ visualize.CX = function(x, layout=NULL, openExternal=F) {
 #' 
 #' cx = toCX(rcx)
 #' 
-#' \dontrun{
+#' htmlFile = tempfile(fileext = ".html")
+#' 
 #' ## save the html
-#'  writeHTML(rcx, "network.html")
+#' writeHTML(rcx, htmlFile)
 #' 
 #' ## or
-#'  writeHTML(cx, "network.html")
+#' writeHTML(cx, htmlFile)
 #' 
 #' ## force a different layout
-#'  writeHTML(rcx, "network.html", c(name="cose"))
+#' writeHTML(rcx, htmlFile, c(name="cose"))
 #' 
 #' ## force a different layout with Java Script parameters
-#'  writeHTML(rcx, "network.html", layout = c(name="random",animate="true"))
+#' writeHTML(rcx, htmlFile, layout = c(name="random",animate="true"))
 #' 
 #' ## even pass a Java Script function
-#'  writeHTML(
+#' writeHTML(
 #'    rcx, 
-#'    "network.html", 
+#'    htmlFile, 
 #'    layout = c(
 #'      name="random",
 #'      animate="true",
 #'      animateFilter="function ( node, i ){ return true; }"
 #'    )
-#'  )
-#' }
-writeHTML = function(x, file, layout=NULL, verbose=F){
+#' )
+writeHTML = function(x, file, layout=NULL, verbose=FALSE){
   UseMethod("writeHTML", x)
 }
 
 
 #' @rdname writeHTML
 #' @export
-writeHTML.RCX = function(x, file, layout=NULL, verbose=F){
+writeHTML.RCX = function(x, file, layout=NULL, verbose=FALSE){
   if(verbose) cat("Convert RCX to CX (JSON)\n")
   cx = toCX(x, verbose)
-  writeHTML(cx, file, layout, verbose)
+  res = writeHTML(cx, file, layout, verbose)
+  return(res)
 }
 
 
 #' @rdname writeHTML
 #' @export
-writeHTML.CX = function(x, file, layout=NULL, verbose=F){
+writeHTML.CX = function(x, file, layout=NULL, verbose=FALSE){
   if(!endsWith(file,".html")) file = paste0(file,".html")
   htmlFile = file
   
@@ -220,4 +227,6 @@ writeHTML.CX = function(x, file, layout=NULL, verbose=F){
   
   if(verbose) cat(paste0('Writing html file to: ',htmlFile,'\n'))
   writeLines(html, htmlFile)
+  
+  return(file)
 }

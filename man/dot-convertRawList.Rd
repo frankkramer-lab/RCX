@@ -4,7 +4,7 @@
 \alias{.convertRawList}
 \title{Convert a list of vectors to a character vector with pasted elements}
 \usage{
-.convertRawList(l, keepNa = T)
+.convertRawList(l, keepNa = TRUE)
 }
 \arguments{
 \item{l}{unnamed list}

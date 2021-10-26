@@ -16,7 +16,7 @@ fromIgraph(
   edgeId = "id",
   edgeInteraction = "edgeInteraction",
   edgeIgnore = c(),
-  suppressWarning = F
+  suppressWarning = FALSE
 )
 }
 \arguments{

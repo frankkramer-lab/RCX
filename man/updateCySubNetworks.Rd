@@ -9,25 +9,25 @@
 updateCySubNetworks(
   x,
   cySubNetworks,
-  stopOnDuplicates = F,
-  keepOldIds = T,
+  stopOnDuplicates = FALSE,
+  keepOldIds = TRUE,
   ...
 )
 
 \method{updateCySubNetworks}{CySubNetworksAspect}(
   x,
   cySubNetworks,
-  stopOnDuplicates = F,
-  keepOldIds = T,
+  stopOnDuplicates = FALSE,
+  keepOldIds = TRUE,
   ...
 )
 
 \method{updateCySubNetworks}{RCX}(
   x,
   cySubNetworks,
-  stopOnDuplicates = F,
-  keepOldIds = T,
-  checkReferences = T,
+  stopOnDuplicates = FALSE,
+  keepOldIds = TRUE,
+  checkReferences = TRUE,
   ...
 )
 }

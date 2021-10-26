@@ -13,15 +13,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-```{yml, include=FALSE, eval=FALSE}
-## for generating the github README.MD
-output:
-  md_document:
-    variant: markdown_github
-```
-
-
 ```{r, include=FALSE}
 library(knitr)
 opts_chunk$set(tidy.opts=list(width.cutoff=75,
@@ -129,10 +120,9 @@ rcx = readCX(cxFile)
 This network also can be accessed and downloaded from NDEx at https://www.ndexbio.org/viewer/networks/66a902f5-2022-11e9-bb6a-0ac135e8bacf
 
 ```{r eval=FALSE, include=FALSE}
-Alternatively, the Bioconductor package [ndexr](https://doi.org/doi:10.18129/B9.bioc.ndexr) can be used to download the network from NDEx:
-```
+# Alternatively, the Bioconductor package [ndexr](https://doi.org/doi:10.18129/B9.bioc.ndexr) can be used to download the network from NDEx:
 
-```{r eval=FALSE, include=FALSE}
+# ```{r eval=FALSE, include=FALSE}
 library(ndexr)
 
 ## UUID of the network

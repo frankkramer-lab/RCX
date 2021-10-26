@@ -152,8 +152,8 @@ createCyVisualPropertyMappings = function(type, definition, name=NULL){
     vpm = data.frame(name=name,
                      type=type,
                      definition=definition,
-                     stringsAsFactors = F,
-                     check.names = F)
+                     stringsAsFactors = FALSE,
+                     check.names = FALSE)
     
     .checkUniqueDF(vpm, "name", fname)
     
@@ -203,8 +203,8 @@ createCyVisualProperty = function(properties=NULL, dependencies=NULL, mappings=N
     if((!is.null(appliesTo)) && (!is.null(view))){
         key = data.frame(appliesTo=appliesTo,
                          view=view,
-                         stringsAsFactors = F,
-                         check.names = F)
+                         stringsAsFactors = FALSE,
+                         check.names = FALSE)
         .checkUniqueDF(key,c("appliesTo","view"), fname)
         
         cvp$appliesTo=appliesTo
@@ -255,7 +255,7 @@ createCyVisualProperty = function(properties=NULL, dependencies=NULL, mappings=N
     .checkSameLength(fname,
                      cvp$properties, cvp$dependencies, cvp$mappings, cvp$appliesTo, cvp$view)
     
-    orderAV = order(cvp$appliesTo,cvp$view, na.last = F)
+    orderAV = order(cvp$appliesTo,cvp$view, na.last = FALSE)
     cvp$properties = cvp$properties[orderAV]
     cvp$dependencies = cvp$dependencies[orderAV]
     cvp$mappings = cvp$mappings[orderAV]
@@ -350,14 +350,14 @@ createCyVisualProperties = function(network=NULL, nodes=NULL, edges=NULL, defaul
 #' @seealso \code{\link{getCyVisualProperty}}, \code{\link{updateCyVisualProperties}}
 #' @export
 #' @example man-roxygen-examples/cy-visual-property-update.R
-updateCyVisualProperty = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
+updateCyVisualProperty = function(cyVisualProperty, additionalProperty, replace=TRUE, stopOnDuplicates=FALSE, .log=c()){
     UseMethod("updateCyVisualProperty", cyVisualProperty)
 }
 
 
 #' @rdname updateCyVisualProperty
 #' @export
-updateCyVisualProperty.CyVisualPropertyProperties = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
+updateCyVisualProperty.CyVisualPropertyProperties = function(cyVisualProperty, additionalProperty, replace=TRUE, stopOnDuplicates=FALSE, .log=c()){
     fname="updateCyVisualProperty"
     if(missing(cyVisualProperty)) .stop("paramMissing", "cyVisualProperty")
     if(missing(additionalProperty)) .stop("paramMissing", "additionalProperty")
@@ -379,7 +379,7 @@ updateCyVisualProperty.CyVisualPropertyProperties = function(cyVisualProperty, a
 
 #' @rdname updateCyVisualProperty
 #' @export
-updateCyVisualProperty.CyVisualPropertyDependencies = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
+updateCyVisualProperty.CyVisualPropertyDependencies = function(cyVisualProperty, additionalProperty, replace=TRUE, stopOnDuplicates=FALSE, .log=c()){
     fname="updateCyVisualProperty"
     if(missing(cyVisualProperty)) .stop("paramMissing", "cyVisualProperty")
     if(missing(additionalProperty)) .stop("paramMissing", "additionalProperty")
@@ -401,7 +401,7 @@ updateCyVisualProperty.CyVisualPropertyDependencies = function(cyVisualProperty,
 
 #' @rdname updateCyVisualProperty
 #' @export
-updateCyVisualProperty.CyVisualPropertyMappings = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
+updateCyVisualProperty.CyVisualPropertyMappings = function(cyVisualProperty, additionalProperty, replace=TRUE, stopOnDuplicates=FALSE, .log=c()){
     fname="updateCyVisualProperty"
     if(missing(cyVisualProperty)) .stop("paramMissing", "cyVisualProperty")
     if(missing(additionalProperty)) .stop("paramMissing", "additionalProperty")
@@ -468,7 +468,7 @@ getCyVisualProperty = function(cyVisualProperty, appliesTo=NA, view=NA){
 
 #' @rdname updateCyVisualProperty
 #' @export
-updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalProperty, replace=T, stopOnDuplicates=F, .log=c()){
+updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalProperty, replace=TRUE, stopOnDuplicates=FALSE, .log=c()){
     fname="updateCyVisualProperty"
     if(missing(cyVisualProperty)) .stop("paramMissing", "cyVisualProperty")
     if(missing(additionalProperty)) .stop("paramMissing", "additionalProperty")
@@ -492,7 +492,7 @@ updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalP
     
     results = NULL
     
-    for (i in 1:length(uniqKeys)){
+    for (i in seq_len(length(uniqKeys))) {
         key = uniqKeys[i]
         indexInCyVP = which(cyVPfilterKey==key)
         indexInAddP = which(addPfilterKey==key)
@@ -568,63 +568,6 @@ updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalP
                                     appliesTo = tmpAppliesTo,
                                     view = tmpView)
     
-    
-    # for (i in 1:length(uniqKeys)){
-    #     key = uniqKeys[i]
-    #     indexInCyVP = which(cyVPfilterKey==key)
-    #     indexInAddP = which(addPfilterKey==key)
-    #     
-    #     if(length(indexInCyVP)!=0 && length(indexInAddP)!=0){
-    #         tmpAppliesTo[i] = cyVisualProperty$appliesTo[indexInCyVP]
-    #         tmpView[i] = cyVisualProperty$view[indexInCyVP]
-    #         .logAV = paste0("<appliesTo=",tmpAppliesTo[i],",view=",tmpView[i],">")
-    #         
-    #         
-    #         prop = updateCyVisualProperty(
-    #             cyVisualProperty$properties[[indexInCyVP]],
-    #             additionalProperty$properties[[indexInAddP]],
-    #             replace,
-    #             stopOnDuplicates,
-    #             c(.log,paste0("properties",.logAV)))
-    #         
-    #         deps = updateCyVisualProperty(
-    #             cyVisualProperty$dependencies[[indexInCyVP]],
-    #             additionalProperty$dependencies[[indexInAddP]],
-    #             replace,
-    #             stopOnDuplicates,
-    #             c(.log,paste0("dependencies",.logAV)))
-    #         
-    #         mapp = updateCyVisualProperty(
-    #             cyVisualProperty$mappings[[indexInCyVP]],
-    #             additionalProperty$mappings[[indexInAddP]],
-    #             replace,
-    #             stopOnDuplicates,
-    #             c(.log,paste0("mappings",.logAV)))
-    #         
-    #         tmpProperties[[i]] = prop
-    #         tmpDependencies[[i]] = deps
-    #         tmpMappings[[i]] = mapp
-    #     }else if(length(indexInCyVP)!=0){
-    #         tmpAppliesTo[i] = cyVisualProperty$appliesTo[indexInCyVP]
-    #         tmpView[i] = cyVisualProperty$view[indexInCyVP]
-    #         tmpProperties[[i]] = cyVisualProperty$properties[[indexInCyVP]]
-    #         tmpDependencies[[i]] = cyVisualProperty$dependencies[[indexInCyVP]]
-    #         tmpMappings[[i]] = cyVisualProperty$mappings[[indexInCyVP]]
-    #     }else{
-    #         tmpAppliesTo[i] = additionalProperty$appliesTo[indexInAddP]
-    #         tmpView[i] = additionalProperty$view[indexInAddP]
-    #         tmpProperties[[i]] = additionalProperty$properties[[indexInAddP]]
-    #         tmpDependencies[[i]] = additionalProperty$dependencies[[indexInAddP]]
-    #         tmpMappings[[i]] = additionalProperty$mappings[[indexInAddP]]
-    #     }
-    # }
-    # 
-    # result = createCyVisualProperty(properties = tmpProperties,
-    #                                 dependencies = tmpDependencies,
-    #                                 mappings = tmpMappings,
-    #                                 appliesTo = tmpAppliesTo,
-    #                                 view = tmpView)
-    
     .addClass(result) = .CLSvp$property
     
     return(result)
@@ -657,14 +600,14 @@ updateCyVisualProperty.CyVisualProperty = function(cyVisualProperty, additionalP
 #' @seealso \code{\link{updateCyVisualProperty}}, \code{\link{getCyVisualProperty}}
 #' @export
 #' @example man-roxygen-examples/cy-visual-properties-update.R
-updateCyVisualProperties = function(x, cyVisualProperties, replace=T, stopOnDuplicates=F, ...){
+updateCyVisualProperties = function(x, cyVisualProperties, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateCyVisualProperties", x)
 }
 
 
 #' @rdname updateCyVisualProperties
 #' @export
-updateCyVisualProperties.CyVisualPropertiesAspect = function(x, cyVisualProperties, replace=T, stopOnDuplicates=F, ...){
+updateCyVisualProperties.CyVisualPropertiesAspect = function(x, cyVisualProperties, replace=TRUE, stopOnDuplicates=FALSE, ...){
     cyVisualPropertiesOld = x
     fname="updateCyVisualProperties"
     if(missing(cyVisualPropertiesOld)) .stop("paramMissing", "x")
@@ -695,7 +638,7 @@ updateCyVisualProperties.CyVisualPropertiesAspect = function(x, cyVisualProperti
 
 #' @rdname updateCyVisualProperties
 #' @export
-updateCyVisualProperties.RCX = function(x, cyVisualProperties, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateCyVisualProperties.RCX = function(x, cyVisualProperties, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="updateCyVisualProperties"
     if(missing(rcx)) .stop("paramMissingRCX")

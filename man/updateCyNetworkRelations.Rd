@@ -9,25 +9,25 @@
 updateCyNetworkRelations(
   x,
   cyNetworkRelations,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCyNetworkRelations}{CyNetworkRelationsAspect}(
   x,
   cyNetworkRelations,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCyNetworkRelations}{RCX}(
   x,
   cyNetworkRelations,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

@@ -6,16 +6,16 @@
 \alias{updateCyGroups.RCX}
 \title{Update Cytoscape Groups}
 \usage{
-updateCyGroups(x, cyGroups, stopOnDuplicates = F, keepOldIds = T, ...)
+updateCyGroups(x, cyGroups, stopOnDuplicates = FALSE, keepOldIds = TRUE, ...)
 
-\method{updateCyGroups}{CyGroupsAspect}(x, cyGroups, stopOnDuplicates = F, keepOldIds = T, ...)
+\method{updateCyGroups}{CyGroupsAspect}(x, cyGroups, stopOnDuplicates = FALSE, keepOldIds = TRUE, ...)
 
 \method{updateCyGroups}{RCX}(
   x,
   cyGroups,
-  stopOnDuplicates = F,
-  keepOldIds = T,
-  checkReferences = T,
+  stopOnDuplicates = FALSE,
+  keepOldIds = TRUE,
+  checkReferences = TRUE,
   ...
 )
 }

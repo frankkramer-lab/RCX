@@ -70,7 +70,7 @@ toGraphNEL = function(rcx, directed=FALSE){
     
     graph = toIgraph(rcx, directed)
     
-    igraph::vertex_attr(graph, "name") = as.character(1:length(igraph::vertex_attr(graph, "id")))
+    igraph::vertex_attr(graph, "name") = as.character(seq_len(length(igraph::vertex_attr(graph, "id"))))
     res = igraph::as_graphnel(graph)
     
     return(res)
@@ -91,7 +91,7 @@ toGraphNEL = function(rcx, directed=FALSE){
 fromGraphNEL = function(graphNEL, 
                         nodeId="id", nodeName="nodeName", nodeIgnore=c("name"), 
                         edgeId="id", edgeInteraction="edgeInteraction", edgeIgnore=c(),
-                        suppressWarning=F){
+                        suppressWarning=FALSE){
     fname = "fromGraphNEL"
     if(! "graphNEL" %in% class(graphNEL)) .stop("wrongClass",c(.formatLog("graphNEL", fname), "graphNEL"))
     
@@ -100,9 +100,9 @@ fromGraphNEL = function(graphNEL,
     rcx = fromIgraph(ig,
                      nodeId="id", nodeName="nodeName", nodeIgnore=c("name"), 
                      edgeId="id", edgeInteraction="edgeInteraction", edgeIgnore=c(),
-                     suppressWarning=F)
+                     suppressWarning=FALSE)
     
-    if((! validate(rcx, F)) && (! suppressWarning)) warning("RCX object didn't validate!")
+    if((! validate(rcx, FALSE)) && (! suppressWarning)) warning("RCX object didn't validate!")
     return(rcx)
 }
 

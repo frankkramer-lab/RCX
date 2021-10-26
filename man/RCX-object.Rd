@@ -18,7 +18,7 @@ createRCX(
   cyNetworkRelations,
   cySubNetworks,
   cyTableColumn,
-  checkReferences = T
+  checkReferences = TRUE
 )
 }
 \arguments{

@@ -9,25 +9,25 @@
 updateCartesianLayout(
   x,
   cartesianLayout,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCartesianLayout}{CartesianLayoutAspect}(
   x,
   cartesianLayout,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateCartesianLayout}{RCX}(
   x,
   cartesianLayout,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

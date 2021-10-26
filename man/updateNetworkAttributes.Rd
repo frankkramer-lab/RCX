@@ -9,25 +9,25 @@
 updateNetworkAttributes(
   x,
   networkAttributes,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateNetworkAttributes}{NetworkAttributesAspect}(
   x,
   networkAttributes,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   ...
 )
 
 \method{updateNetworkAttributes}{RCX}(
   x,
   networkAttributes,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

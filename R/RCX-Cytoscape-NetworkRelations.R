@@ -38,7 +38,7 @@
 #' @name CyNetworkRelations
 #' 
 #' @example man-roxygen-examples/cy-network-relations-create.R
-createCyNetworkRelations = function(child, parent=NULL, name=NULL, isView=F){
+createCyNetworkRelations = function(child, parent=NULL, name=NULL, isView=FALSE){
     fname="createCyNetworkRelations"
     if(missing(child)) .stop("paramMissing", "child is required!")
     
@@ -49,8 +49,8 @@ createCyNetworkRelations = function(child, parent=NULL, name=NULL, isView=F){
     
     aspect = data.frame(child=child,
                         isView=isView,
-                        stringsAsFactors = F,
-                        check.names = F)
+                        stringsAsFactors = FALSE,
+                        check.names = FALSE)
         
     if(! is.null(parent)) {
         .checkNonNeg(parent, "parent", fname)
@@ -94,14 +94,14 @@ createCyNetworkRelations = function(child, parent=NULL, name=NULL, isView=F){
 #' @return \code{\link{CyNetworkRelations}} or [RCX][RCX-object] object with added network relations
 #' @export
 #' @example man-roxygen-examples/cy-network-relations-update.R
-updateCyNetworkRelations = function(x, cyNetworkRelations, replace=T, stopOnDuplicates=F, ...){
+updateCyNetworkRelations = function(x, cyNetworkRelations, replace=TRUE, stopOnDuplicates=FALSE, ...){
     UseMethod("updateCyNetworkRelations", x)
 }
 
 
 #' @rdname updateCyNetworkRelations
 #' @export
-updateCyNetworkRelations.CyNetworkRelationsAspect = function(x, cyNetworkRelations, replace=T, stopOnDuplicates=F, ...){
+updateCyNetworkRelations.CyNetworkRelationsAspect = function(x, cyNetworkRelations, replace=TRUE, stopOnDuplicates=FALSE, ...){
     cyNetworkRelationsOld = x
     fname="updateCyNetworkRelations"
     if(missing(cyNetworkRelationsOld)) .stop("paramMissing", "x")
@@ -123,7 +123,7 @@ updateCyNetworkRelations.CyNetworkRelationsAspect = function(x, cyNetworkRelatio
 
 #' @rdname updateCyNetworkRelations
 #' @export
-updateCyNetworkRelations.RCX = function(x, cyNetworkRelations, replace=T, stopOnDuplicates=F, checkReferences=T, ...){
+updateCyNetworkRelations.RCX = function(x, cyNetworkRelations, replace=TRUE, stopOnDuplicates=FALSE, checkReferences=TRUE, ...){
     rcx = x
     fname="addCyNetworkRelations"
     if(missing(rcx)) .stop("paramMissingRCX")

@@ -13,7 +13,10 @@
 
 \item{sep}{character (default="..."); separates description from result.}
 
-\item{spaceLine}{boolean (default=F); should a blank line be added after.}
+\item{spaceLine}{boolean (default=FALSE); should a blank line be added after.}
+}
+\value{
+NULL, only prints the log
 }
 \description{
 Logging (printing) the results of test cases

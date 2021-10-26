@@ -6,16 +6,28 @@
 \alias{updateCyTableColumn.RCX}
 \title{Update Cytoscape table column properties}
 \usage{
-updateCyTableColumn(x, cyTableColumns, replace = T, stopOnDuplicates = F, ...)
+updateCyTableColumn(
+  x,
+  cyTableColumns,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  ...
+)
 
-\method{updateCyTableColumn}{CyTableColumnAspect}(x, cyTableColumns, replace = T, stopOnDuplicates = F, ...)
+\method{updateCyTableColumn}{CyTableColumnAspect}(
+  x,
+  cyTableColumns,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  ...
+)
 
 \method{updateCyTableColumn}{RCX}(
   x,
   cyTableColumns,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

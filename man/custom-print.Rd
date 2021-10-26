@@ -56,7 +56,7 @@
 
 \method{print}{CyTableColumnAspect}(x, ...)
 
-\method{print}{RCX}(x, inofficial = T, ...)
+\method{print}{RCX}(x, inofficial = TRUE, ...)
 }
 \arguments{
 \item{x}{aspect or \link[=RCX-object]{RCX} object}
@@ -68,6 +68,9 @@
 \item{propertyOf}{character; Which properties should be shown, one of network, nodes, edges, nodes:default, edges:default or \code{all}}
 
 \item{inofficial}{logical; if \code{FALSE} only the official aspects are printed}
+}
+\value{
+prints the object and returns it invisibly (\href{x}{invisible})
 }
 \description{
 These functions attempt to print \link[=RCX-object]{RCX} and aspect objects in a more readable form.

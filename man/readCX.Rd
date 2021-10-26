@@ -7,13 +7,13 @@
 \alias{processCX}
 \title{Read CX from file, parse the JSON and convert it to an \link[=RCX-object]{RCX} object}
 \usage{
-readCX(file, verbose = F, aspectClasses = NULL)
+readCX(file, verbose = FALSE, aspectClasses = NULL)
 
-readJSON(file, verbose = F)
+readJSON(file, verbose = FALSE)
 
-parseJSON(json, verbose = F)
+parseJSON(json, verbose = FALSE)
 
-processCX(aspectList, verbose = F, aspectClasses = NULL)
+processCX(aspectList, verbose = FALSE, aspectClasses = NULL)
 }
 \arguments{
 \item{file}{character; the name of the file which the data are to be read from}
@@ -25,6 +25,9 @@ processCX(aspectList, verbose = F, aspectClasses = NULL)
 \item{json}{character; raw JSON data}
 
 \item{aspectList}{list; list containing the aspect data (parsed JSON)}
+}
+\value{
+\link[=RCX-object]{RCX} object
 }
 \description{
 The \code{readCX} function combines three sub-task:
@@ -47,7 +50,7 @@ The \code{readJSON} function only read the content of a text file and returns it
 
 The \code{parseJSON} function uses the \link{jsonlite} package, to parse JSON text:
 
-\code{jsonlite::fromJSON(cx, simplifyVector = F)}
+\code{jsonlite::fromJSON(cx, simplifyVector = FALSE)}
 
 The result is a list containing the aspect data as elements.
 If, for some reason, the JSON is not valid, the \link{jsonlite} package raises an error.

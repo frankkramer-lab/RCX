@@ -64,8 +64,10 @@
 #' @inheritSection .errorCodes Details
 #'
 #' @param code character; Error code.
-#' @param info character; Addidional information used in some error codes.
+#' @param info character; Additional information used in some error codes.
 #' @param msg character; 
+#' 
+#' @return Does not have any return value, simply throws an error!
 #'
 #' @examples
 #' \dontrun{
@@ -88,7 +90,7 @@
     text = .errorCodes(code, info)
     ## if the error code is not found, raise an error with that code
     if(is.null(text)) .stop("ErrorCodeNotFound", code)
-    stop(paste0(callFuntionName, "\n  ", text, msg), call. = F)
+    stop(paste0(callFuntionName, "\n  ", text, msg), call. = FALSE)
 }
 
 

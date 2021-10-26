@@ -6,11 +6,11 @@
 \alias{writeCX.CX}
 \title{Write RCX to file}
 \usage{
-writeCX(x, file, verbose = F, pretty = F)
+writeCX(x, file, verbose = FALSE, pretty = FALSE)
 
-\method{writeCX}{RCX}(x, file, verbose = F, pretty = F)
+\method{writeCX}{RCX}(x, file, verbose = FALSE, pretty = FALSE)
 
-\method{writeCX}{CX}(x, file, verbose = F, pretty = F)
+\method{writeCX}{CX}(x, file, verbose = FALSE, pretty = FALSE)
 }
 \arguments{
 \item{x}{\link[=RCX-object]{RCX} or \link[=readCX]{CX} object}
@@ -21,6 +21,9 @@ writeCX(x, file, verbose = F, pretty = F)
 
 \item{pretty}{logical; adds indentation whitespace to JSON output.
 Can be TRUE/FALSE or a number specifying the number of spaces to indent. See \code{\link[jsonlite:prettify]{jsonlite::prettify()}}}
+}
+\value{
+file character; the name of the file to which the data were written
 }
 \description{
 These function write an \link[=RCX-object]{RCX} object or a \link[=readCX]{CX} object to a file.

@@ -6,16 +6,28 @@
 \alias{updateEdgeAttributes.RCX}
 \title{Update edge attributes}
 \usage{
-updateEdgeAttributes(x, edgeAttributes, replace = T, stopOnDuplicates = F, ...)
+updateEdgeAttributes(
+  x,
+  edgeAttributes,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  ...
+)
 
-\method{updateEdgeAttributes}{EdgeAttributesAspect}(x, edgeAttributes, replace = T, stopOnDuplicates = F, ...)
+\method{updateEdgeAttributes}{EdgeAttributesAspect}(
+  x,
+  edgeAttributes,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  ...
+)
 
 \method{updateEdgeAttributes}{RCX}(
   x,
   edgeAttributes,
-  replace = T,
-  stopOnDuplicates = F,
-  checkReferences = T,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
+  checkReferences = TRUE,
   ...
 )
 }

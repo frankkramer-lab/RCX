@@ -50,9 +50,9 @@ createNodes = function(id=NULL, name=NULL, represents=NULL){
             id = 0
         }else{
             if(is.null(name)){
-                id = 0:(length(represents) -1)
+                id = seq(0, (length(represents) -1))
             }else{
-                id = 0:(length(name) -1)
+                id = seq(0, (length(name) -1))
             }
         }
     }
@@ -107,14 +107,14 @@ createNodes = function(id=NULL, name=NULL, represents=NULL){
 #' @export
 #' 
 #' @example man-roxygen-examples/nodes-update.R
-updateNodes = function(x, nodes, stopOnDuplicates=F, keepOldIds=T){
+updateNodes = function(x, nodes, stopOnDuplicates=FALSE, keepOldIds=TRUE){
     UseMethod("updateNodes", x)
 }
 
 
 #' @rdname updateNodes
 #' @export
-updateNodes.NodesAspect = function(x, nodes, stopOnDuplicates=F, keepOldIds=T){
+updateNodes.NodesAspect = function(x, nodes, stopOnDuplicates=FALSE, keepOldIds=TRUE){
     nodesAspect = x
     fname="updateNodes"
     if(missing(nodesAspect)) .stop("paramMissing", "x")
@@ -133,7 +133,7 @@ updateNodes.NodesAspect = function(x, nodes, stopOnDuplicates=F, keepOldIds=T){
 
 #' @rdname updateNodes
 #' @export
-updateNodes.RCX = function(x, nodes, stopOnDuplicates=F, keepOldIds=T){
+updateNodes.RCX = function(x, nodes, stopOnDuplicates=FALSE, keepOldIds=TRUE){
     rcx = x
     fname="updateNodes"
     if(missing(rcx)) .stop("paramMissingRCX")
@@ -196,7 +196,7 @@ createEdges = function(id=NULL, source, target, interaction=NULL){
     if(missing(source) || missing(target)) .stop("paramMissing", "source and target are required!")
     
     if(missing(id) || is.null(id)){
-        id = 0:(length(source)-1)
+        id = seq(0, (length(source)-1))
     }
     
     .checkIsUniqueId(id, "id", fname)
@@ -245,14 +245,15 @@ createEdges = function(id=NULL, source, target, interaction=NULL){
 #' 
 #' @return \code{\link{Edges}} or [RCX][RCX-object] with added edges
 #' @export
-updateEdges = function(x, edges, stopOnDuplicates=F, keepOldIds=T, ...){
+#' @example man-roxygen-examples/edges-update.R
+updateEdges = function(x, edges, stopOnDuplicates=FALSE, keepOldIds=TRUE, ...){
     UseMethod("updateEdges", x)
 }
 
 
 #' @rdname updateEdges
 #' @export
-updateEdges.EdgesAspect = function(x, edges, stopOnDuplicates=F, keepOldIds=T, ...){
+updateEdges.EdgesAspect = function(x, edges, stopOnDuplicates=FALSE, keepOldIds=TRUE, ...){
     edgeAspect = x
     fname="updateEdges"
     if(missing(edgeAspect)) .stop("paramMissing", "x")
@@ -272,7 +273,7 @@ updateEdges.EdgesAspect = function(x, edges, stopOnDuplicates=F, keepOldIds=T, .
 
 #' @rdname updateEdges
 #' @export
-updateEdges.RCX = function(x, edges, stopOnDuplicates=F, keepOldIds=T, checkReferences=T, ...){
+updateEdges.RCX = function(x, edges, stopOnDuplicates=FALSE, keepOldIds=TRUE, checkReferences=TRUE, ...){
     rcx = x
     fname="updateEdges"
     if(missing(rcx)) .stop("paramMissingRCX")

@@ -34,7 +34,7 @@
 #' @examples
 #' rcx = createRCX(
 #'   nodes = createNodes(
-#'     name = LETTERS[1:10]
+#'     name = LETTERS[seq_len(10)]
 #'   ),
 #'   edges = createEdges(
 #'     source=c(1,2),
@@ -43,7 +43,7 @@
 #' )
 #' 
 #' json = toCX(rcx, pretty=TRUE)
-toCX = function(rcx, verbose=F, pretty=F){
+toCX = function(rcx, verbose=FALSE, pretty=FALSE){
   fname = "toCX"
   if(missing(rcx)) .stop("paramMissingRCX")
   .checkClass(rcx, .CLS$rcx, "rcx", fname)
@@ -108,31 +108,35 @@ toCX = function(rcx, verbose=F, pretty=F){
 #' @param verbose logical; whether to print what is happening
 #' @param pretty logical; adds indentation whitespace to JSON output. 
 #' Can be TRUE/FALSE or a number specifying the number of spaces to indent. See [jsonlite::prettify()]
+#' 
+#' @return file character; the name of the file to which the data were written
 #'
 #' @export
 #' @seealso [toCX], [rcxToJson], [readCX]
 #' 
 #' @examples
 #' NULL
-writeCX = function(x, file, verbose=F, pretty=F){
+writeCX = function(x, file, verbose=FALSE, pretty=FALSE){
   UseMethod("writeCX", x)
 }
 
 
 #' @rdname writeCX
 #' @export
-writeCX.RCX = function(x, file, verbose=F, pretty=F){
+writeCX.RCX = function(x, file, verbose=FALSE, pretty=FALSE){
   cx = toCX(x, verbose, pretty)
-  writeCX(cx, file, verbose, pretty)
+  res = writeCX(cx, file, verbose, pretty)
+  return(res)
 }
 
 #' @rdname writeCX
 #' @export
-writeCX.CX = function(x, file, verbose=F, pretty=F){
+writeCX.CX = function(x, file, verbose=FALSE, pretty=FALSE){
   if(pretty) x = jsonlite::prettify(x)
   fileCon = file(file)
   writeLines(x, fileCon)
   close(fileCon)
+  return(file)
 }
 
 
@@ -161,14 +165,14 @@ writeCX.CX = function(x, file, verbose=F, pretty=F){
 #' @examples
 #' nodes = createNodes(name = c("a","b","c","d","e","f"))
 #' rcxToJson(nodes)
-rcxToJson = function(aspect, verbose=F, ...){
+rcxToJson = function(aspect, verbose=FALSE, ...){
   UseMethod("rcxToJson", aspect)
 }
 
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.default = function(aspect, verbose=F, ...){
+rcxToJson.default = function(aspect, verbose=FALSE, ...){
   if(verbose) cat(paste0("Don't know what to do with a \"", .aspectClass(aspect), '" aspect!\n'))
   return(NULL)
 }
@@ -176,7 +180,7 @@ rcxToJson.default = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.MetaDataAspect = function(aspect, verbose=F, ...){
+rcxToJson.MetaDataAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert meta-data to JSON...")
   
   if("properties" %in% colnames(aspect)){
@@ -184,13 +188,13 @@ rcxToJson.MetaDataAspect = function(aspect, verbose=F, ...){
     prop = sapply(prop, function(p){
       p = ifelse(is.null(p),
                  NA,
-                 .convert2json(p, byElement=T))
+                 .convert2json(p, byElement=TRUE))
       return(p)
       })
     aspect$properties = prop
   }
   
-  json = .convert2json(aspect, raw=c("properties"), skipNa=T)
+  json = .convert2json(aspect, raw=c("properties"), skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "metaData")
   if(verbose) cat("done!\n")
@@ -200,7 +204,7 @@ rcxToJson.MetaDataAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.NodesAspect = function(aspect, verbose=F, ...){
+rcxToJson.NodesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert nodes to JSON...")
 
   map = c(id="@id", 
@@ -208,7 +212,7 @@ rcxToJson.NodesAspect = function(aspect, verbose=F, ...){
           represents="r")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, skipNa=T)
+  json = .convert2json(aspect, skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "nodes")
   if(verbose) cat("done!\n")
@@ -218,7 +222,7 @@ rcxToJson.NodesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.EdgesAspect = function(aspect, verbose=F, ...){
+rcxToJson.EdgesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert edges to JSON...")
   
   map = c(id="@id", 
@@ -227,7 +231,7 @@ rcxToJson.EdgesAspect = function(aspect, verbose=F, ...){
           interaction="i")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, skipNa=T)
+  json = .convert2json(aspect, skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "edges")
   if(verbose) cat("done!\n")
@@ -237,7 +241,7 @@ rcxToJson.EdgesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.NodeAttributesAspect = function(aspect, verbose=F, ...){
+rcxToJson.NodeAttributesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert node attributes to JSON...")
   
   aspect$d = .convertDataTypes(aspect)
@@ -252,7 +256,7 @@ rcxToJson.NodeAttributesAspect = function(aspect, verbose=F, ...){
           subnetworkId="s")
   aspect = .renameDF(aspect, map)
 
-  json = .convert2json(aspect, raw=c("v"),skipNa=T)
+  json = .convert2json(aspect, raw=c("v"),skipNa=TRUE)
 
   json = .addAspectNameToJson(json, "nodeAttributes")
   if(verbose) cat("done!\n")
@@ -262,7 +266,7 @@ rcxToJson.NodeAttributesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.EdgeAttributesAspect = function(aspect, verbose=F, ...){
+rcxToJson.EdgeAttributesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert edge attributes to JSON...")
 
   aspect$d = .convertDataTypes(aspect)
@@ -277,7 +281,7 @@ rcxToJson.EdgeAttributesAspect = function(aspect, verbose=F, ...){
           subnetworkId="s")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, raw=c("v"),skipNa=T)
+  json = .convert2json(aspect, raw=c("v"),skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "edgeAttributes")
   if(verbose) cat("done!\n")
@@ -287,7 +291,7 @@ rcxToJson.EdgeAttributesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.NetworkAttributesAspect = function(aspect, verbose=F, ...){
+rcxToJson.NetworkAttributesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert network attributes to JSON...")
 
   aspect$d = .convertDataTypes(aspect)
@@ -301,7 +305,7 @@ rcxToJson.NetworkAttributesAspect = function(aspect, verbose=F, ...){
           subnetworkId="s")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, raw=c("v"),skipNa=T)
+  json = .convert2json(aspect, raw=c("v"),skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "networkAttributes")
   if(verbose) cat("done!\n")
@@ -311,10 +315,10 @@ rcxToJson.NetworkAttributesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CartesianLayoutAspect = function(aspect, verbose=F, ...){
+rcxToJson.CartesianLayoutAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert cartesian layout to JSON...")
   
-  json = .convert2json(aspect, skipNa=T)
+  json = .convert2json(aspect, skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cartesianLayout")
   if(verbose) cat("done!\n")
@@ -324,7 +328,7 @@ rcxToJson.CartesianLayoutAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyGroupsAspect = function(aspect, verbose=F, ...){
+rcxToJson.CyGroupsAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape groups to JSON...")
   
   aspect$nodes = .convertRawList(aspect$nodes)
@@ -335,7 +339,7 @@ rcxToJson.CyGroupsAspect = function(aspect, verbose=F, ...){
           name="n")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, raw=c("nodes","externalEdges","internalEdges"), skipNa=T)
+  json = .convert2json(aspect, raw=c("nodes","externalEdges","internalEdges"), skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cyGroups")
   if(verbose) cat("done!\n")
@@ -345,7 +349,7 @@ rcxToJson.CyGroupsAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyHiddenAttributesAspect = function(aspect, verbose=F, ...){
+rcxToJson.CyHiddenAttributesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape hidden attributes to JSON...")
   
   aspect$d = .convertDataTypes(aspect)
@@ -359,7 +363,7 @@ rcxToJson.CyHiddenAttributesAspect = function(aspect, verbose=F, ...){
           subnetworkId="s")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, raw=c("v"),skipNa=T)
+  json = .convert2json(aspect, raw=c("v"),skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cyHiddenAttributes")
   if(verbose) cat("done!\n")
@@ -369,7 +373,7 @@ rcxToJson.CyHiddenAttributesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyNetworkRelationsAspect = function(aspect, verbose=F, ...){
+rcxToJson.CyNetworkRelationsAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape network relations to JSON...")
 
   aspect$v = ifelse(aspect$isView, "view", NA)
@@ -379,7 +383,7 @@ rcxToJson.CyNetworkRelationsAspect = function(aspect, verbose=F, ...){
           parent="p")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, skipNa=T)
+  json = .convert2json(aspect, skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cyNetworkRelations")
   if(verbose) cat("done!\n")
@@ -390,7 +394,7 @@ rcxToJson.CyNetworkRelationsAspect = function(aspect, verbose=F, ...){
 ## ask NDEx since no network with this was found
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CySubNetworksAspect = function(aspect, verbose=F, ...){
+rcxToJson.CySubNetworksAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape subnetworks to JSON...")
   
   aspect$nodes = .convertRawList(aspect$nodes)
@@ -399,7 +403,7 @@ rcxToJson.CySubNetworksAspect = function(aspect, verbose=F, ...){
   map = c(id="@id")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, raw=c("nodes","edges"), skipNa=T)
+  json = .convert2json(aspect, raw=c("nodes","edges"), skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cySubNetworks")
   if(verbose) cat("done!\n")
@@ -409,7 +413,7 @@ rcxToJson.CySubNetworksAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyTableColumnAspect = function(aspect, verbose=F, ...){
+rcxToJson.CyTableColumnAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape table column to JSON...")
   
   aspect$d = .convertDataTypes(aspect)
@@ -425,7 +429,7 @@ rcxToJson.CyTableColumnAspect = function(aspect, verbose=F, ...){
           subnetworkId="s")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, skipNa=T)
+  json = .convert2json(aspect, skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cyTableColumn")
   if(verbose) cat("done!\n")
@@ -435,7 +439,7 @@ rcxToJson.CyTableColumnAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyVisualPropertiesAspect = function(aspect, verbose=F, ...){
+rcxToJson.CyVisualPropertiesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape visual properties to JSON...\n")
   
   result = sapply(names(aspect), function(an){rcxToJson(aspect[[an]], verbose, an)})
@@ -452,12 +456,12 @@ rcxToJson.CyVisualPropertiesAspect = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyVisualProperty = function(aspect, verbose=F, propertyOf="", ...){
+rcxToJson.CyVisualProperty = function(aspect, verbose=FALSE, propertyOf="", ...){
   if(verbose) cat(paste0("- Convert Cytoscape visual property of ",propertyOf," to JSON...\n"))
   
   result = c()
   no = max(sapply(aspect, length))
-  for(n in 1:no){
+  for(n in seq_len(no)){
     tmp = paste0('"properties_of":"',.DICT$VPpropertiesOf[propertyOf],'"')
     
     if(("appliesTo" %in% names(aspect))&&(!is.na(aspect$appliesTo[n]))){
@@ -495,7 +499,7 @@ rcxToJson.CyVisualProperty = function(aspect, verbose=F, propertyOf="", ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyVisualPropertyProperties = function(aspect, verbose=F, ...){
+rcxToJson.CyVisualPropertyProperties = function(aspect, verbose=FALSE, ...){
   if(verbose) cat(paste0("  - Convert Properties to JSON..."))
   
   aspect$name = .convert2json(aspect$name)
@@ -511,7 +515,7 @@ rcxToJson.CyVisualPropertyProperties = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyVisualPropertyDependencies = function(aspect, verbose=F, ...){
+rcxToJson.CyVisualPropertyDependencies = function(aspect, verbose=FALSE, ...){
   if(verbose) cat(paste0("  - Convert Dependencies to JSON..."))
   
   aspect$name = .convert2json(aspect$name)
@@ -526,7 +530,7 @@ rcxToJson.CyVisualPropertyDependencies = function(aspect, verbose=F, ...){
 
 #' @rdname rcxToJson
 #' @export
-rcxToJson.CyVisualPropertyMappings = function(aspect, verbose=F, ...){
+rcxToJson.CyVisualPropertyMappings = function(aspect, verbose=FALSE, ...){
   if(verbose) cat(paste0("  - Convert Mappings to JSON..."))
   
   aspect$name = .convert2json(aspect$name)

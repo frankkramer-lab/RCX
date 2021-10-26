@@ -13,6 +13,8 @@
 #'
 #' @param x aspect or [RCX][RCX-object] object
 #' @param ... further arguments passed to or from other methods. See [base::print()]
+#' 
+#' @return prints the object and returns it invisibly ([invisible](x))
 #'
 #' @seealso [summary]
 #' @name custom-print
@@ -118,7 +120,7 @@ print.CyVisualPropertyMappings = function(x, ...){
 print.CyVisualProperty = function(x, fields=c("all"), ...){
     if((!fields=="all") && !.elementsInDict(fields, "VPpropertyFields")) .stop("paramWrongValue", c("fields", .DICT$VPpropertyFields))
     first = ifelse(length(x$appliesTo)!=1,TRUE,FALSE)
-    for(i in 1:length(x$appliesTo)){
+    for(i in seq_len(length(x$appliesTo))){
         if(first){
             first=FALSE
         }else{
@@ -197,18 +199,18 @@ print.CyTableColumnAspect = function(x, ...){
 #' @rdname custom-print
 #' @param inofficial logical; if `FALSE` only the official aspects are printed
 #' @export
-print.RCX = function(x, inofficial=T, ...){
+print.RCX = function(x, inofficial=TRUE, ...){
     aspects = names(x)
     #firstly print all official aspects in the order given by .CLS
     ordered = names(.CLS)
     ordered = ordered[ordered %in% aspects]
     remaining = aspects[!aspects %in% ordered]
-    first = T
+    first = TRUE
     for(n in ordered){
         if(!first) cat("\n")
         cat(paste0("[[",n,"]] = "))
         print(x[[n]], ...)
-        first = F
+        first = FALSE
     }
     ## then print all remaining (self defined)
     if(inofficial){
@@ -216,7 +218,7 @@ print.RCX = function(x, inofficial=T, ...){
             if(!first) cat("\n")
             cat(paste0("[[",n,"]] = "))
             print(x[[n]], ...)
-            first = F
+            first = FALSE
         }
     }
 }

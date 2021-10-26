@@ -7,8 +7,8 @@
 .mergeAttributesAspect(
   firstAspect,
   secondAspect,
-  replace = T,
-  stopOnDuplicates = F,
+  replace = TRUE,
+  stopOnDuplicates = FALSE,
   required = c("propertyOf", "name"),
   optional = "subnetworkId",
   .log = c()

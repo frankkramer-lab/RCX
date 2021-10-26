@@ -6,11 +6,11 @@
 \alias{visualize.CX}
 \title{Visualize a Network}
 \usage{
-visualize(x, layout = NULL, openExternal = F)
+visualize(x, layout = NULL, openExternal = FALSE)
 
-\method{visualize}{RCX}(x, layout = NULL, openExternal = F)
+\method{visualize}{RCX}(x, layout = NULL, openExternal = FALSE)
 
-\method{visualize}{CX}(x, layout = NULL, openExternal = F)
+\method{visualize}{CX}(x, layout = NULL, openExternal = FALSE)
 }
 \arguments{
 \item{x}{network; \link[=RCX-object]{RCX} or CX object}
@@ -18,6 +18,9 @@ visualize(x, layout = NULL, openExternal = F)
 \item{layout}{named character or list; e.g. \code{c(name="random")}}
 
 \item{openExternal}{logical; whether to open in an external browser instead of the RStudio viewer}
+}
+\value{
+\code{NULL}
 }
 \description{
 Visualize \link[=RCX-object]{RCX} and CX networks in RStudio or in an external browser.
@@ -55,7 +58,7 @@ rcx = createRCX(
   )
 )
 
-\dontrun{
+\donttest{
 ## visualize the network
  visualize(rcx)
 
@@ -79,7 +82,7 @@ rcx = createRCX(
  visualize(
    rcx, 
    layout = c(name="cose"),
-   openExternal = T
+   openExternal = TRUE
  )
 }
 }

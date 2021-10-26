@@ -83,7 +83,7 @@ NULL
     v = paste0('"',v,'"')
     # add commas and "and" inbetween
     if(length(v)>1){
-        first = v[1:(length(v)-1)]
+        first = v[seq_len(length(v)-1)]
         last = v[length(v)]
         first = .formatComma(first)
         v = paste0(first," ",con," ", last)
@@ -152,7 +152,7 @@ NULL
 #' @usage .removeClass(x) <- value
 #' @aliases .removeClass
 '.removeClass<-' = function(x, value){
-    class(x)=class(x)[class(x)!=value]
+    class(x)=class(x)[! class(x) %in% value]
     return(x)
 }
 
@@ -201,7 +201,9 @@ NULL
 #' @param info character; description of the test case.
 #' @param pass boolean; was the test passed?
 #' @param sep character (default="..."); separates description from result.
-#' @param spaceLine boolean (default=F); should a blank line be added after.
+#' @param spaceLine boolean (default=FALSE); should a blank line be added after.
+#' 
+#' @return NULL, only prints the log
 #'
 #' @examples
 #' testPassed <- TRUE
@@ -223,6 +225,7 @@ NULL
         cat("FAIL\n")
     }
     if(spaceLine) cat("\n")
+    return(NULL)
 }
 
 
@@ -313,7 +316,7 @@ NULL
         lastId = firstId + length(secondAspect[,idCol]) - 1
         secondAspect[,idCol] = firstId:lastId
         ## oldId column necessary for duplicated ids, so don't remove it
-        removeOldIdCol = F
+        removeOldIdCol = FALSE
         ## redo with new ids
         mergedAsp = plyr::rbind.fill(firstAspect, secondAspect)
     }
@@ -358,8 +361,8 @@ NULL
     
     attributesAspect = data.frame(propertyOf=propertyOf,
                                   name=name,
-                                  stringsAsFactors = F,
-                                  check.names = F)
+                                  stringsAsFactors = FALSE,
+                                  check.names = FALSE)
 
     ## with characters and numbers mixed
     attributesAspect$value = value
@@ -405,7 +408,7 @@ NULL
 #' @examples
 #' NULL
 .mergeAttributesAspect = function(firstAspect, secondAspect, 
-                                  replace=T, stopOnDuplicates=F, 
+                                  replace=TRUE, stopOnDuplicates=FALSE, 
                                   required=c("propertyOf","name"), 
                                   optional="subnetworkId",
                                   .log=c()){
@@ -476,8 +479,8 @@ NULL
     
     pod  = data.frame(name=name,
                       value=value,
-                      stringsAsFactors = F,
-                      check.names = F)
+                      stringsAsFactors = FALSE,
+                      check.names = FALSE)
     
     idCols = "name"
     .checkUniqueDF(pod, idCols, .log)

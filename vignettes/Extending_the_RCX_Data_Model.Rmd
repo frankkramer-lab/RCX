@@ -373,7 +373,7 @@ To be consistent with the other aspects of the RCX package, we can provide a cus
 ```{r print}
 print.NetworkProvenanceAspect = function(x, ...){
     cat("Network provenance:\n")
-    class(x) = class(x)[class(x) != "NetworkProvenanceAspect"]
+    class(x) = class(x)[! class(x) %in% "NetworkProvenanceAspect"]
     print(x, ...)
 }
 ```
@@ -392,7 +392,7 @@ Therefore, we implement the `validate` method for our aspect.
 What to evaluate in this method is up to the user, but the more checks and information provided, the more it helps other users to track down errors.
 
 ```{r validate, tidy=FALSE}
-validate.NetworkProvenanceAspect = function(x, verbose=T){
+validate.NetworkProvenanceAspect = function(x, verbose=TRUE){
     if(verbose) cat("Checking Network Provenance Aspect:\n")
     
     test = all(! is.na(x$id))
@@ -429,14 +429,14 @@ To allow the aspect to be processed, we have to provide a method to take over th
 In the RCX package, the aspect class specific methods of `rcxToJson` convert the aspect to a JSON object. 
 
 ```{r rcxToJson}
-rcxToJson.NetworkProvenanceAspect = function(aspect, verbose=F, ...){
+rcxToJson.NetworkProvenanceAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert network provenance to JSON...")
   
   ## rename id to @id
   colnames(aspect) = gsub("id","\\@id",colnames(aspect))
   
   ## convert to json
-  json = jsonlite::toJSON(aspect, pretty = T)
+  json = jsonlite::toJSON(aspect, pretty = TRUE)
   
   ## empty nodes are converted to "nodes": {},
   ## the simplest fix is just replacing it

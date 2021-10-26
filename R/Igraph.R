@@ -39,7 +39,7 @@
     attNames = unique(attribute[cols])
     
     if(nrow(attNames)!=0){
-        for(ri in 1:nrow(attNames)){
+        for(ri in seq_len(length(attNames))) {
             attrNewName = attNames[ri,"name"]
             attrName = attrNewName
             attrList = attNames[ri,"isList"]
@@ -214,7 +214,7 @@ toIgraph = function(rcx, directed=FALSE){
     
     if("cySubNetworks" %in% aspects){
         subNetworks = rcx$cySubNetworks
-        for (subNetI in 1:nrow(subNetworks)) {
+        for (subNetI in seq_len(nrow(subNetworks))) {
             subNet = subNetworks[subNetI,]
             if(!is.null(subNet$nodes)){
                 ig = igraph::set_graph_attr(
@@ -288,7 +288,7 @@ toIgraph = function(rcx, directed=FALSE){
 fromIgraph = function(ig, 
                       nodeId="id", nodeName="nodeName", nodeIgnore=c("name"), 
                       edgeId="id", edgeInteraction="edgeInteraction", edgeIgnore=c(),
-                      suppressWarning=F){
+                      suppressWarning=FALSE){
     fname = "fromIgraph"
     if(! "igraph" %in% class(ig)) .stop("wrongClass",c(.formatLog("ig", fname), "igraph"))
     
@@ -299,7 +299,7 @@ fromIgraph = function(ig,
     tmpName = igraph::vertex_attr(ig, nodeName)
     tmpRep = igraph::vertex_attr(ig, "represents")
     if(is.null(nodeId)) {
-        tmpId = 1:length(tmpName)
+        tmpId = seq_len(length(tmpName))
     }else{
         tmpId = igraph::vertex_attr(ig, nodeId)
     }
@@ -356,7 +356,7 @@ fromIgraph = function(ig,
         cartesianLayout = tmpCartLay[[1]]
         
         if(length(tmpCartLay)>1){
-            for(i in 2:length(tmpCartLay)){
+            for(i in seq(2,length(tmpCartLay))){
                 cartesianLayout = updateCartesianLayout(cartesianLayout, tmpCartLay[[i]])
             }
         }
@@ -417,7 +417,7 @@ fromIgraph = function(ig,
         
         nodeAttributes = tmpNodeAttr[[1]]
         if(length(tmpNodeAttr)>1){
-            for(i in 2:length(tmpNodeAttr)){
+            for(i in seq(2, length(tmpNodeAttr))){
                 nodeAttributes = updateNodeAttributes(nodeAttributes, tmpNodeAttr[[i]])
             }
         }
@@ -437,7 +437,7 @@ fromIgraph = function(ig,
     ## filter interaction and treat it differently
     tmpInter = igraph::edge_attr(ig, "interaction")
     if(is.null(edgeId)){
-        tmpEId = 1:length(tmpSource)
+        tmpEId = seq_len(length(tmpSource))
     }else{
         tmpEId = tmpData[,edgeId]
     }
@@ -500,7 +500,7 @@ fromIgraph = function(ig,
         
         edgeAttributes = tmpEdgeAttr[[1]]
         if(length(tmpEdgeAttr)>1){
-            for(i in 2:length(tmpEdgeAttr)){
+            for(i in seq(2,length(tmpEdgeAttr))) {
                 edgeAttributes = updateEdgeAttributes(edgeAttributes, tmpEdgeAttr[[i]])
             }
         }
@@ -582,7 +582,7 @@ fromIgraph = function(ig,
     if(length(tmpNetAttr)>0){
         networkAttributes = tmpNetAttr[[1]]
         if(length(tmpNetAttr)>1){
-            for(i in 2:length(tmpNetAttr)){
+            for(i in seq(2, length(tmpNetAttr))) {
                 networkAttributes = updateNetworkAttributes(networkAttributes, tmpNetAttr[[i]])
             }
         }
@@ -595,9 +595,9 @@ fromIgraph = function(ig,
                     networkAttributes = networkAttributes,
                     cartesianLayout = cartesianLayout,
                     cySubNetworks = cySubNetworks,
-                    checkReferences = F)
+                    checkReferences = FALSE)
     
-    if((! validate(rcx, F)) && (! suppressWarning)) warning("RCX object didn't validate!")
+    if((! validate(rcx, FALSE)) && (! suppressWarning)) warning("RCX object didn't validate!")
     return(rcx)
 }
 

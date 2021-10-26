@@ -9,9 +9,12 @@
 \arguments{
 \item{code}{character; Error code.}
 
-\item{info}{character; Addidional information used in some error codes.}
+\item{info}{character; Additional information used in some error codes.}
 
 \item{msg}{character;}
+}
+\value{
+Does not have any return value, simply throws an error!
 }
 \description{
 Customized stop() function

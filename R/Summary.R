@@ -199,6 +199,8 @@
 #'
 #' @param object an object; [RCX][RCX-object] object or aspect (or column of data.frame)
 #' @param ... additional arguments affecting the summary produced.
+#' 
+#' @return object summary as list
 #'
 #' @name summary
 #' @export

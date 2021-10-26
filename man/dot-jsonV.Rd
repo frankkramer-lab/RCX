@@ -4,7 +4,7 @@
 \alias{.jsonV}
 \title{Return data as a vector from a JSON list}
 \usage{
-.jsonV(data, acc, default = NA, returnAllDefault = T)
+.jsonV(data, acc, default = NA, returnAllDefault = TRUE)
 }
 \arguments{
 \item{data}{json list}

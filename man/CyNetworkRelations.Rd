@@ -5,7 +5,7 @@
 \alias{createCyNetworkRelations}
 \title{Cytoscape network relations}
 \usage{
-createCyNetworkRelations(child, parent = NULL, name = NULL, isView = F)
+createCyNetworkRelations(child, parent = NULL, name = NULL, isView = FALSE)
 }
 \arguments{
 \item{child}{integer; reference to \link[=CySubNetworks]{subnetwork id}}
