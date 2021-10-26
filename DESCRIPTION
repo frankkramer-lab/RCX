@@ -2,12 +2,13 @@ Package: RCX
 Type: Package
 Title: R package implementing the Cytoscape Exchange (CX) format
 Version: 0.99.0
-Author: Florian Auer <florian.auer@informatik.uni-augsburg.de>
-Maintainer: Florian Auer <florian.auer@informatik.uni-augsburg.de>
+Authors@R: person("Florian", "Auer", role = c("aut","cre"), 
+                  email="florian.auer@informatik.uni-augsburg.de",
+                  comment = c(ORCID = "0000-0002-5320-8900"))
 Description: Create, handle, validate, visualize and convert networks in the Cytoscape exchange (CX) format to standard data types and objects. The CX format is also used by the NDEx platform, a online commons for biological networks, and the network visualization software Cytocape.
 License: MIT + file LICENSE
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     jsonlite,
     plyr,
