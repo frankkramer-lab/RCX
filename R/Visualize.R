@@ -90,7 +90,7 @@ visualize = function(x, layout=NULL, openExternal=FALSE){
 visualize.RCX = function(x, layout=NULL, openExternal=FALSE) {
   cx = toCX(x)
   visualize(cx, layout, openExternal)
-  return(NULL)
+  return(invisible(NULL))
 }
 
 
@@ -109,7 +109,7 @@ visualize.CX = function(x, layout=NULL, openExternal=FALSE) {
   else
     viewer(htmlFile)
   
-  return(NULL)
+  return(invisible(NULL))
 }
 
 
