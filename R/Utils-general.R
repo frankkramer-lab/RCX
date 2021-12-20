@@ -255,7 +255,7 @@ NULL
         if(is.numeric(x)) type = "double"
         return(type)
     }
-    return(sapply(values, mapFunction))
+    return(vapply(values, mapFunction, character(1)))
 }
 
 
@@ -266,7 +266,7 @@ NULL
         isList = (length(x)>1)
         return(isList)
     }
-    return(sapply(values, mapFunction))
+    return(vapply(values, mapFunction, logical(1)))
 }
 
 

@@ -119,7 +119,7 @@ parseJSON = function(json, verbose=FALSE){
 #' @export
 processCX = function(aspectList, verbose=FALSE, aspectClasses=NULL){
   ## get the names of the aspects
-  jsonNames = sapply(aspectList, names)
+  jsonNames = vapply(aspectList, names, character(1))
   
   posAspects = names(.CLS)
   ## rearrange order of the aspects to be processed
@@ -155,10 +155,15 @@ processCX = function(aspectList, verbose=FALSE, aspectClasses=NULL){
         properties = params$properties
         if(!is.null(properties)){
           names(properties) = name
-          properties = properties[sapply(properties, function(p){
-            if(length(p)==0) return(FALSE)
-            return(ifelse(all(is.na(p)), FALSE, TRUE))
-          })]
+          properties = properties[
+            vapply(properties, 
+                   function(p){
+                     if(length(p)==0) return(FALSE)
+                     return(ifelse(all(is.na(p)), FALSE, TRUE))
+                   },
+                   logical(1)
+            )
+          ]
         }
 
         rcx = updateMetaData(rcx, version, consistencyGroup, properties)
@@ -564,8 +569,8 @@ jsonToRCX.cyVisualProperties = function(jsonData, verbose){
   vpPM = lapply(vpPM,function(x){
     if(!all(is.na(x))) {
       n = names(x)
-      t = sapply(x, function(y){y$type})
-      d = sapply(x, function(y){y$definition})
+      t = vapply(x, function(y){y$type}, character(1))
+      d = vapply(x, function(y){y$definition}, character(1))
       x = createCyVisualPropertyMappings(t, d, n)
     }
     return(x)

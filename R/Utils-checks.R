@@ -16,7 +16,7 @@
 #' All other functions perform a test and return the result.
 #' 
 #' The used **.DICT:** looks as follows:
-#' @eval paste0("@details", paste0(" * ", names(.DICT), ": ", sapply(names(.DICT), function(x){.pasteC(.DICT[[x]])}), collapse="\n"))
+#' @eval paste0("@details", paste0(" * ", names(.DICT), ": ", vapply(names(.DICT), function(x){.pasteC(.DICT[[x]])},character(1)), collapse="\n"))
 #' 
 #' @note Internal function only for convenience
 #' @keywords internal
@@ -55,7 +55,7 @@ NULL
 #' @describeIn checks checks if all elements of the list `L` are of class `cls`.
 .checkAllClass = function(L, cls, name, cname=c()){
     L[is.na(L)] = NULL
-    test = sapply(L,function(x){.paramClass(x, cls)})
+    test = vapply(L,function(x){.paramClass(x, cls)}, logical(1))
     pass = all(test)
     if(!pass) .stop("wrongClass",c(.formatLog(name, cname), cls))
 }
@@ -180,10 +180,10 @@ NULL
     params = list(...)
     names(params) = lapply(substitute(list(...))[-1], deparse)
     
-    paramsPrintLength = sapply(params, function(x){ifelse(is.null(x),"<ignored>",length(x))})
+    paramsPrintLength = vapply(params, function(x){ifelse(is.null(x),"<ignored>",as.character(length(x)))}, character(1))
     ## ignore NULL element (i.e. parameter not set)
-    params[sapply(params, is.null)] = NULL
-    paramsLength = sapply(params, length)
+    params[vapply(params, is.null, logical(1))] = NULL
+    paramsLength = vapply(params, length, integer(1))
 
     test = length(unique(paramsLength))==1
     if(!test) .stop("paramDifferentLength",
@@ -201,7 +201,7 @@ NULL
     if(missing(name) || is.null(name)) stop("name of the calling funtion has to be set!")
     params = list(...)
 
-    pass = any(!sapply(params, is.null))
+    pass = any(!vapply(params, is.null, logical(1)))
     return(pass)
 }
 
@@ -273,7 +273,7 @@ NULL
 
 #' @describeIn checks checks if all elements of a list `L` are numeric.
 .listAllNumeric = function(L){
-    pass = all(sapply(L, function(x){is.numeric(x)||is.na(x)||is.null(x)}))
+    pass = all(vapply(L, function(x){is.numeric(x)||is.na(x)||is.null(x)}, logical(1)))
     return(pass)
 }
 
@@ -285,7 +285,7 @@ NULL
 
 #' @describeIn checks checks if all elements of a list `L` are numeric or in `.DICT[[key]]`.
 .listAllNumericOrInDict = function(L, key){
-    pass = all(sapply(L, function(x){is.numeric(x)||is.na(x)||is.null(x)||(x %in% .DICT[[key]])}))
+    pass = all(vapply(L, function(x){is.numeric(x)||is.na(x)||is.null(x)||(x %in% .DICT[[key]])}, logical(1)))
     return(pass)
 }
 

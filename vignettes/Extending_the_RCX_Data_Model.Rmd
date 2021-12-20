@@ -21,10 +21,10 @@ opts_chunk$set(tidy.opts=list(width.cutoff=75,
                tidy=TRUE)
 ```
 
-The CX format is supposed to be flexible, so that own aspects can be defined by the user.
-However, the functions provided by the RCX package can not cover those extension.
-To work with those aspects in R it is necessary to implement function extending the RCX to custome aspects.
-In the following, we will explore how custom aspects can be realized and integrated in the RCX model.
+The CX format is supposed to be flexible, so that custom aspects can be defined by the user.
+However, the functions provided by the RCX package cannot cover those extensions.
+To work with those aspects in R, it is necessary to implement functions extending the RCX to support custom aspects.
+In the following, we will explore how custom aspects can be implemented and integrated in the RCX model.
 
 # A custom aspect
 

@@ -26,10 +26,18 @@
 #'                 list(n="IRS1"))
 #' RCX:::.jsonV(testData, "r")
 .jsonV = function(data, acc, default=NA, returnAllDefault=TRUE){
-  result = sapply(data, function(a){
-    if(!acc %in% names(a)) return(default)
-    return(a[[acc]])
-  })
+  cls = class(unlist(lapply(data, 
+                            function(a){
+                              if(!acc %in% names(a)) return(NA)
+                              return(a[[acc]])
+                            })))
+  result = vapply(data, 
+                  function(a){
+                    if(!acc %in% names(a)) return(methods::
+                                                    as(default, cls))
+                    return(a[[acc]])
+                  },
+                  methods::as(TRUE, cls))
   if(!returnAllDefault){
     if(is.na(default)){
       if(all(is.na(result))) result = NULL
@@ -60,7 +68,7 @@
 #'                 list(n="SHC1", r="BLUBB"),
 #'                 list(n="IRS1"))
 #' RCX:::.jsonL(testData, "r")
-.jsonL = function(data, acc, default=NA, unList=TRUE, returnAllDefault=TRUE){
+.jsonL = function(data, acc, default=as.character(NA), unList=TRUE, returnAllDefault=TRUE){
   result = lapply(data, function(a){
     if(!acc %in% names(a)) return(default)
     a = a[[acc]]
@@ -70,19 +78,27 @@
   if(!returnAllDefault){
     if(is.na(default)){
       
-      test = sapply(result, function(x){
-        if(is.list(x)){
-          if(length(x)==0) return(TRUE)
-          return(all(sapply(x, is.na)))
-        } 
-        return(all(is.na(x)))
-      })
+      test = vapply(result, 
+                    function(x){
+                      if(is.list(x)){
+                        if(length(x)==0) return(TRUE)
+                        return(all(vapply(x, is.na, logical(1))))
+                      } 
+                      return(all(is.na(x)))
+                    },
+                    logical(1))
       
       if(all(test)) {
         result = NULL
       }
     }else{
-      if(all(sapply(result, function(x){x==default}))) result = NULL
+      if(all(vapply(result, 
+                    function(x){
+                      return(x==default)
+                    }, 
+                    logical(1)))) {
+        result = NULL
+      }
     }
   }
   return(result)
@@ -163,10 +179,12 @@
 .renameDF = function(df, rnames) {
   if(!is.data.frame(df)) return(NULL)
   dfNames = colnames(df)
-  colnames(df) = sapply(dfNames, function(n){
-    if(n %in% names(rnames)) n = rnames[n]
-    return(n)
-  })
+  colnames(df) = vapply(dfNames, 
+                        function(n){
+                          if(n %in% names(rnames)) n = rnames[n]
+                          return(n)
+                        },
+                        character(1))
   return(df)
 }
 
@@ -239,12 +257,14 @@
 #' @rdname convert2json
 .convert2json.list = function(x, raw=c(), byElement=FALSE, skipNa=TRUE){
   if(skipNa) x[is.na(x)] = NULL
-  # if(skipNa) x[sapply(x,is.na)] = NULL
-  x[sapply(x,is.null)] = NULL
+  x[vapply(x,is.null,logical(1))] = NULL
   
   nx = names(x)
+  
   inRaw = nx %in% raw
-  x[!inRaw] = sapply(x[!inRaw], .convert2json)
+  x[!inRaw] = vapply(x[!inRaw], 
+                     function(x){.convert2json(x)},
+                     character(1))
   
   if(byElement){
     result = paste0('{"name":"',nx,'","value":',x,'}', collapse = ",")
@@ -305,15 +325,17 @@
 
 #' @rdname convert-data-types-and-values
 .convertValues = function(df, cols=c(value="value", isList="isList")){
-  result = sapply(df[,cols["value"]], function(v){
-    if(is.null(v)){
-      v=""
-    }else{
-      v = .convert2json(v)
-    }
-    v = paste0(v, collapse = ",")
-    return(v)
-  })
+  result = vapply(df[,cols["value"]], 
+                  function(v){
+                    if(is.null(v)){
+                      v=""
+                    }else{
+                      v = .convert2json(v)
+                    }
+                    v = paste0(v, collapse = ",")
+                    return(v)
+                  },
+                  character(1))
   result = ifelse(df[,cols["isList"]], paste0("[",result,"]"), result)
   return(result)
 }
@@ -335,16 +357,22 @@
 .convertRawList = function(l, keepNa=TRUE){
   result = NULL
   if(!is.null(l)){
-    result = sapply(l, function(v){
-      if((length(v)==1)&&(is.na(v))){
-        if(!keepNa) v = "[]"
-      }else{
-        v = .convert2json(v)
-        v = paste0(v, collapse = ",")
-        v = paste0("[",v,"]")
-      } 
-      return(v)
-    })
+    result = vapply(l, 
+                    function(v){
+                      if((length(v)==1)&&(is.na(v))){
+                        if(!keepNa){
+                          v = "[]"
+                        }else{
+                          v = as.character(NA)
+                        }
+                      }else{
+                        v = .convert2json(v)
+                        v = paste0(v, collapse = ",")
+                        v = paste0("[",v,"]")
+                      } 
+                      return(v)
+                    },
+                    character(1))
   }
   return(result)
 }

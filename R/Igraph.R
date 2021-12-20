@@ -39,7 +39,7 @@
     attNames = unique(attribute[cols])
     
     if(nrow(attNames)!=0){
-        for(ri in seq_len(length(attNames))) {
+        for(ri in seq_len(nrow(attNames))) {
             attrNewName = attNames[ri,"name"]
             attrName = attrNewName
             attrList = attNames[ri,"isList"]
@@ -382,7 +382,7 @@ fromIgraph = function(ig,
             tmpSel = !is.na(tmpVal)
             
             tmpList = is.list(tmpVal)
-            if(tmpList) tmpSel = ! sapply(tmpVal, is.null)
+            if(tmpList) tmpSel = ! vapply(tmpVal, is.null, logical(1))
             
             tmpSplit = strsplit(a, split = "\\.\\.\\.")[[1]]
             tmpName = rep(tmpSplit[1], length(tmpSel))
@@ -466,7 +466,7 @@ fromIgraph = function(ig,
             tmpVal = igraph::edge_attr(ig, tmpAcc)
             tmpSel = !is.na(tmpVal)
             tmpList = is.list(tmpVal)
-            if(tmpList) tmpSel = ! sapply(tmpVal, is.null)
+            if(tmpList) tmpSel = ! vapply(tmpVal, is.null, logical(1))
             
             tmpSplit = strsplit(a, split = "\\.\\.\\.")[[1]]
             tmpName = rep(tmpSplit[1], length(tmpSel))
@@ -520,7 +520,7 @@ fromIgraph = function(ig,
     attrNames = attrNames[! attrNames %in% tmpSubNetworks]
     cySubNetworks = NULL
     if(length(tmpSubNetworks)!=0){
-        snids = as.numeric(unique(sapply(strsplit(tmpSubNetworks,"\\.\\.\\."), function(x){x[2]})))
+        snids = as.numeric(unique(vapply(strsplit(tmpSubNetworks,"\\.\\.\\."), function(x){x[2]}), character(1)))
         for (snid in snids) {
             nodesData = NULL
             tmpNodesName = paste0("subnetwork...",snid,"...nodes")
@@ -552,7 +552,7 @@ fromIgraph = function(ig,
         tmpVal = igraph::graph_attr(ig, tmpAcc)
         tmpSel = !is.na(tmpVal)
         tmpList = is.list(tmpVal)
-        if(tmpList) tmpSel = ! sapply(tmpVal, is.null)
+        if(tmpList) tmpSel = ! vapply(tmpVal, is.null, logical(1))
         
         tmpSplit = strsplit(tmpAcc, split = "\\$")[[1]]
         tmpName = rep(tmpSplit[1], length(tmpSel))

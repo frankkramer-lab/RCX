@@ -172,7 +172,7 @@
 #' summary(df)
 `.transformListLength<-` = function(aspect, value){
   if(value %in% colnames(aspect)){
-    col = sapply(aspect[,value], length)
+    col = vapply(aspect[,value], length, integer(1))
     .addClass(col) = "AspectListLengthColumn"
     aspect[,value] = col
   }
@@ -370,16 +370,16 @@ summary.CyVisualProperty = function(object, ...){
   .markRefColumn(av) = "view"
   
   result = list(summary(av))
-  properties = object$properties[!sapply(object$properties, is.na)]
-  if(! all(sapply(object$properties, is.na)))
+  properties = object$properties[!vapply(object$properties, is.na, logical(1))]
+  if(! all(vapply(object$properties, is.na, logical(1))))
     result$properties=summary(plyr::ldply(properties, data.frame))
   
-  dependencies = object$dependencies[!sapply(object$dependencies, is.na)]
-  if(! all(sapply(object$dependencies, is.na)))
+  dependencies = object$dependencies[!vapply(object$dependencies, is.na, logical(1))]
+  if(! all(vapply(object$dependencies, is.na, logical(1))))
     result$dependencies=summary(plyr::ldply(dependencies, data.frame))
   
-  mappings = object$mappings[!sapply(object$mappings, is.na)]
-  if(! all(sapply(object$mappings, is.na)))
+  mappings = object$mappings[!vapply(object$mappings, is.na, logical(1))]
+  if(! all(vapply(object$mappings, is.na, logical(1))))
     result$mappings=summary(plyr::ldply(mappings, data.frame))
   
   return(result)

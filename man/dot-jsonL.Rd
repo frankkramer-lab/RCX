@@ -4,7 +4,13 @@
 \alias{.jsonL}
 \title{Return data as a list from a JSON list}
 \usage{
-.jsonL(data, acc, default = NA, unList = TRUE, returnAllDefault = TRUE)
+.jsonL(
+  data,
+  acc,
+  default = as.character(NA),
+  unList = TRUE,
+  returnAllDefault = TRUE
+)
 }
 \arguments{
 \item{data}{json list}

@@ -185,12 +185,12 @@ rcxToJson.MetaDataAspect = function(aspect, verbose=FALSE, ...){
   
   if("properties" %in% colnames(aspect)){
     prop = aspect$properties
-    prop = sapply(prop, function(p){
+    prop = vapply(prop, function(p){
       p = ifelse(is.null(p),
                  NA,
                  .convert2json(p, byElement=TRUE))
       return(p)
-      })
+    },character(1))
     aspect$properties = prop
   }
   
@@ -420,9 +420,9 @@ rcxToJson.CyTableColumnAspect = function(aspect, verbose=FALSE, ...){
   aspect$dataType = NULL
   aspect$isList = NULL
   
-  aspect$appliesTo = sapply(aspect$appliesTo, function(a){
+  aspect$appliesTo = vapply(aspect$appliesTo, function(a){
     return(names(.DICT$TCappliesTo[.DICT$TCappliesTo==a]))
-  })
+  }, character(1))
   
   map = c(appliesTo="applies_to",
           name="n",
@@ -442,7 +442,9 @@ rcxToJson.CyTableColumnAspect = function(aspect, verbose=FALSE, ...){
 rcxToJson.CyVisualPropertiesAspect = function(aspect, verbose=FALSE, ...){
   if(verbose) cat("Convert Cytoscape visual properties to JSON...\n")
   
-  result = sapply(names(aspect), function(an){rcxToJson(aspect[[an]], verbose, an)})
+  result = vapply(names(aspect), 
+                  function(an){rcxToJson(aspect[[an]], verbose, an)},
+                  character(1))
   
   json = paste0(result, collapse = ",")
   
@@ -460,7 +462,7 @@ rcxToJson.CyVisualProperty = function(aspect, verbose=FALSE, propertyOf="", ...)
   if(verbose) cat(paste0("- Convert Cytoscape visual property of ",propertyOf," to JSON...\n"))
   
   result = c()
-  no = max(sapply(aspect, length))
+  no = max(vapply(aspect, length, integer(1)))
   for(n in seq_len(no)){
     tmp = paste0('"properties_of":"',.DICT$VPpropertiesOf[propertyOf],'"')
     

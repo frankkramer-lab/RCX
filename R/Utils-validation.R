@@ -40,7 +40,9 @@ NULL
 
 #' @describeIn dot_test checks if all list elements have all required columns
 .test_ListRequiredColumnsPresent = function(aspect, columns, verbose=FALSE){
-    pass =  all(sapply(aspect, function(x){all(columns %in% colnames(x))}))
+    pass =  all(vapply(aspect, 
+                       function(x){all(columns %in% colnames(x))}, 
+                       logical(1)))
     if(verbose) .log(paste0('- All required columns present (',.pasteC(columns),')'), pass)
     return(pass)
 }
@@ -77,7 +79,7 @@ NULL
 .test_AtLeastOneElementPresent = function(aspect, element, verbose=FALSE){
     pass = any(names(aspect) %in% element)
     if(pass){
-        pass = any(sapply(aspect[names(aspect) %in% element], function(x){!is.na(x)}))
+        pass = any(!is.na(aspect[names(aspect) %in% element]))
     }
     if(verbose) .log(paste0("- At least one of the elements present (",.pasteC(element),")"), pass)
     return(pass)
@@ -100,7 +102,9 @@ NULL
 
 #' @describeIn dot_test checks for all list elements if all elements in specified column are unique
 .test_ListAllUnique = function(aspect, column, verbose=FALSE){
-    pass = all(sapply(aspect, function(x){length(x[,column])==length(unique(x[,column]))}))
+    pass = all(vapply(aspect, 
+                      function(x){length(x[,column])==length(unique(x[,column]))}, 
+                      logical(1)))
     if(verbose) .log(paste0("- All list elements (",.pasteC(column),") contain only unique values"), pass)
     return(pass)
 }
@@ -116,9 +120,11 @@ NULL
 
 #' @describeIn dot_test checks if all elements in specified column are unique
 .test_ListAllUniqueInLists = function(aspect, column, verbose=FALSE){
-    pass = all(sapply(aspect, function(x){
-        .test_IsUniqueInLists(x, column, FALSE)
-    }))
+    pass = all(vapply(aspect, 
+                      function(x){
+                          .test_IsUniqueInLists(x, column, FALSE)
+                      }, 
+                      logical(1)))
     text = ifelse(length(column)==1, "Column", "Combination of columns")
     if(verbose) .log(paste0("- ",text," (",.pasteC(column),") contains only unique values"), pass)
     return(pass)
@@ -154,7 +160,9 @@ NULL
 
 #' @describeIn dot_test checks if the specified list element are all of type character
 .test_ListAllCharacter = function(aspect, element, verbose=FALSE){
-    pass = all(sapply(aspect[[element]], function(x){is.character(x)}))
+    pass = all(vapply(aspect[[element]], 
+                      function(x){is.character(x)}, 
+                      logical(1)))
     if(verbose) .log(paste0("- All list elements of ",element," contain only character values"), pass)
     return(pass)
 }
@@ -205,7 +213,9 @@ NULL
 
 #' @describeIn dot_test checks if the all elements in the list are of class in .CLSvp
 .test_ListOfCVPclass = function(x, cls, verbose=FALSE){
-    pass = all(sapply(x, function(y){.CLSvp[[cls]] %in% class(y)}))
+    pass = all(vapply(x, 
+                      function(y){.CLSvp[[cls]] %in% class(y)}, 
+                      logical(1)))
     if(verbose) .log(paste0("- All objects of class \"",.CLSvp[[cls]],"\""), pass)
     return(pass)
 }
@@ -219,28 +229,36 @@ NULL
 
 #' @describeIn dot_test checks if the specified list element contains any NA values
 .test_ListAllContainsNA = function(aspect, element, verbose=FALSE){
-    pass = all(sapply(aspect[[element]], function(x){all(!is.na(x))}))
+    pass = all(vapply(aspect[[element]], 
+                      function(x){all(!is.na(x))}, 
+                      logical(1)))
     if(verbose) .log(paste0("- All list elements of ",element," don't contain any NA values"), pass)
     return(pass)
 }
 
 #' @describeIn dot_test checks if the specified column is a list with only numeric values (NAs and NULLs are not considered)
 .test_ListAllNumeric = function(aspect, column, verbose=FALSE){
-    pass = all(sapply(aspect[,column], function(x){is.numeric(x)||is.na(x)||is.null(x)}))
+    pass = all(vapply(aspect[,column], 
+                      function(x){is.numeric(x)||is.na(x)||is.null(x)}, 
+                      logical(1)))
     if(verbose) .log(paste0("- The list (column: ",column,") contains only numeric values"), pass)
     return(pass)
 }
 
 #' @describeIn dot_test checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
 .test_ListAllNumericOrInDict = function(aspect, column, dic, verbose=FALSE){
-    pass = all(sapply(aspect[,column], function(x){is.numeric(x)||is.na(x)||is.null(x)||(x %in% .DICT[[dic]])}))
+    pass = all(vapply(aspect[,column], 
+                      function(x){is.numeric(x)||is.na(x)||is.null(x)||(x %in% .DICT[[dic]])}, 
+                      logical(1)))
     if(verbose) .log(paste0("- The list (column: ",column,") contains only numeric values or dictionary entries (",.pasteC(.DICT[[dic]]),")"), pass)
     return(pass)
 }
 
 #' @describeIn dot_test checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
 .test_ListAllOfClass = function(aspect, cls, verbose=FALSE){
-    pass = all(sapply(aspect, function(x){cls %in% class(x)}))
+    pass = all(vapply(aspect, 
+                      function(x){cls %in% class(x)}, 
+                      logical(1)))
     if(verbose) .log(paste0("- The list only contains entries of class \"",cls,"\""), pass)
     return(pass)
 }

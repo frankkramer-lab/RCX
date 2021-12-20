@@ -164,9 +164,9 @@ updateCyGroups.CyGroupsAspect = function(x, cyGroups, stopOnDuplicates=FALSE, ke
     cyGroups = .mergeIdAspect(cyGroups, cyGroups, "id", "id", stopOnDuplicates, keepOldIds, fname)
     
     ## correct lists to be not NULL but NA instead
-    if("nodes" %in% colnames(cyGroups)) cyGroups$nodes[sapply(cyGroups$nodes, is.null)] = NA
-    if("externalEdges" %in% colnames(cyGroups)) cyGroups$externalEdges[sapply(cyGroups$externalEdges, is.null)] = NA
-    if("internalEdges" %in% colnames(cyGroups)) cyGroups$internalEdges[sapply(cyGroups$internalEdges, is.null)] = NA
+    if("nodes" %in% colnames(cyGroups)) cyGroups$nodes[vapply(cyGroups$nodes, is.null, logical(1))] = NA
+    if("externalEdges" %in% colnames(cyGroups)) cyGroups$externalEdges[vapply(cyGroups$externalEdges, is.null, logical(1))] = NA
+    if("internalEdges" %in% colnames(cyGroups)) cyGroups$internalEdges[vapply(cyGroups$internalEdges, is.null, logical(1))] = NA
         
     .addClass(cyGroups) = .CLS$cyGroups
     

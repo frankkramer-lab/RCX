@@ -14,7 +14,8 @@ Depends:
 Imports:
     jsonlite,
     plyr,
-    igraph
+    igraph,
+    methods
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 biocViews: Pathways, DataImport, Network

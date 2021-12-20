@@ -244,7 +244,7 @@ createCyVisualProperty = function(properties=NULL, dependencies=NULL, mappings=N
 
 
     ## Fill missing attributes with NA
-    no = max(sapply(cvp, length))
+    no = max(vapply(cvp, length, integer(1)))
 
     if(is.null(cvp$properties)) cvp$properties = as.list(rep(NA, no))
     if(is.null(cvp$dependencies)) cvp$dependencies = as.list(rep(NA, no))
