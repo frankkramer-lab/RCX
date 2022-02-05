@@ -909,6 +909,14 @@ As igraph, graphNEL objects can not hold information about the visual
 representation of the network, so here too we can restore the original
 layout by adding the `CyVisualProperties` aspect we saved previously.
 
+Errors, questions and suggestions
+=================================
+
+If you have any questions to the usage of this package, suggestions for the further development of this package or encountered any problems in the process of the installation or while the usage:
+
+Pleas feel free to open a new [issue on our bord](https://github.com/frankkramer-lab/RCX/issues)!
+
+
 Session info
 ============
 
