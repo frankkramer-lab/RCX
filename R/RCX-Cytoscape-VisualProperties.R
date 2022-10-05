@@ -199,21 +199,24 @@ createCyVisualProperty = function(properties=NULL, dependencies=NULL, mappings=N
     
     cvp = list()
 
-    ## check for uniquenes of appliesTo and view
-    if((!is.null(appliesTo)) && (!is.null(view))){
+    ## check for uniqueness of appliesTo and view
+    testAppliesTo = ((!is.null(appliesTo)) && (!all(is.na(appliesTo))))
+    testView = ((!is.null(view)) && (!all(is.na(view))))
+    if(testAppliesTo && testView){
         key = data.frame(appliesTo=appliesTo,
                          view=view,
                          stringsAsFactors = FALSE,
                          check.names = FALSE)
+        print(key)
         .checkUniqueDF(key,c("appliesTo","view"), fname)
         
         cvp$appliesTo=appliesTo
         cvp$view=view
-    }else if(!is.null(appliesTo)){
+    }else if(testAppliesTo){
         .checkUnique(appliesTo, "appliesTo", fname)
         cvp$appliesTo=appliesTo
         cvp$view=rep(NA, length(appliesTo))
-    }else if(!is.null(view)){
+    }else if(testView){
         .checkUnique(view, "view", fname)
         cvp$view=view
         cvp$appliesTo=rep(NA, length(view))
