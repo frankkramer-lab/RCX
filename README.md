@@ -106,10 +106,31 @@ Model](vignettes/Appendix_The_RCX_and_CX_Data_Model.Rmd)
 Installation
 ============
 
+For installing packages from github the `devtools` package is the most common approach.
+However, it requires XML libraries installed on the system which can cause problems while installation due to unmet dependencies.
+The `remotes` package covers the functionality to download and install R packages stored in 'GitHub', 'GitLab', 'Bitbucket', 'Bioconductor', or plain 'subversion' or 'git' repositories without depending on XML libraries.
+If `devtools` is already installed, of course it can be used, otherwise it is recommended to use the lightweight `remotes` package.
+
+**From github using remotes:**
+
 ``` r
-if (!"RCX" %in% installed.packages()) {
-    require(devtools)
-    install_github("frankkramer-lab/RCX")
+if(!"remotes" %in% installed.packages()){
+  install.packages("remotes")
+}
+if(!"RCX" %in% installed.packages()){
+  remotes::install_github("frankkramer-lab/RCX")
+}
+library(RCX)
+```
+
+**From github using devtools:**
+
+``` r
+if(!"devtools" %in% installed.packages()){
+  install.packages("devtools")
+}
+if(!"RCX" %in% installed.packages()){
+  devtools::install_github("frankkramer-lab/RCX")
 }
 library(RCX)
 ```
