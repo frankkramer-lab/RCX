@@ -3,6 +3,7 @@
 \docType{data}
 \name{aspectClasses}
 \alias{aspectClasses}
+\alias{getAspectClasses}
 \alias{subAspectClasses}
 \alias{updateAspectClasses}
 \title{aspectClasses and subAspectClasses}
@@ -14,40 +15,51 @@ An object of class \code{character} of length 4.
 \usage{
 aspectClasses
 
+getAspectClasses(extensions = TRUE)
+
 subAspectClasses
 
-updateAspectClasses(aspectClasses, aspect)
+updateAspectClasses(aspectClasses = aspectClasses)
 }
 \arguments{
-\item{aspectClasses}{named character; accession names and aspect classes}
+\item{extensions}{logical; whether to include aspect classes from extensions}
 
-\item{aspect}{named character; new accession names and aspect classes}
+\item{aspectClasses}{named character; accession names and aspect classes}
 }
 \value{
 named character; accession names and aspect classes
 }
 \description{
-\code{aspectClasses} and \code{subAspectClasses} contain the accession name and the classes of the corresponding (sub)aspect.
+To get the aspect classes it is advised to always use the \code{getAspectClasses()} function to ensure the correct functionality.
+\code{aspectClasses} and \code{subAspectClasses} contain the default \link[=RCX-object]{RCX} accession name and the classes of the corresponding (sub)aspect.
+The \code{getAspectClasses()} function standardizes access to the accession names and classes,
+and also allows to include installed extensions of the \link[=RCX-object]{RCX} data model.
+Only installed and loaded extensions are included in the result:
+New extensions should register on load using the \link{setExtension} function to be added to \code{options()$RCX.options$extensions},
+and therefore to \code{getAspectClasses()}.
 }
 \details{
-\code{updateAspectClasses} adds aspect classes to the list and avoids duplicate accession names and aspect classes.
+\code{updateAspectClasses} sets the default aspect classes in \code{options()$RCX.options}, either from \code{aspectClasses} or manually provided options.
 }
 \examples{
+## default aspect classes
 aspectClasses
 
-aspectClasses = updateAspectClasses(
-  aspectClasses, 
-  c(bla="BlaAspect")
+## get set aspect classes from options()
+aspectClasses = getAspectClasses()
+
+## get aspect classes without extensions
+aspectClasses = getAspectClasses(extensions=FALSE)
+
+## set default updateClasses
+updateAspectClasses(
+  aspectClasses = aspectClasses
 )
 
-aspectClasses
-
-aspectClasses = updateAspectClasses(
-  aspectClasses, 
-  c(bla="BlaAspect", blubb="BubbAspect")
-)
-
-aspectClasses
+## default sub aspect classes
 subAspectClasses
+}
+\seealso{
+\link{setExtension}
 }
 \keyword{datasets}

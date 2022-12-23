@@ -12,7 +12,7 @@ updateMetaData(
   version = NULL,
   consistencyGroup = NULL,
   properties = NULL,
-  aspectClasses = NULL
+  aspectClasses = getAspectClasses()
 )
 
 \method{updateMetaData}{RCX}(
@@ -20,7 +20,7 @@ updateMetaData(
   version = NULL,
   consistencyGroup = NULL,
   properties = NULL,
-  aspectClasses = NULL
+  aspectClasses = getAspectClasses()
 )
 
 \method{updateMetaData}{default}(
@@ -28,7 +28,7 @@ updateMetaData(
   version = NULL,
   consistencyGroup = NULL,
   properties = NULL,
-  aspectClasses = NULL
+  aspectClasses = getAspectClasses()
 )
 }
 \arguments{

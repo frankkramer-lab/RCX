@@ -265,20 +265,27 @@ The meta-data does not contain the aspect yet.
 ## Update meta-data for the aspect
 
 To include it, we have to provide information about the relation between accession name (`networkProvenance`) and the class of the aspect (`NetworkProvenanceAspect`).
-This information is kept in the `aspectClasses` vector. 
-To update this vector with a new aspect, we can use the `updateAspectClasses` function:
+This information is provided by the `getAspectClasses` function.
+Inclusion in the RCX model works either as scripts, or better by wrapping it as own package.
+
+### Witout a extension package
+
+To update the return of this function with a new aspect, we can use the `updateAspectClasses` function:
 
 ```{r aspectClasses, tidy=FALSE}
-aspectClasses
-aspectClasses <- updateAspectClasses(
-  aspectClasses, 
-  c(networkProvenance="NetworkProvenanceAspect")
-)
-aspectClasses
+aspectClasses = getAspectClasses()
+
+aspectClasses["networkProvenance"] <- "NetworkProvenanceAspect"
+
+updateAspectClasses(aspectClasses)
+
+getAspectClasses()
 ```
 
-The meta-data can be updated manually using the `updateMetaData` function.
-However, to get the updated `aspectClass` to work, we have to provide it to the update function:
+This is already sufficient to work, but in some cases it is required to "tell" the meta-data update manually to use specific aspect classes:
+
+The meta-data can be updated manually using the `updateMetaData` function,
+however, to get the updated `aspectClass` to work, we have to provide it to the update function:
 
 ```{r updateMetadata}
 rcx = updateMetaData(rcx)
@@ -305,6 +312,22 @@ updateNetworkProvenance.RCX = function(x, aspect){
     return(x)
 }
 ```
+
+### As extension package
+Generally it is better to provide extension as own packages.
+This also simplifies the process of adding the extension to the RCX environment.
+Only the `.onload` function (located in `zzz.R`) which is called on loading the package has to be adjusted to register the new extension:
+
+```{r setExtension, eval=FALSE}
+.onLoad <- function(libname, pkgname) {
+ RCX::setExtension(pkgname, "networkProvenance", "NetworkProvenanceAspect")
+ invisible()
+}
+```
+
+As convention, the package should be named by starting with "RCX" followed by the extension name, e.g. "RCXNetworkProvenance".
+
+## Meta-data summary
 
 The `idCounter` of the meta-data is not updated yet, although this aspect contains an ID.
 To enable this, we have to implement two methods:

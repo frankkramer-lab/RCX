@@ -277,7 +277,7 @@ refersTo.CySubNetworksAspect = function (aspect) {
 #' rcx = createRCX(nodes = nodes, edges = edges)
 #' 
 #' referredBy(rcx)
-referredBy = function (rcx, aspectClasses=NULL) {
+referredBy = function (rcx, aspectClasses=getAspectClasses()) {
   fname="referredBy"
   if(missing(rcx)) .stop("paramMissingRCX")
   .checkClass(rcx, .CLS$rcx, .formatO("rcx",fname))
@@ -502,32 +502,40 @@ aspectClass2Name = function(cls){
 
 #' aspectClasses and subAspectClasses
 #' 
-#' `aspectClasses` and `subAspectClasses` contain the accession name and the classes of the corresponding (sub)aspect.
+#' To get the aspect classes it is advised to always use the `getAspectClasses()` function to ensure the correct functionality.
+#' `aspectClasses` and `subAspectClasses` contain the default [RCX][RCX-object] accession name and the classes of the corresponding (sub)aspect.
+#' The `getAspectClasses()` function standardizes access to the accession names and classes, 
+#' and also allows to include installed extensions of the [RCX][RCX-object] data model.
+#' Only installed and loaded extensions are included in the result:
+#' New extensions should register on load using the [setExtension] function to be added to `options()$RCX.options$extensions`, 
+#' and therefore to `getAspectClasses()`.
 #' 
-#' `updateAspectClasses` adds aspect classes to the list and avoids duplicate accession names and aspect classes.
+#' `updateAspectClasses` sets the default aspect classes in `options()$RCX.options`, either from `aspectClasses` or manually provided options.
 #'
 #' @param aspectClasses named character; accession names and aspect classes 
-#' @param aspect named character; new accession names and aspect classes
+#' @param extensions logical; whether to include aspect classes from extensions
 #'
 #' @return named character; accession names and aspect classes
 #' @export
+#' 
+#' @seealso [setExtension]
 #'
 #' @examples
+#' ## default aspect classes
 #' aspectClasses
 #' 
-#' aspectClasses = updateAspectClasses(
-#'   aspectClasses, 
-#'   c(bla="BlaAspect")
+#' ## get set aspect classes from options()
+#' aspectClasses = getAspectClasses()
+#' 
+#' ## get aspect classes without extensions
+#' aspectClasses = getAspectClasses(extensions=FALSE)
+#' 
+#' ## set default updateClasses
+#' updateAspectClasses(
+#'   aspectClasses = aspectClasses
 #' )
 #' 
-#' aspectClasses
-#' 
-#' aspectClasses = updateAspectClasses(
-#'   aspectClasses, 
-#'   c(bla="BlaAspect", blubb="BubbAspect")
-#' )
-#' 
-#' aspectClasses
+#' ## default sub aspect classes
 #' subAspectClasses
 aspectClasses = c(rcx = "RCX",
                   metaData = "MetaDataAspect",
@@ -547,6 +555,30 @@ aspectClasses = c(rcx = "RCX",
 
 #' @rdname aspectClasses
 #' @export
+getAspectClasses = function(extensions=TRUE){
+  RCX.options = options()$RCX.options
+  
+  if(is.null(RCX.options)){
+    RCX.options = updateAspectClasses()
+  }
+  
+  print(RCX.options)
+  
+  if(extensions && !is.null(RCX.options$extensions)){
+    for(extension in names(RCX.options$extensions)) {
+      ## only include if extension package is loaded!
+      if(extension %in% .packages()){
+        RCX.options$aspectClasses = append(RCX.options$aspectClasses, RCX.options$extensions[[extension]])
+      }
+    }
+  }
+  
+  return(RCX.options$aspectClasses)
+}
+
+
+#' @rdname aspectClasses
+#' @export
 subAspectClasses = c(property = "CyVisualProperty",
                      properties = "CyVisualPropertyProperties",
                      dependencies = "CyVisualPropertyDependencies",
@@ -555,12 +587,60 @@ subAspectClasses = c(property = "CyVisualProperty",
 
 #' @rdname aspectClasses
 #' @export
-updateAspectClasses = function(aspectClasses, aspect){
-  aspect = aspect[! aspect %in% aspectClasses]
-  aspect = aspect[! names(aspect) %in% names(aspectClasses)]
-
-  if(length(aspect)!=0){
-    aspectClasses = append(aspectClasses, c(networkProvenance="NetworkProvenanceAspect"))
+updateAspectClasses = function(aspectClasses=aspectClasses){
+  RCX.options = options()$RCX.options
+  
+  if(is.null(RCX.options)){
+    RCX.options = list(aspectClasses=aspectClasses, extensions=list())
   }
-  return(aspectClasses)
+  
+  RCX.options$aspectClasses=aspectClasses
+  
+  if(is.null(RCX.options$extensions)){
+    RCX.options$extensions=list()
+  }
+  
+  options(RCX.options = RCX.options)
+  
+  return(RCX.options)
+}
+
+
+#' Set or register an RCX extension
+#' 
+#' To simplify the usage of extension of the [RCX][RCX-object] data model new extensions can easily registered on load with this function.
+#' Registered extension then automatically are used for the conversion of CX data containing aspects of these extensions.
+#' The accession names and classes then are also added to [getAspectClasses][aspectClasses].
+#'
+#' @param package character; name of the extension package
+#' @param accession character; accession name used in [RCX][RCX-object] (e.g. `rcx$accessionName`)
+#' @param className character; class name of the aspect (e.g. `is(rcx$accessionName, "AccessionNameAspect")`)
+#'
+#' @return `options()$RCX.options$extensions`
+#' @export
+#' 
+#' @seealso [aspectClasses]
+#'
+#' @examples
+#' \donttest{
+#' setExtension("RCXMyRcxExtension", "myRcxExtension", "MyRcxExtensionAspect")
+#' }
+setExtension = function(package, accession, className){
+  RCX.options = options()$RCX.options
+  
+  if(is.null(RCX.options)){
+    RCX.options = updateAspectClasses()
+  }
+  
+  if(is.null(RCX.options$extensions)){
+    RCX.options$extensions=list()
+  }
+  
+  extension = c()
+  extension[accession] = className
+  RCX.options$extensions[[package]] = extension
+  
+  options(RCX.options = RCX.options)
+  
+  invisible(RCX.options$extensions)
 }

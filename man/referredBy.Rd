@@ -4,7 +4,7 @@
 \alias{referredBy}
 \title{List the aspects that are refered by an other aspect}
 \usage{
-referredBy(rcx, aspectClasses = NULL)
+referredBy(rcx, aspectClasses = getAspectClasses())
 }
 \arguments{
 \item{rcx}{an object of one of the aspect classes (e.g. NodesAspect, EdgesAspect, etc.)}

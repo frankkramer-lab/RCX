@@ -77,7 +77,7 @@
 #' json = readJSON(cxFile)
 #' aspectList = parseJSON(json)
 #' rcx = processCX(aspectList)
-readCX = function(file, verbose=FALSE, aspectClasses=NULL){
+readCX = function(file, verbose=FALSE, aspectClasses=getAspectClasses()){
   json = readJSON(file, verbose)
   aspectList = parseJSON(json, verbose)
   rcx = processCX(aspectList, verbose, aspectClasses=aspectClasses)
@@ -117,11 +117,11 @@ parseJSON = function(json, verbose=FALSE){
 
 #' @describeIn readCX Processes the list of aspect data and creates an [RCX][RCX-object]
 #' @export
-processCX = function(aspectList, verbose=FALSE, aspectClasses=NULL){
+processCX = function(aspectList, verbose=FALSE, aspectClasses=getAspectClasses()){
   ## get the names of the aspects
   jsonNames = vapply(aspectList, names, character(1))
   
-  posAspects = names(.CLS)
+  posAspects = names(aspectClasses)
   ## rearrange order of the aspects to be processed
   posAspects = posAspects[!posAspects %in% c("nodes", "metaData", "rcx")]
   posAspects = c("nodes", posAspects, "metaData")
@@ -185,7 +185,7 @@ processCX = function(aspectList, verbose=FALSE, aspectClasses=NULL){
             
             cls = NA
             if(is.null(aspectClasses)){
-              cls = .aspectClass(aspect)
+              cls = getAspectClasses()
             }else{
               if(any(class(aspect) %in% aspectClasses)){
                 cls = class(aspect)[class(aspect) %in% aspectClasses]

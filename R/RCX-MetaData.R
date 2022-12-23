@@ -48,13 +48,13 @@
 #' @export
 #'
 #' @example man-roxygen-examples/meta-data-update.R
-updateMetaData = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=NULL){
+updateMetaData = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=getAspectClasses()){
     UseMethod("updateMetaData", x)
 }
 
 #' @rdname Meta-data
 #' @export
-updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=NULL){
+updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=getAspectClasses()){
     rcx = x
     fname = "updateMetaData"
     if(missing(rcx)) .stop("paramMissingRCX")
@@ -80,7 +80,7 @@ updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, proper
             
             cls = NA
             if(is.null(aspectClasses)){
-                cls = .aspectClass(aspect)
+                cls = getAspectClasses()
                 name = aspectClass2Name(cls)
             }else{
                 if(any(class(aspect) %in% aspectClasses)){
@@ -120,7 +120,7 @@ updateMetaData.RCX = function(x, version = NULL, consistencyGroup = NULL, proper
 
 #' @rdname Meta-data
 #' @export
-updateMetaData.default = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=NULL){
+updateMetaData.default = function(x, version = NULL, consistencyGroup = NULL, properties=NULL, aspectClasses=getAspectClasses()){
     aspect = x
     fname = "updateMetaData"
     # .checkClassOneOf(aspect, .CLS, "aspect", fname)
