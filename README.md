@@ -113,6 +113,13 @@ If `devtools` is already installed, of course it can be used, otherwise it is re
 
 **From github using remotes:**
 
+For installing packages from github the `devtools` package is the most common approach.
+However, it requires XML libraries installed on the system which can cause problems while installation due to unmet dependencies.
+The `remotes` package covers the functionality to download and install R packages stored in 'GitHub', 'GitLab', 'Bitbucket', 'Bioconductor', or plain 'subversion' or 'git' repositories without depending on XML libraries.
+If `devtools` is already installed, of course it can be used, otherwise it is recommended to use the lightweight `remotes` package.
+
+**From github using remotes:**
+
 ``` r
 if(!"remotes" %in% installed.packages()){
   install.packages("remotes")
@@ -908,6 +915,14 @@ rcxBack$metaData
 As igraph, graphNEL objects can not hold information about the visual
 representation of the network, so here too we can restore the original
 layout by adding the `CyVisualProperties` aspect we saved previously.
+
+Errors, questions and suggestions
+=================================
+
+If you have any questions to the usage of this package, suggestions for the further development of this package or encountered any problems in the process of the installation or while the usage:
+
+Pleas feel free to open a new [issue on our bord](https://github.com/frankkramer-lab/RCX/issues)!
+
 
 Session info
 ============
