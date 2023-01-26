@@ -562,8 +562,6 @@ getAspectClasses = function(extensions=TRUE){
     RCX.options = updateAspectClasses()
   }
   
-  print(RCX.options)
-  
   if(extensions && !is.null(RCX.options$extensions)){
     for(extension in names(RCX.options$extensions)) {
       ## only include if extension package is loaded!

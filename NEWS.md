@@ -1,3 +1,6 @@
+Changes in version 1.3.1(2023-01-26)
++ Fix: lost print in getAspectClasses
+
 Changes in version 1.3.1(2022-12-23)
 + Update extension load mechanism: getAspectClasses returns also extension classes, setExtension() for registration and usage of options()
 
