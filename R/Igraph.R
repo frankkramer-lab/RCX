@@ -184,8 +184,8 @@ toIgraph = function(rcx, directed=FALSE){
     edges = rcx$edges
     ## reordering columns so that source and target are the first two
     edgeNames = colnames(edges)
-    edgeNames = c("source","target", 
-                  (edgeNames[!edgeNames %in% c("source","target")]))
+    edgeNames = c("s","t", 
+                  (edgeNames[!edgeNames %in% c("s","t")]))
     edges = edges[edgeNames]
     ## rename columns to use id as name
     nodes = rcx$nodes
