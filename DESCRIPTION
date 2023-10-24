@@ -1,7 +1,7 @@
 Package: RCX
 Type: Package
 Title: R package implementing the Cytoscape Exchange (CX) format
-Version: 1.5.0
+Version: 1.6.0
 Authors@R: person("Florian", "Auer", role = c("aut","cre"), 
                   email="florian.auer@informatik.uni-augsburg.de",
                   comment = c(ORCID = "0000-0002-5320-8900"))
