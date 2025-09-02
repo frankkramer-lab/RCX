@@ -1,3 +1,6 @@
+Changes in version 1.12.1(2025-09-02)
++ Fix: fromGraphNEL didn't use the provided arguments for conversion
+
 Changes in version 1.3.1(2023-01-26)
 + Fix: lost print in getAspectClasses
 
