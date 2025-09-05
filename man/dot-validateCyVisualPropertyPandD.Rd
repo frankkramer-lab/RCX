@@ -24,9 +24,9 @@ For both properties the checks are the same.
 }
 \section{Functions}{
 \itemize{
-\item \code{.validateListOfCyVisualPropertyPandD}: List of property and dependency objects
-}}
+\item \code{.validateListOfCyVisualPropertyPandD()}: List of property and dependency objects
 
+}}
 \note{
 Internal function only for convenience
 }

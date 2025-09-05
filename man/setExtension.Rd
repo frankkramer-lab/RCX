@@ -22,7 +22,7 @@ Registered extension then automatically are used for the conversion of CX data c
 The accession names and classes then are also added to \link[=aspectClasses]{getAspectClasses}.
 }
 \examples{
-\dontrun{
+\donttest{
 setExtension("RCXMyRcxExtension", "myRcxExtension", "MyRcxExtensionAspect")
 }
 }

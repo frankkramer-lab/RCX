@@ -159,81 +159,81 @@ The used \strong{.DICT:} looks as follows:
 }
 \section{Functions}{
 \itemize{
-\item \code{.paramClass}: checks if the object \code{param} is of class \code{cls}.
+\item \code{.paramClass()}: checks if the object \code{param} is of class \code{cls}.
 
-\item \code{.checkClass}: checks if the object \code{param} is of class \code{cls}.
+\item \code{.checkClass()}: checks if the object \code{param} is of class \code{cls}.
 
-\item \code{.checkAllClass}: checks if all elements of the list \code{L} are of class \code{cls}.
+\item \code{.checkAllClass()}: checks if all elements of the list \code{L} are of class \code{cls}.
 
-\item \code{.checkClassOneOf}: checks if \code{param} is any class of \code{clss}.
+\item \code{.checkClassOneOf()}: checks if \code{param} is any class of \code{clss}.
 
-\item \code{.checkCharacter}: checks if \code{param} is character.
+\item \code{.checkCharacter()}: checks if \code{param} is character.
 
-\item \code{.checkNumeric}: checks if \code{param} is numeric.
+\item \code{.checkNumeric()}: checks if \code{param} is numeric.
 
-\item \code{.checkLogical}: checks if \code{param} is logical.
+\item \code{.checkLogical()}: checks if \code{param} is logical.
 
-\item \code{.checkList}: checks if \code{param} is a list.
+\item \code{.checkList()}: checks if \code{param} is a list.
 
-\item \code{.paramNamed}: checks if \code{param} has names.
+\item \code{.paramNamed()}: checks if \code{param} has names.
 
-\item \code{.checkNamed}: checks if \code{param} has names.
+\item \code{.checkNamed()}: checks if \code{param} has names.
 
-\item \code{.checkNamedCharacter}: checks if \code{param} has names and is character.
+\item \code{.checkNamedCharacter()}: checks if \code{param} has names and is character.
 
-\item \code{.checkNamedNumeric}: checks if \code{param} has names and is numeric.
+\item \code{.checkNamedNumeric()}: checks if \code{param} has names and is numeric.
 
-\item \code{.checkNamedLogical}: checks if \code{param} has names and is logical.
+\item \code{.checkNamedLogical()}: checks if \code{param} has names and is logical.
 
-\item \code{.checkNamedList}: checks if \code{param} has names and is a list.
+\item \code{.checkNamedList()}: checks if \code{param} has names and is a list.
 
-\item \code{.paramNonNeg}: checks if \code{param} is greater than 0 if not NA.
+\item \code{.paramNonNeg()}: checks if \code{param} is greater than 0 if not NA.
 
-\item \code{.checkNonNeg}: checks if \code{param} is greater than 0 if not NA.
+\item \code{.checkNonNeg()}: checks if \code{param} is greater than 0 if not NA.
 
-\item \code{.paramNoNa}: checks if \code{param} is not NA.
+\item \code{.paramNoNa()}: checks if \code{param} is not NA.
 
-\item \code{.checkNoNa}: checks if \code{param} is not NA.
+\item \code{.checkNoNa()}: checks if \code{param} is not NA.
 
-\item \code{.checkIsUniqueId}: checks if \code{param} is an unique id.
+\item \code{.checkIsUniqueId()}: checks if \code{param} is an unique id.
 
-\item \code{.checkIsId}: checks if \code{param} is an id.
+\item \code{.checkIsId()}: checks if \code{param} is an id.
 
-\item \code{.paramIsOptionalId}: checks if \code{param} is an optional id.
+\item \code{.paramIsOptionalId()}: checks if \code{param} is an optional id.
 
-\item \code{.checkSameLength}: checks if all elements in \code{...} have the same number of elements.
+\item \code{.checkSameLength()}: checks if all elements in \code{...} have the same number of elements.
 
-\item \code{.paramAnyNotNull}: checks if any element in \code{...} is not NULL.
+\item \code{.paramAnyNotNull()}: checks if any element in \code{...} is not NULL.
 
-\item \code{.checkAnyNotNull}: checks if any element in \code{...} is not NULL.
+\item \code{.checkAnyNotNull()}: checks if any element in \code{...} is not NULL.
 
-\item \code{.elementsUnique}: checks if the elements in \code{A} are unique.
+\item \code{.elementsUnique()}: checks if the elements in \code{A} are unique.
 
-\item \code{.checkUnique}: checks if the elements in \code{A} are unique.
+\item \code{.checkUnique()}: checks if the elements in \code{A} are unique.
 
-\item \code{.elementsUniqueDF}: checks if the elements in the columns \code{cols} of \code{DF} are unique.
+\item \code{.elementsUniqueDF()}: checks if the elements in the columns \code{cols} of \code{DF} are unique.
 
-\item \code{.checkUniqueDF}: checks if the elements in the columns \code{cols} of \code{DF} are unique.
+\item \code{.checkUniqueDF()}: checks if the elements in the columns \code{cols} of \code{DF} are unique.
 
-\item \code{.elementsInDict}: checks if the elements of \code{A} are in \code{.DICT[[key]]}.
+\item \code{.elementsInDict()}: checks if the elements of \code{A} are in \code{.DICT[[key]]}.
 
-\item \code{.elementsBContainsAllA}: checks if all elements of \code{A} are present in \code{B}.
+\item \code{.elementsBContainsAllA()}: checks if all elements of \code{A} are present in \code{B}.
 
-\item \code{.checkBContainsAllA}: checks if all elements of \code{A} are present in \code{B}.
+\item \code{.checkBContainsAllA()}: checks if all elements of \code{A} are present in \code{B}.
 
-\item \code{.checkRefs}: checks if \code{B} contains all elements of \code{A}, aka. references.
+\item \code{.checkRefs()}: checks if \code{B} contains all elements of \code{A}, aka. references.
 
-\item \code{.checkRefPresent}: checks if a referred aspect of class \code{cls} is accessible by \code{key} in \code{A}.
+\item \code{.checkRefPresent()}: checks if a referred aspect of class \code{cls} is accessible by \code{key} in \code{A}.
 
-\item \code{.listAllNumeric}: checks if all elements of a list \code{L} are numeric.
+\item \code{.listAllNumeric()}: checks if all elements of a list \code{L} are numeric.
 
-\item \code{.checkAllNumeric}: checks if all elements of a list \code{L} are numeric.
+\item \code{.checkAllNumeric()}: checks if all elements of a list \code{L} are numeric.
 
-\item \code{.listAllNumericOrInDict}: checks if all elements of a list \code{L} are numeric or in \code{.DICT[[key]]}.
+\item \code{.listAllNumericOrInDict()}: checks if all elements of a list \code{L} are numeric or in \code{.DICT[[key]]}.
 
-\item \code{.checkAllNumericOrInDict}: checks if all elements of a list \code{L} are numeric or in \code{.DICT[[key]]}.
+\item \code{.checkAllNumericOrInDict()}: checks if all elements of a list \code{L} are numeric or in \code{.DICT[[key]]}.
+
 }}
-
 \note{
 Internal function only for convenience
 }
