@@ -98,8 +98,8 @@ fromGraphNEL = function(graphNEL,
     ig = igraph::graph_from_graphnel(graphNEL)
     
     rcx = fromIgraph(ig,
-                     nodeId="id", nodeName="nodeName", nodeIgnore=c("name"), 
-                     edgeId="id", edgeInteraction="edgeInteraction", edgeIgnore=c(),
+                     nodeId=nodeId, nodeName=nodeName, nodeIgnore=nodeIgnore, 
+                     edgeId=edgeId, edgeInteraction=edgeInteraction, edgeIgnore=edgeIgnore,
                      suppressWarning=FALSE)
     
     if((! validate(rcx, FALSE)) && (! suppressWarning)) warning("RCX object didn't validate!")
