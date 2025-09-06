@@ -80,13 +80,13 @@ name used in the CX.
 }
 \section{Functions}{
 \itemize{
-\item \code{readJSON}: Reads the CX/JSON from file and returns the content as text
+\item \code{readJSON()}: Reads the CX/JSON from file and returns the content as text
 
-\item \code{parseJSON}: Parses the JSON text and returns a list with the aspect data
+\item \code{parseJSON()}: Parses the JSON text and returns a list with the aspect data
 
-\item \code{processCX}: Processes the list of aspect data and creates an \link[=RCX-object]{RCX}
+\item \code{processCX()}: Processes the list of aspect data and creates an \link[=RCX-object]{RCX}
+
 }}
-
 \examples{
 cxFile = system.file(
   "extdata", 

@@ -54,7 +54,9 @@ In a \code{\link{CyVisualProperties}} aspect, \code{\link{CyVisualProperty}} obj
 default nodes and edges.
 }
 \details{
-\subsection{Structure of Cytoscape Visual Property}{\preformatted{CyVisualProperty
+\subsection{Structure of Cytoscape Visual Property}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{CyVisualProperty
 |---properties = CyVisualPropertyProperties
 |   |--name
 |   |--value 
@@ -67,7 +69,7 @@ default nodes and edges.
 |   |--definition 
 |---appliesTo = <reference to subnetwork id>
 |---view = <reference to subnetwork id>
-}
+}\if{html}{\out{</div>}}
 }
 
 \code{\link{CyVisualProperties}} aspects consist of \code{\link{CyVisualProperty}} objects for each entry: networks, nodes, edges, and

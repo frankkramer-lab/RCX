@@ -25,9 +25,9 @@ Each element has an R data type (i.e. class). If more than one element are prese
 }
 \section{Functions}{
 \itemize{
-\item \code{.inferIsList}: Infer, if the values are lists
-}}
+\item \code{.inferIsList()}: Infer, if the values are lists
 
+}}
 \note{
 Internal function only for convenience
 }

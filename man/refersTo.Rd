@@ -47,23 +47,23 @@ aspects are implemented. This way it is easier to extend the data model.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: of default returns \emph{NULL}
+\item \code{refersTo(default)}: of default returns \emph{NULL}
 
-\item \code{EdgesAspect}: of EdgesAspect refers to id by \emph{source} and \emph{target}
+\item \code{refersTo(EdgesAspect)}: of EdgesAspect refers to id by \emph{source} and \emph{target}
 
-\item \code{NodeAttributesAspect}: of NodeAttributesAspect refers to id by \emph{propertyOf} and to id by \emph{subnetworkId}
+\item \code{refersTo(NodeAttributesAspect)}: of NodeAttributesAspect refers to id by \emph{propertyOf} and to id by \emph{subnetworkId}
 
-\item \code{EdgeAttributesAspect}: of EdgeAttributesAspect refers to id by \emph{propertyOf} and to id by \emph{subnetworkId}
+\item \code{refersTo(EdgeAttributesAspect)}: of EdgeAttributesAspect refers to id by \emph{propertyOf} and to id by \emph{subnetworkId}
 
-\item \code{CartesianLayoutAspect}: of CartesianLayoutAspect refers to id by \emph{node} and to id by \emph{view}
+\item \code{refersTo(CartesianLayoutAspect)}: of CartesianLayoutAspect refers to id by \emph{node} and to id by \emph{view}
 
-\item \code{CyGroupsAspect}: of CyGroupsAspect refers to id by \emph{nodes} and to id by \emph{externalEdges} and \emph{internalEdges}
+\item \code{refersTo(CyGroupsAspect)}: of CyGroupsAspect refers to id by \emph{nodes} and to id by \emph{externalEdges} and \emph{internalEdges}
 
-\item \code{CyVisualPropertiesAspect}: of CyVisualPropertiesAspect refers to id by \emph{appliesTo} of the sub-aspects
+\item \code{refersTo(CyVisualPropertiesAspect)}: of CyVisualPropertiesAspect refers to id by \emph{appliesTo} of the sub-aspects
 
-\item \code{CySubNetworksAspect}: of  refers to id by \emph{nodes} and to id by \emph{edges}
+\item \code{refersTo(CySubNetworksAspect)}: of  refers to id by \emph{nodes} and to id by \emph{edges}
+
 }}
-
 \examples{
 edges = createEdges(source = c(0,0), target = c(1,2))
 refersTo(edges)

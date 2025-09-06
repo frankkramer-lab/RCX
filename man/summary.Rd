@@ -88,19 +88,19 @@ for example ids of an aspect, required and optional references to ids of aspects
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{AspectIdColumn}: Summarize an id property
+\item \code{summary(AspectIdColumn)}: Summarize an id property
 
-\item \code{AspectRefColumn}: Summarize an optional property, that references the ids of an other aspect
+\item \code{summary(AspectRefColumn)}: Summarize an optional property, that references the ids of an other aspect
 
-\item \code{AspectReqRefColumn}: Summarize a required property, that references the ids of an other aspect
+\item \code{summary(AspectReqRefColumn)}: Summarize a required property, that references the ids of an other aspect
 
-\item \code{AspectValueColumn}: Summarize the occurrences of the different elements in the property
+\item \code{summary(AspectValueColumn)}: Summarize the occurrences of the different elements in the property
 
-\item \code{AspectAttributeColumn}: Summarize the different attributes in the property
+\item \code{summary(AspectAttributeColumn)}: Summarize the different attributes in the property
 
-\item \code{AspectListLengthColumn}: The property is a list of vectors, so summarize the length of the vectors
+\item \code{summary(AspectListLengthColumn)}: The property is a list of vectors, so summarize the length of the vectors
+
 }}
-
 \examples{
 rcx = createRCX(
   nodes = createNodes(name = c("a","b","c")),

@@ -78,43 +78,43 @@ presence of NA values, and references between the aspects.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default
+\item \code{validate(default)}: Default
 
-\item \code{NodesAspect}: Nodes
+\item \code{validate(NodesAspect)}: Nodes
 
-\item \code{EdgesAspect}: Edges
+\item \code{validate(EdgesAspect)}: Edges
 
-\item \code{NodeAttributesAspect}: Node attributes
+\item \code{validate(NodeAttributesAspect)}: Node attributes
 
-\item \code{EdgeAttributesAspect}: Edge attributes
+\item \code{validate(EdgeAttributesAspect)}: Edge attributes
 
-\item \code{NetworkAttributesAspect}: Network attributes
+\item \code{validate(NetworkAttributesAspect)}: Network attributes
 
-\item \code{CartesianLayoutAspect}: Cartesian layout
+\item \code{validate(CartesianLayoutAspect)}: Cartesian layout
 
-\item \code{CyGroupsAspect}: Cytoscape Groups
+\item \code{validate(CyGroupsAspect)}: Cytoscape Groups
 
-\item \code{CyVisualPropertiesAspect}: Cytoscape Visual Properties
+\item \code{validate(CyVisualPropertiesAspect)}: Cytoscape Visual Properties
 
-\item \code{CyVisualProperty}: Cytoscape Visual Properties
+\item \code{validate(CyVisualProperty)}: Cytoscape Visual Properties
 
-\item \code{CyVisualPropertyProperties}: Cytoscape visual property: Properties
+\item \code{validate(CyVisualPropertyProperties)}: Cytoscape visual property: Properties
 
-\item \code{CyVisualPropertyDependencies}: Cytoscape visual property: Dependencies
+\item \code{validate(CyVisualPropertyDependencies)}: Cytoscape visual property: Dependencies
 
-\item \code{CyVisualPropertyMappings}: Cytoscape visual property: Mappings
+\item \code{validate(CyVisualPropertyMappings)}: Cytoscape visual property: Mappings
 
-\item \code{CyHiddenAttributesAspect}: Cytoscape hidden attributes
+\item \code{validate(CyHiddenAttributesAspect)}: Cytoscape hidden attributes
 
-\item \code{CyNetworkRelationsAspect}: Cytoscape network relations
+\item \code{validate(CyNetworkRelationsAspect)}: Cytoscape network relations
 
-\item \code{CySubNetworksAspect}: Cytoscape sub-networks
+\item \code{validate(CySubNetworksAspect)}: Cytoscape sub-networks
 
-\item \code{CyTableColumnAspect}: Cytoscape table column aspect
+\item \code{validate(CyTableColumnAspect)}: Cytoscape table column aspect
 
-\item \code{RCX}: The whole RCX object with all its aspects
+\item \code{validate(RCX)}: The whole RCX object with all its aspects
+
 }}
-
 \examples{
 ## Read from a CX file
 ## reading the provided example network of the package

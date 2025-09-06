@@ -69,7 +69,9 @@ This function is used to add Cytoscape visual property objects (\code{\link{CyVi
 Cytoscape visual property objects define networks, nodes, edges, and default nodes and edges in a \code{\link{CyVisualProperties}} aspect.
 }
 \details{
-\subsection{Structure of Cytoscape Visual Property}{\preformatted{CyVisualProperty
+\subsection{Structure of Cytoscape Visual Property}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{CyVisualProperty
 |---properties = CyVisualPropertyProperties
 |   |--name
 |   |--value 
@@ -82,7 +84,7 @@ Cytoscape visual property objects define networks, nodes, edges, and default nod
 |   |--definition 
 |---appliesTo = <reference to subnetwork id>
 |---view = <reference to subnetwork id>
-}
+}\if{html}{\out{</div>}}
 }
 
 \code{\link{CyVisualProperty}} objects differ in the sub-networks and views (\code{\link{CySubNetworks}}) they apply to,

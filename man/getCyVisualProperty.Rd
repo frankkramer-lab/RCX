@@ -51,7 +51,9 @@ Mappings are \code{\link{CyVisualPropertyMappings}} objects, that hold informati
 For further information about Cytoscape visual properties see the \code{Styles} topic of the official Cytoscape documentation:
 \href{http://manual.cytoscape.org/en/stable/Styles.html}{http://manual.cytoscape.org/en/stable/Styles.html}
 
-\subsection{Structure of Cytoscape Visual Properties}{\preformatted{CyVisualProperties
+\subsection{Structure of Cytoscape Visual Properties}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{CyVisualProperties
 |---network = CyVisualProperty
 |---nodes = CyVisualProperty
 |---edges = CyVisualProperty
@@ -71,7 +73,7 @@ CyVisualProperty
 |   |--definition 
 |---appliesTo = <reference to subnetwork id>
 |---view = <reference to subnetwork id>
-}
+}\if{html}{\out{</div>}}
 }
 }
 \examples{

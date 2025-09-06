@@ -460,7 +460,7 @@ countElements.MetaDataAspect = function(x){
 #' The following accessions/classes are available within the standard RCX implementation:
 #' 
 #' **accession name <=> class name**
-#' `r paste0("```",paste(names(.CLS)," <=> ", .CLS, collapse="\n"),"```")`
+#' `r paste0(intToUtf8(c(0x60,0x60,0x60)),paste(names(.CLS)," <=> ", .CLS, collapse="\n"),intToUtf8(c(0x60,0x60,0x60)))`
 #'
 #' @param name character; name of the RCX accession of the Aspect
 #' @param cls character; name of the aspect class 

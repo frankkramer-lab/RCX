@@ -8,8 +8,8 @@
 #'
 #' @author Florian Auer \email{florian.auer@informatik.uni-augsburg.de}
 #' @name RCX
-#' @docType package
-NULL
+#' @keywords internal
+"_PACKAGE"
 
 
 #' Create an RCX object from aspects

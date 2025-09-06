@@ -2,6 +2,7 @@
 % Please edit documentation in R/RCX.R
 \docType{package}
 \name{RCX}
+\alias{RCX-package}
 \alias{RCX}
 \title{R package implementing the Cytoscape Exchange (CX) format}
 \description{
@@ -12,6 +13,15 @@ The CX format is also used by the NDEx platform, a online commons for biological
 
 \code{browseVignettes("RCy3")}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/frankkramer-lab/RCX}
+  \item Report bugs at \url{https://github.com/frankkramer-lab/RCX/issues}
+}
+
+}
 \author{
 Florian Auer \email{florian.auer@informatik.uni-augsburg.de}
 }
+\keyword{internal}

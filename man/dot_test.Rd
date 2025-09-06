@@ -134,73 +134,73 @@ Tests for validating RCX objects and its aspects.
 }
 \section{Functions}{
 \itemize{
-\item \code{.test_RequiredColumnsPresent}: checks if aspect has all required columns
+\item \code{.test_RequiredColumnsPresent()}: checks if aspect has all required columns
 
-\item \code{.test_ListRequiredColumnsPresent}: checks if all list elements have all required columns
+\item \code{.test_ListRequiredColumnsPresent()}: checks if all list elements have all required columns
 
-\item \code{.test_AllowedColumnsPresent}: checks if only allowed columns are set
+\item \code{.test_AllowedColumnsPresent()}: checks if only allowed columns are set
 
-\item \code{.test_ListAllowedColumnsPresent}: checks if all list elements have only allowed columns
+\item \code{.test_ListAllowedColumnsPresent()}: checks if all list elements have only allowed columns
 
-\item \code{.test_NoMergeColumn}: checks if column with old ids is not present (would be a merge artefact)
+\item \code{.test_NoMergeColumn()}: checks if column with old ids is not present (would be a merge artefact)
 
-\item \code{.test_AtLeastOneColumnPresent}: checks if at least one specified column is present
+\item \code{.test_AtLeastOneColumnPresent()}: checks if at least one specified column is present
 
-\item \code{.test_AtLeastOneElementPresent}: checks if at least one specified element is present
+\item \code{.test_AtLeastOneElementPresent()}: checks if at least one specified element is present
 
-\item \code{.test_OneNodePresent}: checks if at least one element (node) is present in the specified column
+\item \code{.test_OneNodePresent()}: checks if at least one element (node) is present in the specified column
 
-\item \code{.test_IsUnique}: checks if all elements in specified column are unique
+\item \code{.test_IsUnique()}: checks if all elements in specified column are unique
 
-\item \code{.test_ListAllUnique}: checks for all list elements if all elements in specified column are unique
+\item \code{.test_ListAllUnique()}: checks for all list elements if all elements in specified column are unique
 
-\item \code{.test_IsUniqueInLists}: checks if all elements in specified column are unique
+\item \code{.test_IsUniqueInLists()}: checks if all elements in specified column are unique
 
-\item \code{.test_ListAllUniqueInLists}: checks if all elements in specified column are unique
+\item \code{.test_ListAllUniqueInLists()}: checks if all elements in specified column are unique
 
-\item \code{.test_IsLogical}: checks if the specified column is of type logical
+\item \code{.test_IsLogical()}: checks if the specified column is of type logical
 
-\item \code{.test_IsNumeric}: checks if the specified column is of type numeric
+\item \code{.test_IsNumeric()}: checks if the specified column is of type numeric
 
-\item \code{.test_ElementIsNumeric}: checks if the specified column is of type numeric
+\item \code{.test_ElementIsNumeric()}: checks if the specified column is of type numeric
 
-\item \code{.test_IsCharacter}: checks if the specified column is of type character
+\item \code{.test_IsCharacter()}: checks if the specified column is of type character
 
-\item \code{.test_ListAllCharacter}: checks if the specified list element are all of type character
+\item \code{.test_ListAllCharacter()}: checks if the specified list element are all of type character
 
-\item \code{.test_IsList}: checks if the specified column is of type list
+\item \code{.test_IsList()}: checks if the specified column is of type list
 
-\item \code{.test_ElementIsList}: checks if the specified column is of type list
+\item \code{.test_ElementIsList()}: checks if the specified column is of type list
 
-\item \code{.test_IsPos}: checks if the specified column are positive integers
+\item \code{.test_IsPos()}: checks if the specified column are positive integers
 
-\item \code{.test_IsClass}: checks if the specified column is of the specified class in .CLS
+\item \code{.test_IsClass()}: checks if the specified column is of the specified class in .CLS
 
-\item \code{.test_IsNamedList}: checks if the aspect is a list with specified names
+\item \code{.test_IsNamedList()}: checks if the aspect is a list with specified names
 
-\item \code{.test_IsCVPclass}: checks if the specified column is of the specified class in .CLSvp
+\item \code{.test_IsCVPclass()}: checks if the specified column is of the specified class in .CLSvp
 
-\item \code{.test_ListOfCVPclass}: checks if the all elements in the list are of class in .CLSvp
+\item \code{.test_ListOfCVPclass()}: checks if the all elements in the list are of class in .CLSvp
 
-\item \code{.test_ContainsNA}: checks if the specified column contains any NA values
+\item \code{.test_ContainsNA()}: checks if the specified column contains any NA values
 
-\item \code{.test_ListAllContainsNA}: checks if the specified list element contains any NA values
+\item \code{.test_ListAllContainsNA()}: checks if the specified list element contains any NA values
 
-\item \code{.test_ListAllNumeric}: checks if the specified column is a list with only numeric values (NAs and NULLs are not considered)
+\item \code{.test_ListAllNumeric()}: checks if the specified column is a list with only numeric values (NAs and NULLs are not considered)
 
-\item \code{.test_ListAllNumericOrInDict}: checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
+\item \code{.test_ListAllNumericOrInDict()}: checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
 
-\item \code{.test_ListAllOfClass}: checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
+\item \code{.test_ListAllOfClass()}: checks if the specified column is a list with only numeric values (NAs and NULLs are not considered) or in .DICT
 
-\item \code{.test_AspectExist}: checks if the rcx object contains the specified apsect
+\item \code{.test_AspectExist()}: checks if the rcx object contains the specified apsect
 
-\item \code{.test_IdsInAspect}: checks if all provided ids are present in the specified column of an aspect
+\item \code{.test_IdsInAspect()}: checks if all provided ids are present in the specified column of an aspect
 
-\item \code{.test_ValuesInSet}: checks if the specified column of an aspect only contains values of the provided set
+\item \code{.test_ValuesInSet()}: checks if the specified column of an aspect only contains values of the provided set
 
-\item \code{.test_DataTypeColumn}: checks if the \code{dataType} column of an aspect only contains JSON data types.
+\item \code{.test_DataTypeColumn()}: checks if the \code{dataType} column of an aspect only contains JSON data types.
+
 }}
-
 \note{
 Internal function only for convenience
 }

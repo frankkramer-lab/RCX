@@ -37,19 +37,19 @@ Format objects for error logging
 }
 \section{Functions}{
 \itemize{
-\item \code{.formatQuote}: add quotes to the vector elements: \code{"<v[i]>"}
+\item \code{.formatQuote()}: add quotes to the vector elements: \code{"<v[i]>"}
 
-\item \code{.formatComma}: add commas between the vector elements: \verb{<v[1]>, <v[2]>, <v[3]>}
+\item \code{.formatComma()}: add commas between the vector elements: \verb{<v[1]>, <v[2]>, <v[3]>}
 
-\item \code{.formatParams}: format the vector: \verb{"<v[1]>", "<v[2]>" and "<v[3]>"}
+\item \code{.formatParams()}: format the vector: \verb{"<v[1]>", "<v[2]>" and "<v[3]>"}
 
-\item \code{.formatData}: format the vector: \verb{<v[1]>$<v[2]>$<v[3]>}
+\item \code{.formatData()}: format the vector: \verb{<v[1]>$<v[2]>$<v[3]>}
 
-\item \code{.formatLog}: format the vector: \verb{"<v[1]>", "<v[2]>" and "<v[3]>" (in <fname>)}
+\item \code{.formatLog()}: format the vector: \verb{"<v[1]>", "<v[2]>" and "<v[3]>" (in <fname>)}
 
-\item \code{.formatO}: format a object name with its calling function
+\item \code{.formatO()}: format a object name with its calling function
+
 }}
-
 \note{
 Internal function only for convenience
 }
