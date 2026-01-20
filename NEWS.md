@@ -1,4 +1,4 @@
-# Changes in version 1.14.0 (2026-01-20)
+# Changes in version 1.14.1 (2026-01-20)
 
 + Fix: cyGroups follows a different naming structure in the JSON export. Updated the export function accordingly. 
   Also the CyGroup ids have to be present in RCX object, a check for those references has been added.
