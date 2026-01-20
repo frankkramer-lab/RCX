@@ -72,7 +72,7 @@ Each aspect is accessible in the CX-JSON by a particular accession name (i.e. it
 This name is used as class to handle different aspects by method dispatch.
 This simplifies the extension of RCX for non-standard or self-defined aspects.
 
-The CX-JSON is parsed to R data types using the \link{jsonlite} package as follows:
+The CX-JSON is parsed to R data types using the \link[jsonlite:fromJSON]{jsonlite} package as follows:
 
 \code{jsonlite::fromJSON(cx, simplifyVector = FALSE)}
 

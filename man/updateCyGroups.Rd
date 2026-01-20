@@ -49,6 +49,9 @@ or \code{\link{Edges}} aspect respectively, otherwise an error is raised.
 When two groups should be added to each other some conflicts may rise, since the aspects might use the same IDs.
 If the aspects do not share any IDs, the two aspects are simply combined. Otherwise, the IDs of the new groups are re-assinged
 continuing with the next available ID (i.e. \code{\link{maxId}}(cyGroupsAspect) + 1 and \code{\link{maxId}}(rcx$cyGroups) + 1, respectively).
+When adding the CyGroups aspect to an \link[=RCX-object]{RCX} object, its ids \strong{must} be present as \code{\link{Nodes}} ids,
+in the \link[=RCX-object]{RCX} object, otherwise an error is raised (i.e. a CyGroup is represented as an additional Node in the
+\code{\link{Nodes}} aspect).
 
 To keep track of the changes, it is possible to keep the old IDs of the newly added nodes in the automatically added column \emph{oldId}.
 This can be omitted by setting \emph{keepOldIds} to \code{FALSE}.

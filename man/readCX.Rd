@@ -48,12 +48,12 @@ The \code{readJSON} function only read the content of a text file and returns it
 
 \subsection{Parse the JSON}{
 
-The \code{parseJSON} function uses the \link{jsonlite} package, to parse JSON text:
+The \code{parseJSON} function uses the \link[jsonlite:fromJSON]{jsonlite} package, to parse JSON text:
 
 \code{jsonlite::fromJSON(cx, simplifyVector = FALSE)}
 
 The result is a list containing the aspect data as elements.
-If, for some reason, the JSON is not valid, the \link{jsonlite} package raises an error.
+If, for some reason, the JSON is not valid, the \link[jsonlite:fromJSON]{jsonlite} package raises an error.
 }
 
 \subsection{Process the contained aspects to create an \link[=RCX-object]{RCX} object}{

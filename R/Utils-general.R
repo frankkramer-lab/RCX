@@ -33,7 +33,6 @@
 #'
 #' @param v character vector; just some strings
 #' @param fname character; function name
-#' @param .log character; previous called functions
 #'
 #' @return character
 #' 
@@ -42,7 +41,6 @@
 #' \dontrun{
 #' v <- c("one", "two", "three")
 #' fname <- "foo"
-#' .log <- c("foo1", "foo2", "foo3")
 #' 
 #' .formatQuote(v)
 #' #[1] "\"one\""   "\"two\""   "\"three\""

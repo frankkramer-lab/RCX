@@ -15,7 +15,7 @@ createCyGroups(
 )
 }
 \arguments{
-\item{id}{integer (optional); Cytoscape group ids}
+\item{id}{integer (optional); Cytoscape group ids; reference to \link[=Nodes]{node ids}}
 
 \item{name}{character; names of the groups}
 
@@ -41,6 +41,9 @@ Cytoscape groups allow to group a set of \code{\link{Nodes}} and corresponding i
 and represent a group as a single node in the visualization.
 A group is defined by its unique id, which must be an (positive) integer, which serves as reference to other aspects.
 If no ids are provided, they are created automatically.
+When adding the CyGroups aspect to an \link[=RCX-object]{RCX} object, its ids \strong{must} be present as \code{\link{Nodes}} ids,
+in the \link[=RCX-object]{RCX} object, otherwise an error is raised (i.e. a CyGroup is represented as an additional Node in the
+\code{\link{Nodes}} aspect).
 }
 \examples{
 ## a minimal example

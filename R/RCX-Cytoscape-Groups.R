@@ -27,9 +27,12 @@
 #' Cytoscape groups allow to group a set of \code{\link{Nodes}} and corresponding internal and external \code{\link{Edges}} together, 
 #' and represent a group as a single node in the visualization.
 #' A group is defined by its unique id, which must be an (positive) integer, which serves as reference to other aspects.
-#' If no ids are provided, they are created automatically.
+#' If no ids are provided, they are created automatically. 
+#' When adding the CyGroups aspect to an [RCX][RCX-object] object, its ids **must** be present as \code{\link{Nodes}} ids, 
+#' in the [RCX][RCX-object] object, otherwise an error is raised (i.e. a CyGroup is represented as an additional Node in the 
+#' \code{\link{Nodes}} aspect). 
 #'
-#' @param id integer (optional); Cytoscape group ids
+#' @param id integer (optional); Cytoscape group ids; reference to [node ids][Nodes]
 #' @param name character; names of the groups
 #' @param nodes list of integers (optional); reference to [node ids][Nodes]
 #' @param externalEdges list of integers (optional); the external edges making up the group; reference to [edge ids][Edges]
@@ -128,7 +131,10 @@ createCyGroups = function(id=NULL, name, nodes=NULL, externalEdges=NULL, interna
 #' 
 #' When two groups should be added to each other some conflicts may rise, since the aspects might use the same IDs. 
 #' If the aspects do not share any IDs, the two aspects are simply combined. Otherwise, the IDs of the new groups are re-assinged 
-#' continuing with the next available ID (i.e. \code{\link{maxId}}(cyGroupsAspect) + 1 and \code{\link{maxId}}(rcx$cyGroups) + 1, respectively). 
+#' continuing with the next available ID (i.e. \code{\link{maxId}}(cyGroupsAspect) + 1 and \code{\link{maxId}}(rcx$cyGroups) + 1, respectively).
+#' When adding the CyGroups aspect to an [RCX][RCX-object] object, its ids **must** be present as \code{\link{Nodes}} ids, 
+#' in the [RCX][RCX-object] object, otherwise an error is raised (i.e. a CyGroup is represented as an additional Node in the 
+#' \code{\link{Nodes}} aspect).  
 #' 
 #' To keep track of the changes, it is possible to keep the old IDs of the newly added nodes in the automatically added column *oldId*.
 #' This can be omitted by setting *keepOldIds* to `FALSE`.
@@ -183,6 +189,13 @@ updateCyGroups.RCX = function(x, cyGroups, stopOnDuplicates=FALSE, keepOldIds=TR
     if(missing(cyGroups)) .stop("paramMissing", "cyGroups")
     .checkClass(rcx, .CLS$rcx, "rcx", fname)
     .checkClass(cyGroups, .CLS$cyGroups, "cyGroups", fname)
+    
+    if((! is.null(cyGroups$nodes)) && (checkReferences)){
+      .checkRefPresent(rcx, "nodes", .CLS$nodes, "rcx$nodes", fname)
+      ids = unique(unlist(cyGroups$id))
+      ids = ids[!is.na(ids)]
+      .checkRefs(ids, rcx$nodes$id, c("cyGroups$id", "rcx$nodes$id"), fname)
+    }
     
     if((! is.null(cyGroups$nodes)) && (checkReferences)){
         .checkRefPresent(rcx, "nodes", .CLS$nodes, "rcx$nodes", fname)

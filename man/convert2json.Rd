@@ -13,17 +13,17 @@
 \usage{
 .convert2json(x, ...)
 
-\method{.convert2json}{character}(x)
+\method{.convert2json}{character}(x, ...)
 
-\method{.convert2json}{numeric}(x)
+\method{.convert2json}{numeric}(x, ...)
 
-\method{.convert2json}{integer}(x)
+\method{.convert2json}{integer}(x, ...)
 
-\method{.convert2json}{logical}(x)
+\method{.convert2json}{logical}(x, ...)
 
-\method{.convert2json}{list}(x, raw = c(), byElement = FALSE, skipNa = TRUE)
+\method{.convert2json}{list}(x, raw = c(), byElement = FALSE, skipNa = TRUE, ...)
 
-\method{.convert2json}{data.frame}(x, raw = c(), skipNa = TRUE)
+\method{.convert2json}{data.frame}(x, raw = c(), skipNa = TRUE, ...)
 }
 \arguments{
 \item{x}{data element}
