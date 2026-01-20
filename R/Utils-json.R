@@ -226,7 +226,7 @@
 }
 
 #' @rdname convert2json
-.convert2json.character = function(x){
+.convert2json.character = function(x, ...){
   ## escape characters
   x = gsub(r"(\)",r"(\\)",x, fixed=TRUE)
   x = gsub("\n",r"(\\n)",x, fixed=TRUE)
@@ -240,7 +240,7 @@
 }
 
 #' @rdname convert2json
-.convert2json.numeric = function(x){
+.convert2json.numeric = function(x, ...){
   return(as.character(x))
 }
 
@@ -249,13 +249,13 @@
 
 
 #' @rdname convert2json
-.convert2json.logical = function(x){
+.convert2json.logical = function(x, ...){
   x[!is.na(x)] = ifelse(x[!is.na(x)],'"true"','"false"')
   return(x)
 }
 
 #' @rdname convert2json
-.convert2json.list = function(x, raw=c(), byElement=FALSE, skipNa=TRUE){
+.convert2json.list = function(x, raw=c(), byElement=FALSE, skipNa=TRUE, ...){
   if(skipNa) x[is.na(x)] = NULL
   x[vapply(x,is.null,logical(1))] = NULL
   
@@ -279,7 +279,7 @@
 }
 
 #' @rdname convert2json
-.convert2json.data.frame = function(x, raw=c(), skipNa=TRUE){
+.convert2json.data.frame = function(x, raw=c(), skipNa=TRUE, ...){
   for(col in colnames(x)){
     if(!col %in% raw) x[,col] = .convert2json(x[,col])
   }
@@ -359,7 +359,7 @@
   if(!is.null(l)){
     result = vapply(l, 
                     function(v){
-                      if((length(v)==1)&&(is.na(v))){
+                      if(is.null(v) || ((length(v)==1)&&(is.na(v)))){
                         if(!keepNa){
                           v = "[]"
                         }else{

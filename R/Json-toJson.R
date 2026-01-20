@@ -334,12 +334,16 @@ rcxToJson.CyGroupsAspect = function(aspect, verbose=FALSE, ...){
   aspect$nodes = .convertRawList(aspect$nodes)
   aspect$externalEdges = .convertRawList(aspect$externalEdges)
   aspect$internalEdges = .convertRawList(aspect$internalEdges)
+  ## for some reason collapsed must not be enclosed in quotes
+  aspect$collapsed = ifelse(aspect$collapsed, "true", "false")
   
   map = c(id="@id",
-          name="n")
+          name="n",
+          externalEdges="external_edges",
+          internalEdges="internal_edges")
   aspect = .renameDF(aspect, map)
   
-  json = .convert2json(aspect, raw=c("nodes","externalEdges","internalEdges"), skipNa=TRUE)
+  json = .convert2json(aspect, raw=c("nodes","external_edges","internal_edges","collapsed"), skipNa=TRUE)
   
   json = .addAspectNameToJson(json, "cyGroups")
   if(verbose) cat("done!\n")

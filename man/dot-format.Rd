@@ -26,8 +26,6 @@
 \item{v}{character vector; just some strings}
 
 \item{fname}{character; function name}
-
-\item{.log}{character; previous called functions}
 }
 \value{
 character
@@ -57,7 +55,6 @@ Internal function only for convenience
 \dontrun{
 v <- c("one", "two", "three")
 fname <- "foo"
-.log <- c("foo1", "foo2", "foo3")
 
 .formatQuote(v)
 #[1] "\"one\""   "\"two\""   "\"three\""

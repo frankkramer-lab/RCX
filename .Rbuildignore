@@ -4,3 +4,5 @@
 ^man-roxygen$
 ^man-roxygen-examples$
 ^data-raw$
+^LICENSE\.md$
+

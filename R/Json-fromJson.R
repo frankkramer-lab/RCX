@@ -24,12 +24,12 @@
 #' 
 #' ## Parse the JSON
 #' 
-#' The `parseJSON` function uses the [jsonlite] package, to parse JSON text:
+#' The `parseJSON` function uses the [jsonlite][jsonlite::jsonlite] package, to parse JSON text:
 #'  
 #' `jsonlite::fromJSON(cx, simplifyVector = FALSE)`
 #' 
 #' The result is a list containing the aspect data as elements.
-#' If, for some reason, the JSON is not valid, the [jsonlite] package raises an error.
+#' If, for some reason, the JSON is not valid, the [jsonlite][jsonlite::jsonlite] package raises an error.
 #' 
 #' ## Process the contained aspects to create an [RCX][RCX-object] object
 #' 
@@ -229,7 +229,7 @@ processCX = function(aspectList, verbose=FALSE, aspectClasses=getAspectClasses()
 #' This name is used as class to handle different aspects by method dispatch.
 #' This simplifies the extension of RCX for non-standard or self-defined aspects.
 #' 
-#' The CX-JSON is parsed to R data types using the [jsonlite] package as follows:
+#' The CX-JSON is parsed to R data types using the [jsonlite][jsonlite::jsonlite] package as follows:
 #' 
 #' `jsonlite::fromJSON(cx, simplifyVector = FALSE)`
 #' 
