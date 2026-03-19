@@ -180,22 +180,31 @@ toIgraph = function(rcx, directed=FALSE){
     
     aspects = names(rcx)
     ig = NULL
-    if(! "edges" %in% aspects) .stop("igraphEdgesRequired", fname)
-    edges = rcx$edges
-    ## reordering columns so that source and target are the first two
-    edgeNames = colnames(edges)
-    edgeNames = c("source","target", 
-                  (edgeNames[!edgeNames %in% c("source","target")]))
-    edges = edges[edgeNames]
-    ## rename columns to use id as name
-    nodes = rcx$nodes
-    nodes$nodeName = nodes$name
-    nodes$name = nodes$id
-    
-    ig = igraph::graph_from_data_frame(edges,
-                                       directed = directed,
-                                       vertices = nodes)
-    ig = igraph::set_vertex_attr(ig, "id", value = igraph::vertex_attr(ig, "name"))
+    if("edges" %in% aspects){
+        edges = rcx$edges
+        ## reordering columns so that source and target are the first two
+        edgeNames = colnames(edges)
+        edgeNames = c("source","target", 
+                      (edgeNames[!edgeNames %in% c("source","target")]))
+        edges = edges[edgeNames]
+        ## rename columns to use id as name
+        nodes = rcx$nodes
+        nodes$nodeName = nodes$name
+        nodes$name = nodes$id
+        
+        ig = igraph::graph_from_data_frame(edges,
+                                           directed = directed,
+                                           vertices = nodes)
+        ig = igraph::set_vertex_attr(ig, "id", value = igraph::vertex_attr(ig, "name"))
+    }else{
+        nodes = rcx$nodes
+        nodes$nodeName = nodes$name
+        nodes$name = nodes$id
+        
+        ig = igraph::make_empty_graph(n = 0, directed = directed)
+        ig = igraph::add_vertices(ig, nrow(nodes), attr = as.list(nodes))
+        ig = igraph::set_vertex_attr(ig, "id", value = igraph::vertex_attr(ig, "name"))
+    }
     
     if("nodeAttributes" %in% aspects){
         attributes = rcx$nodeAttributes
@@ -304,7 +313,6 @@ fromIgraph = function(ig,
         tmpId = igraph::vertex_attr(ig, nodeId)
     }
     nodes = createNodes(id=tmpId, name = tmpName, represents = tmpRep)
-    
     
     ## Node Attributes:
     attrNames = attrNames[! attrNames %in% nodeIgnore]
@@ -424,89 +432,98 @@ fromIgraph = function(ig,
     }
     
     ## Edges:
-    ## necessary for getting the internal ids
-    if(is.null(edgeId)){
-        tmpCols = c("from", "to")
-    }else{
-        tmpCols = c("from", "to", edgeId)
-    }
-    tmpData = unique(igraph::as_long_data_frame(ig)[tmpCols])
-    tmpSource = tmpId[tmpData$from]
-    tmpTarget = tmpId[tmpData$to]
-    
-    ## filter interaction and treat it differently
-    tmpInter = igraph::edge_attr(ig, "interaction")
-    if(is.null(edgeId)){
-        tmpEId = seq_len(length(tmpSource))
-    }else{
-        tmpEId = tmpData[,edgeId]
-    }
-    
-    edges = createEdges(id=tmpEId, source = tmpSource, target = tmpTarget, interaction = tmpInter)
-    
-    
-    ## Edge Attribures:
-    attrNames = igraph::edge_attr_names(ig)
-    edgeIgnore = c(edgeId, "interaction", edgeIgnore)
-    attrNames = attrNames[! attrNames %in% edgeIgnore]
-    
-    ## trim datatypes from attributes
-    tmpDataTypes = attrNames[endsWith(attrNames, "...dataType")]
-    attrNames = attrNames[! attrNames %in% tmpDataTypes]
-    tmpDataTypes = gsub("\\.\\.\\.dataType", "", tmpDataTypes)
-    
-    
-    ## process all remaining attributes
+    edges = NULL
     edgeAttributes = NULL
-    if(length(attrNames)!=0){
-        tmpEdgeAttr = lapply(attrNames, function(a){
-            tmpAcc = a
-            a = gsub("attribute\\.\\.\\.", "", a)
+    
+    if(igraph::ecount(ig)!=0) {
+        ## necessary for getting the internal ids
+        if(is.null(edgeId)){
+            tmpCols = c("from", "to")
+        }else{
+            tmpCols = c("from", "to", edgeId)
+        }
+        tmpData = igraph::as_long_data_frame(ig)[tmpCols]
+        
+        ## only if there are edges
+        if(nrow(tmpData)!=0){
+            tmpSource = tmpId[tmpData$from]
+            tmpTarget = tmpId[tmpData$to]
             
-            tmpVal = igraph::edge_attr(ig, tmpAcc)
-            tmpSel = !is.na(tmpVal)
-            tmpList = is.list(tmpVal)
-            if(tmpList) tmpSel = ! vapply(tmpVal, is.null, logical(1))
-            
-            tmpSplit = strsplit(a, split = "\\.\\.\\.")[[1]]
-            tmpName = rep(tmpSplit[1], length(tmpSel))
-            tmpSub = NULL
-            if(length(tmpSplit)==2) tmpSub = rep(as.numeric(tmpSplit[2]), length(tmpSel))[tmpSel]
-            
-            if(tmpAcc %in% tmpDataTypes) {
-                tmpDT = igraph::vertex_attr(ig, paste0(tmpAcc,"...dataType"))
+            ## filter interaction and treat it differently
+            tmpInter = igraph::edge_attr(ig, "interaction")
+            if(is.null(edgeId)){
+                tmpEId = seq_len(length(tmpSource))
             }else{
-                tmpValUnlist = ifelse(tmpList, unlist(tmpVal), tmpVal)
-                
-                if(is.logical(tmpValUnlist)) {
-                    tmpDT = rep("boolean", length(tmpSel))
-                }else if(is.numeric(tmpValUnlist)) {
-                    tmpDT = rep("double", length(tmpSel))
-                }else{
-                    tmpDT = rep("string", length(tmpSel))
-                }
+                tmpEId = tmpData[,edgeId]
             }
             
-            tmpList = rep(tmpList, length(tmpSel))
+            edges = createEdges(id=tmpEId, source = tmpSource, target = tmpTarget, interaction = tmpInter)
             
-            tmpAttr = createEdgeAttributes(propertyOf = tmpEId[tmpSel],
-                                           name = tmpName[tmpSel],
-                                           value = tmpVal[tmpSel],
-                                           dataType = tmpDT[tmpSel],
-                                           isList = tmpList[tmpSel],
-                                           subnetworkId = tmpSub)
-            return(tmpAttr)
-        })
-        
-        edgeAttributes = tmpEdgeAttr[[1]]
-        if(length(tmpEdgeAttr)>1){
-            for(i in seq(2,length(tmpEdgeAttr))) {
-                edgeAttributes = updateEdgeAttributes(edgeAttributes, tmpEdgeAttr[[i]])
+            
+            ## Edge Attributes:
+            attrNames = igraph::edge_attr_names(ig)
+            edgeIgnore = c(edgeId, "interaction", edgeIgnore)
+            attrNames = attrNames[! attrNames %in% edgeIgnore]
+            
+            ## trim datatypes from attributes
+            tmpDataTypes = attrNames[endsWith(attrNames, "...dataType")]
+            attrNames = attrNames[! attrNames %in% tmpDataTypes]
+            tmpDataTypes = gsub("\\.\\.\\.dataType", "", tmpDataTypes)
+            
+            
+            ## process all remaining attributes
+            edgeAttributes = NULL
+            if(length(attrNames)!=0){
+                tmpEdgeAttr = lapply(attrNames, function(a){
+                    tmpAcc = a
+                    a = gsub("attribute\\.\\.\\.", "", a)
+                    
+                    tmpVal = igraph::edge_attr(ig, tmpAcc)
+                    tmpSel = !is.na(tmpVal)
+                    tmpList = is.list(tmpVal)
+                    if(tmpList) tmpSel = ! vapply(tmpVal, is.null, logical(1))
+                    
+                    tmpSplit = strsplit(a, split = "\\.\\.\\.")[[1]]
+                    tmpName = rep(tmpSplit[1], length(tmpSel))
+                    tmpSub = NULL
+                    if(length(tmpSplit)==2) tmpSub = rep(as.numeric(tmpSplit[2]), length(tmpSel))[tmpSel]
+                    
+                    if(tmpAcc %in% tmpDataTypes) {
+                        tmpDT = igraph::vertex_attr(ig, paste0(tmpAcc,"...dataType"))
+                    }else{
+                        tmpValUnlist = ifelse(tmpList, unlist(tmpVal), tmpVal)
+                        
+                        if(is.logical(tmpValUnlist)) {
+                            tmpDT = rep("boolean", length(tmpSel))
+                        }else if(is.numeric(tmpValUnlist)) {
+                            tmpDT = rep("double", length(tmpSel))
+                        }else{
+                            tmpDT = rep("string", length(tmpSel))
+                        }
+                    }
+                    
+                    tmpList = rep(tmpList, length(tmpSel))
+                    
+                    tmpAttr = createEdgeAttributes(propertyOf = tmpEId[tmpSel],
+                                                   name = tmpName[tmpSel],
+                                                   value = tmpVal[tmpSel],
+                                                   dataType = tmpDT[tmpSel],
+                                                   isList = tmpList[tmpSel],
+                                                   subnetworkId = tmpSub)
+                    return(tmpAttr)
+                })
+                
+                edgeAttributes = tmpEdgeAttr[[1]]
+                if(length(tmpEdgeAttr)>1){
+                    for(i in seq(2,length(tmpEdgeAttr))) {
+                        edgeAttributes = updateEdgeAttributes(edgeAttributes, tmpEdgeAttr[[i]])
+                    }
+                }
             }
         }
     }
     
-    ## Network Attribures:
+    ## Network Attributes:
     networkAttributes = NULL
     attrNames = igraph::graph_attr_names(ig)
     
