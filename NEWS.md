@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 # Changes in version 1.14.2 (2026-03-19)
 
 + Fix: Previously, toIgraph required the RCX object to contain an edges aspect, making it impossible to convert node-only networks to igraph. 
   The function now handles edgeless networks.
 
->>>>>>> fix_igraph
 # Changes in version 1.14.1 (2026-01-20)
 
 + Fix: cyGroups follows a different naming structure in the JSON export. Updated the export function accordingly. 
